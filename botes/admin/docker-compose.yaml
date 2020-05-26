@@ -1,0 +1,17 @@
+version: "3.4"
+
+services:
+
+
+  logs:
+    container_name: 'box_logs'
+    build: '../../services/logs'
+    ports:
+      - ${LOGS_PORT}:4000
+    volumes:
+      - ./logs:${LOGS_PATH}
+    restart: always
+    environment:
+      - APP_MODE=${APP_MODE}
+      - LOGS_PORT=${LOGS_PORT}
+      - LOGS_PATH=${LOGS_PATH}

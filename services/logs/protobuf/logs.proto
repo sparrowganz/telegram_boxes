@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package protobuf;
+
+service Logger {
+    //отправка сообщения
+    rpc AccessLog (AccessLogRequest) returns (AccessLogResponse) {
+    }
+
+    rpc ErrorLog (ErrorLogRequest) returns (ErrorLogResponse) {
+    }
+
+    rpc SystemLog (SystemLogRequest) returns (SystemLogResponse) {
+
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Access Log
+//----------------------------------------------------------------------------------------------------------------------
+message AccessLogRequest {
+    string RequestId = 1;
+    string ServerName = 3;
+    string Method = 2;
+    int64 Time = 4;
+    string Duration = 5;
+    string User = 6;
+}
+
+message AccessLogResponse {
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//  Error Log
+//------------------------------------------------------------------------------------------------------------------
+
+message ErrorLogRequest {
+    string RequestId = 1;
+    string ServerName = 2;
+    int64 Time = 3;
+    string Error = 4;
+}
+
+message ErrorLogResponse {
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//  System Log
+//------------------------------------------------------------------------------------------------------------------
+
+message SystemLogRequest {
+    string ServerName = 1;
+    int64 Time = 2;
+    string Data = 3;
+}
+
+message SystemLogResponse {
+}
