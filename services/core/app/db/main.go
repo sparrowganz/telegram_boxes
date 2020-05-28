@@ -7,7 +7,6 @@ import (
 
 type Database interface {
 	Connector
-	mongo.Models
 	Getter
 }
 
@@ -18,10 +17,10 @@ func InitDatabaseConnect(host, port, username, password, database, mechanism str
 type Getter interface {
 	GetMainSession() *mgo.Session
 	GetDatabaseName() string
+	Models() mongo.Models
 }
 
 type Connector interface {
 	Connect(host, port, username, password, database, mechanism string) error
 	Close()
 }
-

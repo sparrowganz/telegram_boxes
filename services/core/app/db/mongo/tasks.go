@@ -2,9 +2,22 @@ package mongo
 
 import "gopkg.in/mgo.v2"
 
+type tasksData struct {
+	database   string
+	collection string
+}
+
+func createTaskModel(database string) Tasks {
+	return &tasksData{
+		database:   database,
+		collection: "Bots",
+	}
+}
+
 type Tasks interface {
 	queryTasks(session *mgo.Session) *mgo.Collection
 }
-func (db *DB) queryTasks(session *mgo.Session) *mgo.Collection {
-	return session.DB(db.DatabaseName).C("Tasks")
+
+func (td *tasksData) queryTasks(session *mgo.Session) *mgo.Collection {
+	return session.DB(td.database).C(td.collection)
 }

@@ -25,7 +25,6 @@ func main() {
 	s.Logger = app.InitLogger(os.Getenv("LOGS_PATH"))
 
 	grpcServer := grpc.NewServer()
-
 	protobuf.RegisterLoggerServer(grpcServer, s)
 
 	s.Logger.System(time.Now().UnixNano(), app.ServiceName,

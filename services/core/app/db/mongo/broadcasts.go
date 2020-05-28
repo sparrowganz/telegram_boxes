@@ -5,6 +5,18 @@ import (
 	"telegram_boxes/services/core/app/models"
 )
 
+type broadcastData struct {
+	database   string
+	collection string
+}
+
+func createBroadcastModel(database string) Broadcasts {
+	return &broadcastData{
+		database:   database,
+		collection: "Bots",
+	}
+}
+
 type Broadcasts interface {
 	queryBroadcast(session *mgo.Session) *mgo.Collection
 	CreateBroadcast(br models.Broadcast, session *mgo.Session) error
@@ -12,21 +24,21 @@ type Broadcasts interface {
 	RemoveBroadcast(br models.Broadcast, session *mgo.Session) error
 }
 
-func (db *DB) queryBroadcast(session *mgo.Session) *mgo.Collection {
-	return session.DB(db.DatabaseName).C("Broadcasts")
+func (br *broadcastData) queryBroadcast(session *mgo.Session) *mgo.Collection {
+	return session.DB(br.database).C(br.collection)
 }
 
-func (db *DB) CreateBroadcast(br models.Broadcast, session *mgo.Session) error {
-	br.Timestamp().SetCreateTime()
-	return db.queryBroadcast(session).Insert(br)
+func (br *broadcastData) CreateBroadcast(model models.Broadcast, session *mgo.Session) error {
+	model.Timestamp().SetCreateTime()
+	return br.queryBroadcast(session).Insert(model)
 }
 
-func (db *DB) UpdateBroadcast(br models.Broadcast, session *mgo.Session) error {
-	br.Timestamp().SetUpdateTime()
-	return db.queryBot(session).UpdateId(br.ID(), br)
+func (br *broadcastData) UpdateBroadcast(model models.Broadcast, session *mgo.Session) error {
+	model.Timestamp().SetUpdateTime()
+	return br.queryBroadcast(session).UpdateId(model.ID(), model)
 }
 
-func (db *DB) RemoveBroadcast(br models.Broadcast, session *mgo.Session) error {
-	br.Timestamp().SetRemoveTime()
-	return db.queryBot(session).UpdateId(br.ID(), br)
+func (br *broadcastData) RemoveBroadcast(model models.Broadcast, session *mgo.Session) error {
+	model.Timestamp().SetRemoveTime()
+	return br.queryBroadcast(session).UpdateId(model.ID(), model)
 }

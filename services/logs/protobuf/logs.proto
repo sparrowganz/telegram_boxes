@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package protobuf;
 
+option go_package = "services/logs/protobuf";
+
 service Logger {
     //отправка сообщения
     rpc AccessLog (AccessLogRequest) returns (AccessLogResponse) {
@@ -20,8 +22,8 @@ service Logger {
 //----------------------------------------------------------------------------------------------------------------------
 message AccessLogRequest {
     string RequestId = 1;
-    string ServerName = 3;
     string Method = 2;
+    string ServerName = 3;
     int64 Time = 4;
     string Duration = 5;
     string User = 6;

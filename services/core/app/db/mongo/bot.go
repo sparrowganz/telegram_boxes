@@ -5,6 +5,18 @@ import (
 	"telegram_boxes/services/core/app/models"
 )
 
+type botsData struct {
+	database   string
+	collection string
+}
+
+func createBotModel(database string) Bots {
+	return &botsData{
+		database:   database,
+		collection: "Bots",
+	}
+}
+
 type Bots interface {
 	queryBot(session *mgo.Session) *mgo.Collection
 	CreateBot(bot models.Bot, session *mgo.Session) error
@@ -12,21 +24,21 @@ type Bots interface {
 	RemoveBot(bot models.Bot, session *mgo.Session) error
 }
 
-func (db *DB) queryBot(session *mgo.Session) *mgo.Collection {
-	return session.DB(db.DatabaseName).C("Bots")
+func (bd *botsData) queryBot(session *mgo.Session) *mgo.Collection {
+	return session.DB(bd.database).C(bd.collection)
 }
 
-func (db *DB) CreateBot(bot models.Bot, session *mgo.Session) error {
+func (bd *botsData) CreateBot(bot models.Bot, session *mgo.Session) error {
 	bot.Timestamp().SetCreateTime()
-	return db.queryBot(session).Insert(bot)
+	return bd.queryBot(session).Insert(bot)
 }
 
-func (db *DB) UpdateBot(bot models.Bot, session *mgo.Session) error {
+func (bd *botsData) UpdateBot(bot models.Bot, session *mgo.Session) error {
 	bot.Timestamp().SetUpdateTime()
-	return db.queryBot(session).UpdateId(bot.ID(), bot)
+	return bd.queryBot(session).UpdateId(bot.ID(), bot)
 }
 
-func (db *DB) RemoveBot(bot models.Bot, session *mgo.Session) error {
+func (bd *botsData) RemoveBot(bot models.Bot, session *mgo.Session) error {
 	bot.Timestamp().SetRemoveTime()
-	return db.queryBot(session).UpdateId(bot.ID(), bot)
+	return bd.queryBot(session).UpdateId(bot.ID(), bot)
 }
