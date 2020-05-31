@@ -2,13 +2,13 @@ package main
 
 import (
 	"errors"
-	"telegram_boxes/services/logs/app"
-	"telegram_boxes/services/logs/protobuf"
 	"fmt"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
+	"telegram_boxes/services/logs/app"
+	"telegram_boxes/services/logs/protobuf"
 	"time"
 )
 

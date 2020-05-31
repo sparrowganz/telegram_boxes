@@ -3,7 +3,7 @@ version: "3.4"
 services:
   box:
     container_name: "box_"+${BOX_NAME}
-    build: '../../services/box'
+    build: 'services/box'
     ports:
       - ${APP_PORT}:4000
     restart: always

@@ -18,6 +18,10 @@ protoc -I$GOPATH/src/telegram_boxes \
 #   Admin
 #----------------------------------------------------------------------------------
 
+echo "-----------  Генерация клиента сервиса Logger"
+protoc -I$GOPATH/src/telegram_boxes \
+    services/logs/protobuf/logs.proto --go_out=plugins=grpc:./services/admin/protobuf
+
 #----------------------------------------------------------------------------------
 #   Logger
 #----------------------------------------------------------------------------------

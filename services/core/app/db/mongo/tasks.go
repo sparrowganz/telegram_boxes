@@ -1,7 +1,5 @@
 package mongo
 
-import "gopkg.in/mgo.v2"
-
 type tasksData struct {
 	database   string
 	collection string

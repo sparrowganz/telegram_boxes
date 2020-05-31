@@ -11,7 +11,7 @@ type StatsData struct {
 	All       int `json:"all"`
 }
 
-func CreateStats()  Stats {
+func CreateStats() Stats {
 	return &StatsData{
 		Success:   0,
 		WithError: 0,
