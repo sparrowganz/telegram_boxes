@@ -8,7 +8,9 @@ services:
     environment:
       - APP_MODE=${APP_MODE}
 
+      - ADMINS=${ADMINS}
       - TOKEN=${TOKEN}
-      - LOGS_HOST=${LOGS_PORT}
+
+      - LOGS_HOST=${LOGS_HOST}
       - LOGS_PORT=${LOGS_PORT}
 

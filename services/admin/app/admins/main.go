@@ -16,7 +16,7 @@ type adminData struct {
 func CreateAdmin() Admin {
 	return &adminData{
 		m:       &sync.Mutex{},
-		storage: make([]int64, 10),
+		storage: []int64{},
 	}
 }
 
@@ -39,6 +39,7 @@ func (a *adminData) GetAll() []int64 {
 func (a *adminData) IsSet(id int64) bool {
 	a.m.Lock()
 	defer a.m.Unlock()
+
 	for _, sID := range a.storage {
 		if sID == id {
 			return true

@@ -5,7 +5,7 @@ services:
     container_name: 'logs'
     build: '$GOPATH/src/telegram_boxes/services/logs'
     ports:
-      - ${LOGS_PORT}:4000
+      - ${LOGS_PORT}:${LOGS_PORT}
     volumes:
       - /Users/sparrowganz/go/src/telegram_boxes/logs:${LOGS_PATH}
     restart: always

@@ -33,7 +33,7 @@ type logger interface {
 
 type logData struct {
 	isDebug bool
-	cl protobuf.LoggerClient
+	cl      protobuf.LoggerClient
 }
 
 func CreateLogger(isDebug bool, host, port string) (l Log, err error) {
@@ -107,8 +107,11 @@ func (l *logData) Error(rID, user, msg string) error {
 			Error:      msg,
 		})
 
-	if l.isDebug && err != nil {
-		fmt.Println(err)
+	if l.isDebug {
+		if err != nil {
+			fmt.Println("ERROR: ", err)
+		}
+		fmt.Println("ERROR: ", msg)
 	}
 	return err
 }
@@ -121,8 +124,11 @@ func (l *logData) System(msg string) error {
 			Time:       time.Now().UnixNano(),
 			Data:       msg,
 		})
-	if l.isDebug && err != nil {
-		fmt.Println(err)
+	if l.isDebug {
+		if err != nil {
+			_ = l.Error("", "system", err.Error())
+		}
+		fmt.Println("SYSTEM:", msg)
 	}
 	return err
 }

@@ -16,7 +16,7 @@ func main() {
 	s := new(protobuf.Server)
 	defer recovery(s)
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("LOGS_PORT")))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", os.Getenv("LOGS_PORT")))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
