@@ -17,7 +17,7 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 	case TaskType:
 		switch callback.Action() {
 		case GetAction:
-			b.getTaskInlineHandler(update.Message.Chat.ID, update.Message.MessageID, callback.ID(), false)
+			b.getTaskInlineHandler(update.Message.Chat.ID, update.Message.MessageID, callback.ID())
 		case PriorityAction:
 			b.changePriorityTaskInlineHandler(update.Message.Chat.ID, update.Message.MessageID, update.ID, callback.ID())
 		case CleanAction:
@@ -50,7 +50,7 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 					b.forceRemoveInlineTask(update.Message.Chat.ID, update.Message.MessageID, job.GetData().(string))
 				case NoID:
 					b.getTaskInlineHandler(
-						update.Message.Chat.ID, update.Message.MessageID, job.GetData().(string), true)
+						update.Message.Chat.ID, update.Message.MessageID, job.GetData().(string))
 				}
 			}
 		}
@@ -64,7 +64,7 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 
 const (
 	TaskNotFound = "Задание не найдено попробуйте снова"
-	TaskTemplate = "Задание %s: \n????(Выводить ли само задание)"
+	TaskTemplate = "Задание %s: \n????(Выводить ли само задание)\n\n%v"
 )
 
 func (b *botData) forceRemoveInlineTask(chatID int64, messageID int, actionID string) {
@@ -162,11 +162,10 @@ func (b *botData) changePriorityTaskInlineHandler(chatID int64, messageID int, q
 		UserId:  chatID,
 	})
 
-	b.getTaskInlineHandler(chatID, messageID, tsk.ID, true)
+	b.getTaskInlineHandler(chatID, messageID, tsk.ID)
 }
 
-func (b *botData) getTaskInlineHandler(chatID int64, messageID int, actionID string, disableNotif bool) {
-	b.Telegram().DeleteMessages(chatID, []int{messageID})
+func (b *botData) getTaskInlineHandler(chatID int64, messageID int, actionID string) {
 
 	tsk, err := b.Task().GetTask(actionID)
 	if err != nil {
@@ -176,15 +175,21 @@ func (b *botData) getTaskInlineHandler(chatID int64, messageID int, actionID str
 		return
 	}
 
+	var priorityText string
+	if tsk.IsPriority {
+		priorityText = "✅ Задание приоритетное"
+	} else {
+		priorityText = "❌ Задание не приоритетно"
+	}
 
 	b.Telegram().ToQueue(&telegram.Message{
-		Message: tgbotapi.MessageConfig{
-			BaseChat: tgbotapi.BaseChat{
-				ChatID:              chatID,
-				ReplyMarkup:         getTaskKeyboard(tsk),
-				DisableNotification: disableNotif,
+		Message: tgbotapi.EditMessageTextConfig{
+			BaseEdit: tgbotapi.BaseEdit{
+				ChatID:      chatID,
+				ReplyMarkup: getTaskKeyboard(tsk),
+				MessageID:   messageID,
 			},
-			Text:                  fmt.Sprintf(TaskTemplate, tsk.Name),
+			Text:                  fmt.Sprintf(TaskTemplate, tsk.Name, priorityText),
 			ParseMode:             tgbotapi.ModeMarkdown,
 			DisableWebPagePreview: true,
 		},

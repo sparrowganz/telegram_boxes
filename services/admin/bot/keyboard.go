@@ -61,17 +61,7 @@ func getTasksKeyboard(tsks []*task.Task) *tgbotapi.InlineKeyboardMarkup {
 //Get Task action inline keyboard
 func getTaskKeyboard(tsk *task.Task) *tgbotapi.InlineKeyboardMarkup {
 
-	var (
-		text string
-	)
-
-	if tsk.IsPriority {
-		text = "✅ Задание приоритетное"
-	} else {
-		text = "❌ Задание не приоритетно"
-	}
-
-	changePriorityButton, _ := keyboard.NewButton().SetText(text).SetData(
+	changePriorityButton, _ := keyboard.NewButton().SetText("Изменить приоритет").SetData(
 		TaskType.String(), PriorityAction.String(), tsk.ID).ToInline()
 	row1 := tgbotapi.NewInlineKeyboardRow(changePriorityButton)
 
