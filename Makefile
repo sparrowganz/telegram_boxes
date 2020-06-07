@@ -28,7 +28,7 @@ core-run-d run-core-d:
 
 .PHONY: core-stop stop-core
 core-stop stop-core:
-	docker-compose -f $(core-compose) --env $(core-env) $(down)
+	docker-compose -f $(core-compose) --env $(core-env) $(stop)
 
 #-----------------------------------------------------------------------------------------------------------------------
 #ADMIN
@@ -62,3 +62,16 @@ run-all all-run : core-run-d admin-run-d
 
 .PHONY: stop-all all-stop
 stop-all all-stop: core-stop admin-stop
+
+#-----------------------------------------------------------------------------------------------------------------------
+#Clean
+#-----------------------------------------------------------------------------------------------------------------------
+
+PHONY: clean
+clean: stop-all remove prune
+
+remove:
+	docker rmi $$(docker images -a)
+
+prune:
+	 docker system prune

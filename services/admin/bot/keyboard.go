@@ -11,6 +11,10 @@ func cancelButton() (b keyboard.Button) {
 	return keyboard.NewButton().SetText("Отмена").SetData(CancelType.String())
 }
 
+func hardCheckButton() (b keyboard.Button) {
+	return keyboard.NewButton().SetText("Проверить").SetData(ServerType.String(), CheckAction.String())
+}
+
 func getTypesKeyboard(tps []*types.Type) *tgbotapi.InlineKeyboardMarkup {
 
 	var row []tgbotapi.InlineKeyboardButton

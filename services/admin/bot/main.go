@@ -5,6 +5,7 @@ import (
 	"github.com/sparrowganz/teleFly/telegram"
 	"telegram_boxes/services/admin/app/admins"
 	"telegram_boxes/services/admin/app/log"
+	"telegram_boxes/services/admin/app/servers"
 	"telegram_boxes/services/admin/app/task"
 	"telegram_boxes/services/admin/app/types"
 )
@@ -22,6 +23,7 @@ func (b *botData) Methods() Botter {
 type BotSetter interface {
 	SetTasks(t task.Tasks)
 	SetTypes(t types.Types)
+	SetServers(s servers.Servers)
 }
 
 func (b *botData) SetTasks(t task.Tasks) {
@@ -32,6 +34,10 @@ func (b *botData) SetTypes(t types.Types) {
 	b.types = t
 }
 
+func (b *botData) SetServers(s servers.Servers) {
+	b.servers = s
+}
+
 type Botter interface {
 	BotSetter
 	Admins() admins.Admin
@@ -39,6 +45,7 @@ type Botter interface {
 	Log() log.Log
 	Task() task.Tasks
 	Types() types.Types
+	Servers() servers.Servers
 }
 
 type botData struct {
@@ -47,6 +54,7 @@ type botData struct {
 	logger  log.Log
 	tasks   task.Tasks
 	types   types.Types
+	servers servers.Servers
 }
 
 func (b *botData) Admins() admins.Admin {
@@ -67,6 +75,10 @@ func (b *botData) Task() task.Tasks {
 
 func (b *botData) Types() types.Types {
 	return b.types
+}
+
+func (b *botData) Servers() servers.Servers {
+	return b.servers
 }
 
 func CreateBot(a admins.Admin, t telegram.Sender, logs log.Log) Bot {

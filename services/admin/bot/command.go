@@ -41,7 +41,7 @@ func (b *botData) commandValidation(message *tgbotapi.Message) {
 }
 
 func (b *botData) startCommandHandler(chatID int64) {
-	b.tSender.ToQueue(
+	b.Telegram().ToQueue(
 		&telegram.Message{
 			Message: tgbotapi.NewMessage(chatID, "Добро пожаловать (?? username), вы имеете доступ к боту (список команд ??)"),
 			UserId:  chatID,
@@ -64,7 +64,7 @@ func (b *botData) tasksCommandHandler(chatID int64) {
 		keyb = getTasksKeyboard(allTasks)
 	}
 
-	b.tSender.ToQueue(
+	b.Telegram().ToQueue(
 		&telegram.Message{
 			Message: tgbotapi.MessageConfig{
 				BaseChat: tgbotapi.BaseChat{
@@ -87,10 +87,10 @@ func (b *botData) addTaskCommandHandler(chatID int64) {
 		b.Telegram().Actions().Delete(chatID)
 	}
 	b.Telegram().Actions().New(chatID,
-		actions.NewJob( AddAction.String(), TaskType.String(), &task.Task{}, 0, false),
+		actions.NewJob(AddAction.String(), TaskType.String(), &task.Task{}, 0, false),
 	)
 
-	b.tSender.ToQueue(
+	b.Telegram().ToQueue(
 		&telegram.Message{
 			Message: tgbotapi.MessageConfig{
 				BaseChat: tgbotapi.BaseChat{
@@ -106,7 +106,7 @@ func (b *botData) addTaskCommandHandler(chatID int64) {
 }
 
 func (b *botData) statisticsCommandHandler(chatID int64) {
-	b.tSender.ToQueue(
+	b.Telegram().ToQueue(
 		&telegram.Message{
 			Message: tgbotapi.NewMessage(chatID, "Здесь будут отображены статистика ботов"),
 			UserId:  chatID,
@@ -115,7 +115,7 @@ func (b *botData) statisticsCommandHandler(chatID int64) {
 }
 
 func (b *botData) broadcastCommandHandler(chatID int64) {
-	b.tSender.ToQueue(
+	b.Telegram().ToQueue(
 		&telegram.Message{
 			Message: tgbotapi.NewMessage(chatID, "Здесь будет отображены текущие рассылки и создание новой"),
 			UserId:  chatID,
@@ -124,10 +124,29 @@ func (b *botData) broadcastCommandHandler(chatID int64) {
 }
 
 func (b *botData) diagnosticsCommandHandler(chatID int64) {
-	b.tSender.ToQueue(
+
+	sStatus := b.Servers().GetAllServersStatus()
+
+	var txt string
+
+	for _, status := range sStatus {
+		txt += status.Username + " (" + status.Status.String() + ")\n"
+	}
+
+	keyb , _ := hardCheckButton().ToKeyboard()
+
+	b.Telegram().ToQueue(
 		&telegram.Message{
-			Message: tgbotapi.NewMessage(chatID, "Здесь будет (??????)"),
-			UserId:  chatID,
+			Message: tgbotapi.MessageConfig{
+				BaseChat: tgbotapi.BaseChat{
+					ChatID:      chatID,
+					ReplyMarkup: keyb,
+				},
+				Text:                  txt,
+				ParseMode:             tgbotapi.ModeMarkdown,
+				DisableWebPagePreview: false,
+			},
+			UserId: chatID,
 		})
 	return
 }

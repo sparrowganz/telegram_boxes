@@ -5,6 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
+	"telegram_boxes/services/admin/app/servers"
 	"telegram_boxes/services/admin/app/task"
 )
 
@@ -15,6 +16,11 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 
 	callback := telegram.ParseCallBack(update.Data)
 	switch callback.Type() {
+	case ServerType:
+		switch callback.Action() {
+		case CheckAction:
+			b.checkAllServers(update.Message.Chat.ID, update.Message.MessageID)
+		}
 	case TaskType:
 		switch callback.Action() {
 		case GetAction:
@@ -71,7 +77,6 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 			b.Telegram().DeleteMessages(update.Message.Chat.ID, job.GetMessageIDs())
 			b.Telegram().Actions().Delete(update.Message.Chat.ID)
 
-
 			_ = b.Log().Error("", "", "inlineValidation: action or type is invalid")
 			b.Telegram().SendError(update.Message.Chat.ID, "Что-то пошло не так попробуйте снова", nil)
 			return
@@ -99,6 +104,55 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 		}
 
 	}
+}
+
+//
+//				SERVERS
+//
+
+func (b *botData) checkAllServers(chatID int64, messageID int) {
+
+	b.Telegram().ToQueue(&telegram.Message{
+		Message: tgbotapi.EditMessageTextConfig{
+			BaseEdit: tgbotapi.BaseEdit{
+				ChatID:    chatID,
+				MessageID: messageID,
+			},
+			Text:                  "Проверка началась",
+			ParseMode:             tgbotapi.ModeMarkdown,
+			DisableWebPagePreview: true,
+		},
+		UserId: chatID,
+	})
+
+	chResult := make(chan *servers.StatusData, 10)
+	go b.Servers().HardCheckAll(chResult, chatID)
+
+	for res := range chResult {
+		b.Telegram().ToQueue(
+			&telegram.Message{
+				Message: tgbotapi.MessageConfig{
+					BaseChat: tgbotapi.BaseChat{
+						ChatID: chatID,
+					},
+					Text:                  fmt.Sprintf("%v - %v", res.Username, res.Status),
+					ParseMode:             tgbotapi.ModeMarkdown,
+				},
+				UserId: chatID,
+			})
+	}
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.MessageConfig{
+				BaseChat: tgbotapi.BaseChat{
+					ChatID: chatID,
+				},
+				Text:                  "Проверка закончена",
+				ParseMode:             tgbotapi.ModeMarkdown,
+			},
+			UserId: chatID,
+		})
 }
 
 //
@@ -172,7 +226,6 @@ func (b *botData) forceRemoveInlineTask(chatID int64, messageID int, job actions
 
 	job.AddMessageId(messageID)
 	b.Telegram().DeleteMessages(chatID, job.GetMessageIDs())
-
 
 	err := b.Task().Delete(job.GetData().(string))
 	if err != nil {
