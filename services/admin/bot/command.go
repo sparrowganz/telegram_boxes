@@ -3,6 +3,8 @@ package bot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
+	"github.com/sparrowganz/teleFly/telegram/actions"
+	"telegram_boxes/services/admin/app/task"
 )
 
 type Command string
@@ -62,7 +64,6 @@ func (b *botData) tasksCommandHandler(chatID int64) {
 		keyb = getTasksKeyboard(allTasks)
 	}
 
-
 	b.tSender.ToQueue(
 		&telegram.Message{
 			Message: tgbotapi.MessageConfig{
@@ -81,12 +82,27 @@ func (b *botData) tasksCommandHandler(chatID int64) {
 }
 
 func (b *botData) addTaskCommandHandler(chatID int64) {
+	if j, ok := b.Telegram().Actions().Get(chatID); ok {
+		b.Telegram().DeleteMessages(chatID, j.GetMessageIDs())
+		b.Telegram().Actions().Delete(chatID)
+	}
+	b.Telegram().Actions().New(chatID,
+		actions.NewJob( AddAction.String(), TaskType.String(), &task.Task{}, 0, false),
+	)
+
 	b.tSender.ToQueue(
 		&telegram.Message{
-			Message: tgbotapi.NewMessage(chatID, "Здесь будут отображен функционал по добавлению заданий"),
-			UserId:  chatID,
+			Message: tgbotapi.MessageConfig{
+				BaseChat: tgbotapi.BaseChat{
+					ChatID:      chatID,
+					ReplyMarkup: getTypesKeyboard(b.Types().GetAllTypes()),
+				},
+				Text:                  "Выберите тип",
+				ParseMode:             tgbotapi.ModeMarkdown,
+				DisableWebPagePreview: true,
+			},
+			UserId: chatID,
 		})
-	return
 }
 
 func (b *botData) statisticsCommandHandler(chatID int64) {

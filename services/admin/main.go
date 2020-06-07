@@ -13,6 +13,7 @@ import (
 	"telegram_boxes/services/admin/app/admins"
 	sLog "telegram_boxes/services/admin/app/log"
 	"telegram_boxes/services/admin/app/task"
+	"telegram_boxes/services/admin/app/types"
 	"telegram_boxes/services/admin/bot"
 )
 
@@ -52,6 +53,7 @@ func main() {
 
 	sender := bot.CreateBot(a, telegramSender, logger)
 	sender.Methods().SetTasks(task.CreateTasks())
+	sender.Methods().SetTypes(types.CreateType())
 
 	wg.Add(1)
 	go func() {

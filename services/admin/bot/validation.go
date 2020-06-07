@@ -15,7 +15,7 @@ func (b *botData) Validation(update tgbotapi.Update) {
 		} else if update.Message.IsCommand() {
 			b.commandValidation(update.Message)
 		} else if update.Message.Text != "" {
-			//text.Validation(update)
+			b.textValidation(update.Message)
 		}
 	}
 }

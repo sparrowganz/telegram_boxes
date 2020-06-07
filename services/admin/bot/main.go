@@ -3,10 +3,10 @@ package bot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
-	"github.com/sparrowganz/teleFly/telegram/actions"
 	"telegram_boxes/services/admin/app/admins"
 	"telegram_boxes/services/admin/app/log"
 	"telegram_boxes/services/admin/app/task"
+	"telegram_boxes/services/admin/app/types"
 )
 
 type Bot interface {
@@ -21,10 +21,15 @@ func (b *botData) Methods() Botter {
 
 type BotSetter interface {
 	SetTasks(t task.Tasks)
+	SetTypes(t types.Types)
 }
 
 func (b *botData) SetTasks(t task.Tasks) {
 	b.tasks = t
+}
+
+func (b *botData) SetTypes(t types.Types) {
+	b.types = t
 }
 
 type Botter interface {
@@ -33,7 +38,7 @@ type Botter interface {
 	Telegram() telegram.Sender
 	Log() log.Log
 	Task() task.Tasks
-	Actions() actions.Event
+	Types() types.Types
 }
 
 type botData struct {
@@ -41,7 +46,7 @@ type botData struct {
 	tSender telegram.Sender
 	logger  log.Log
 	tasks   task.Tasks
-	actions actions.Event
+	types   types.Types
 }
 
 func (b *botData) Admins() admins.Admin {
@@ -60,8 +65,8 @@ func (b *botData) Task() task.Tasks {
 	return b.tasks
 }
 
-func (b *botData) Actions() actions.Event {
-	return b.actions
+func (b *botData) Types() types.Types {
+	return b.types
 }
 
 func CreateBot(a admins.Admin, t telegram.Sender, logs log.Log) Bot {
@@ -69,20 +74,19 @@ func CreateBot(a admins.Admin, t telegram.Sender, logs log.Log) Bot {
 		admins:  a,
 		tSender: t,
 		logger:  logs,
-		actions: actions.CreateEvents(),
 	}
 }
 
 func (b *botData) StartReadErrors() {
 	for err := range b.Telegram().Errors().Ch() {
 		if err.UserID != 0 {
-			b.tSender.ToQueue(&telegram.Message{
-				Message: tgbotapi.NewMessage(err.UserID, err.Err.Error()),
+			b.Telegram().ToQueue(&telegram.Message{
+				Message: tgbotapi.NewMessage(err.UserID, "Что-то пошло не так. Попробуйте снова"/*err.Err.Error()*/),
 				UserId:  err.UserID,
 			})
 		} else {
 			for _, id := range b.Admins().GetAll() {
-				b.tSender.ToQueue(&telegram.Message{
+				b.Telegram().ToQueue(&telegram.Message{
 					Message: tgbotapi.NewMessage(id, err.Err.Error()),
 					UserId:  id,
 				})

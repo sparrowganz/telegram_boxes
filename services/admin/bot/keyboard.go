@@ -2,23 +2,42 @@ package bot
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/keyboard"
 	"telegram_boxes/services/admin/app/task"
+	"telegram_boxes/services/admin/app/types"
 )
 
-const (
-	TaskType       telegram.Type = "t"
-	LastChoiceType telegram.Type = "lc"
+func cancelButton() (b keyboard.Button) {
+	return keyboard.NewButton().SetText("Отмена").SetData(CancelType.String())
+}
 
-	CleanAction    telegram.Action = "c"
-	DeleteAction   telegram.Action = "d"
-	GetAction      telegram.Action = "g"
-	PriorityAction telegram.Action = "pr"
+func getTypesKeyboard(tps []*types.Type) *tgbotapi.InlineKeyboardMarkup {
 
-	YesID = "y"
-	NoID  = "n"
-)
+	var row []tgbotapi.InlineKeyboardButton
+	var rows [][]tgbotapi.InlineKeyboardButton
+
+	for _, tp := range tps {
+
+		but, err := keyboard.NewButton().SetText(tp.Name).SetData(TaskType.String(),
+			AddAction.String(), tp.ID).ToInline()
+		if err != nil {
+			return nil
+		}
+
+		row = append(row, but)
+		if len(row) == 2 {
+			rows = append(rows, row)
+			row = []tgbotapi.InlineKeyboardButton{}
+		}
+	}
+	if len(row) != 0 {
+		rows = append(rows, row)
+	}
+
+	cancelB, _ := cancelButton().ToInline()
+	k := tgbotapi.NewInlineKeyboardMarkup(append(rows, tgbotapi.NewInlineKeyboardRow(cancelB))...)
+	return &k
+}
 
 func lastChoiceKeyboard(action string) *tgbotapi.InlineKeyboardMarkup {
 	yes, err := keyboard.NewButton().SetText("Да").SetData(

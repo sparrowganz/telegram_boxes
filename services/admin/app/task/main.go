@@ -1,11 +1,15 @@
 package task
 
-import "errors"
+import (
+	"errors"
+	"gopkg.in/mgo.v2/bson"
+)
 
 type Tasks interface {
 	Getter
 	Changer
 	Remover
+	Creator
 }
 
 type tasksData struct {
@@ -19,16 +23,18 @@ type Task struct {
 	ID         string
 	Name       string
 	IsPriority bool
+	TypeID     string
+	Link       string
 }
 
 func CreateTasks() Tasks {
 	return &tasksData{
 		//todo remove debug structure
 		storage: []*Task{
-			{"1", "1", false},
-			{"2", "2", true},
-			{"3", "3", false},
-			{"4", "4", true},
+			{"1", "1", false, "1", "http://vk.com"},
+			{"2", "2", true, "2", "http://vk.com"},
+			{"3", "3", false, "3", "http://vk.com"},
+			{"4", "4", true, "1", "http://vk.com"},
 		},
 	}
 }
@@ -96,4 +102,13 @@ func (t *tasksData) Delete(id string) error {
 func (t *tasksData) CleanupRun(id string) (*Task, error) {
 
 	return t.GetTask(id)
+}
+
+type Creator interface {
+	Create(t *Task)
+}
+
+func (t *tasksData) Create(tsk *Task) {
+	tsk.ID = bson.NewObjectId().Hex()
+	t.storage = append(t.storage, tsk)
 }
