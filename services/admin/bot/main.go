@@ -93,10 +93,11 @@ func (b *botData) StartReadErrors() {
 	for err := range b.Telegram().Errors().Ch() {
 		if err.UserID != 0 {
 			b.Telegram().ToQueue(&telegram.Message{
-				Message: tgbotapi.NewMessage(err.UserID, "Что-то пошло не так. Попробуйте снова"/*err.Err.Error()*/),
+				Message: tgbotapi.NewMessage(err.UserID, "Что-то пошло не так. Попробуйте снова" /*err.Err.Error()*/),
 				UserId:  err.UserID,
 			})
 		} else {
+			_ = b.Log().Error("", "system", err.Err.Error())
 			for _, id := range b.Admins().GetAll() {
 				b.Telegram().ToQueue(&telegram.Message{
 					Message: tgbotapi.NewMessage(id, err.Err.Error()),

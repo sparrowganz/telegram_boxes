@@ -33,7 +33,8 @@ type Servers interface {
 type serversData struct {
 	//taskData
 	//todo remove debug structure
-	storage []*Server
+	storage     []*Server
+	coefficient int
 }
 
 //todo remove debug structure
@@ -49,6 +50,7 @@ type Server struct {
 func CreateServers() Servers {
 	return &serversData{
 		//todo remove debug structure
+		coefficient: 11,
 		storage: []*Server{
 			{"1", "@username1", 100, 2, 5, 1},
 			{"2", "@username2", 200, 4, 10, 2},
@@ -64,8 +66,44 @@ type StatusData struct {
 	Status   Status
 }
 
+type Count struct {
+	ID       string
+	Username string
+	All      int
+	Blocked  int
+	UseNow   int
+}
+
 type Getter interface {
 	GetAllServersStatus() []*StatusData
+	GetAllUsersCount() []*Count
+	GetAllUsersFakeCount() []*Count
+}
+
+func (s *serversData) GetAllUsersCount() (all []*Count) {
+	for _, server := range s.storage {
+		all = append(all, &Count{
+			ID:       server.ID,
+			Username: server.Username,
+			All:      server.All,
+			Blocked:  server.Blocked,
+			UseNow:   server.UseNow,
+		})
+	}
+	return all
+}
+
+func (s *serversData) GetAllUsersFakeCount() (all []*Count) {
+	for _, server := range s.storage {
+		all = append(all, &Count{
+			ID:       server.ID,
+			Username: server.Username,
+			All:      server.All * s.coefficient,
+			Blocked:  server.Blocked,
+			UseNow:   server.UseNow * s.coefficient,
+		})
+	}
+	return all
 }
 
 func (s *serversData) GetAllServersStatus() (all []*StatusData) {

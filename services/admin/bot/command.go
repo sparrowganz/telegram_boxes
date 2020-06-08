@@ -1,9 +1,11 @@
 package bot
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
+	"telegram_boxes/services/admin/app/servers"
 	"telegram_boxes/services/admin/app/task"
 )
 
@@ -28,7 +30,7 @@ func (b *botData) commandValidation(message *tgbotapi.Message) {
 	case addtask:
 		b.addTaskCommandHandler(message.Chat.ID)
 	case statistics:
-		b.statisticsCommandHandler(message.Chat.ID)
+		b.statisticsCommandHandler(message.Chat.ID, false)
 	case diagnostics:
 		b.diagnosticsCommandHandler(message.Chat.ID)
 	case bonus:
@@ -105,11 +107,42 @@ func (b *botData) addTaskCommandHandler(chatID int64) {
 		})
 }
 
-func (b *botData) statisticsCommandHandler(chatID int64) {
+func (b *botData) statisticsCommandHandler(chatID int64, isFake bool) {
+
+	var (
+		data []*servers.Count
+		keyb interface{}
+	)
+
+	if !isFake {
+		data = b.Servers().GetAllUsersCount()
+		keyb, _ = fakeDataButton().ToKeyboard()
+	} else {
+		data = b.Servers().GetAllUsersFakeCount()
+	}
+
+	var txt string
+
+	for _, status := range data {
+		txt += fmt.Sprintf("%s (%v)\n", status.Username, status.All)
+		txt += fmt.Sprintf("Активных: %v\n", status.All-status.Blocked)
+		txt += fmt.Sprintf("Заблокировали: %v\n", status.Blocked)
+		txt += fmt.Sprintf("Пользуются сейчас: %v\n", status.UseNow)
+		txt += "\n\n"
+	}
+
 	b.Telegram().ToQueue(
 		&telegram.Message{
-			Message: tgbotapi.NewMessage(chatID, "Здесь будут отображены статистика ботов"),
-			UserId:  chatID,
+			Message: tgbotapi.MessageConfig{
+				BaseChat: tgbotapi.BaseChat{
+					ChatID:      chatID,
+					ReplyMarkup: keyb,
+				},
+				Text:                  txt,
+				ParseMode:             tgbotapi.ModeMarkdown,
+				DisableWebPagePreview: false,
+			},
+			UserId: chatID,
 		})
 	return
 }
@@ -133,7 +166,7 @@ func (b *botData) diagnosticsCommandHandler(chatID int64) {
 		txt += status.Username + " (" + status.Status.String() + ")\n"
 	}
 
-	keyb , _ := hardCheckButton().ToKeyboard()
+	keyb, _ := hardCheckButton().ToKeyboard()
 
 	b.Telegram().ToQueue(
 		&telegram.Message{

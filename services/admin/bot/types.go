@@ -16,6 +16,7 @@ const (
 	AddAction      telegram.Action = "a"
 	PriorityAction telegram.Action = "pr"
 	CheckAction    telegram.Action = "check"
+	FakeAction     telegram.Action = "fake"
 
 	YesID = "y"
 	NoID  = "n"

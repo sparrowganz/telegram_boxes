@@ -15,6 +15,10 @@ func hardCheckButton() (b keyboard.Button) {
 	return keyboard.NewButton().SetText("Проверить").SetData(ServerType.String(), CheckAction.String())
 }
 
+func fakeDataButton() (b keyboard.Button) {
+	return keyboard.NewButton().SetText("Фейковая статистика").SetData(ServerType.String(), FakeAction.String())
+}
+
 func getTypesKeyboard(tps []*types.Type) *tgbotapi.InlineKeyboardMarkup {
 
 	var row []tgbotapi.InlineKeyboardButton

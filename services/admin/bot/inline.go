@@ -20,6 +20,9 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 		switch callback.Action() {
 		case CheckAction:
 			b.checkAllServers(update.Message.Chat.ID, update.Message.MessageID)
+		case FakeAction:
+			b.Telegram().DeleteMessages(update.Message.Chat.ID, []int{update.Message.MessageID})
+			b.statisticsCommandHandler(update.Message.Chat.ID, true)
 		}
 	case TaskType:
 		switch callback.Action() {
@@ -135,8 +138,8 @@ func (b *botData) checkAllServers(chatID int64, messageID int) {
 					BaseChat: tgbotapi.BaseChat{
 						ChatID: chatID,
 					},
-					Text:                  fmt.Sprintf("%v - %v", res.Username, res.Status),
-					ParseMode:             tgbotapi.ModeMarkdown,
+					Text:      fmt.Sprintf("%v - %v", res.Username, res.Status),
+					ParseMode: tgbotapi.ModeMarkdown,
 				},
 				UserId: chatID,
 			})
@@ -148,8 +151,8 @@ func (b *botData) checkAllServers(chatID int64, messageID int) {
 				BaseChat: tgbotapi.BaseChat{
 					ChatID: chatID,
 				},
-				Text:                  "Проверка закончена",
-				ParseMode:             tgbotapi.ModeMarkdown,
+				Text:      "Проверка закончена",
+				ParseMode: tgbotapi.ModeMarkdown,
 			},
 			UserId: chatID,
 		})
