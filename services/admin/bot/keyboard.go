@@ -3,6 +3,7 @@ package bot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram/keyboard"
+	"telegram_boxes/services/admin/app/servers"
 	"telegram_boxes/services/admin/app/task"
 	"telegram_boxes/services/admin/app/types"
 )
@@ -17,6 +18,43 @@ func hardCheckButton() (b keyboard.Button) {
 
 func fakeDataButton() (b keyboard.Button) {
 	return keyboard.NewButton().SetText("Фейковая статистика").SetData(ServerType.String(), FakeAction.String())
+}
+
+func allServersBonusButton() (b keyboard.Button) {
+	return keyboard.NewButton().SetText("Все боты").SetData(BonusType.String(), ChooseAction.String(), AllID)
+}
+
+func changeBonusKeyboard(id string, isActive bool) *tgbotapi.InlineKeyboardMarkup {
+
+	activeB := tgbotapi.InlineKeyboardButton{}
+	if !isActive {
+		activeB, _ = keyboard.NewButton().SetText("Деактивировать").SetData(
+			BonusType.String(), ChangeActiveAction.String(), id).ToInline()
+	} else {
+		activeB, _ = keyboard.NewButton().SetText("Активировать").SetData(
+			BonusType.String(), ChangeActiveAction.String(), id).ToInline()
+	}
+
+	k := tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(activeB))
+	return &k
+}
+
+func getBonusServersKeyboard(servers []*servers.Server) *tgbotapi.InlineKeyboardMarkup {
+
+	var rows [][]tgbotapi.InlineKeyboardButton
+	for _, server := range servers {
+		but, err := keyboard.NewButton().SetText(server.Username).SetData(
+			BonusType.String(), ChooseAction.String(), server.ID).ToInline()
+		if err != nil {
+			return nil
+		}
+		rows = append(rows, tgbotapi.NewInlineKeyboardRow(but))
+	}
+
+	all, _ := allServersBonusButton().ToInline()
+
+	k := tgbotapi.NewInlineKeyboardMarkup(append(rows, tgbotapi.NewInlineKeyboardRow(all))...)
+	return &k
 }
 
 func getTypesKeyboard(tps []*types.Type) *tgbotapi.InlineKeyboardMarkup {

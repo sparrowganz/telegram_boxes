@@ -41,10 +41,14 @@ type serversData struct {
 type Server struct {
 	ID       string
 	Username string
-	All      int
-	Blocked  int
-	UseNow   int
-	Status   Status
+
+	All     int
+	Blocked int
+	UseNow  int
+
+	IsActiveBonus bool
+
+	Status Status
 }
 
 func CreateServers() Servers {
@@ -52,10 +56,10 @@ func CreateServers() Servers {
 		//todo remove debug structure
 		coefficient: 11,
 		storage: []*Server{
-			{"1", "@username1", 100, 2, 5, 1},
-			{"2", "@username2", 200, 4, 10, 2},
-			{"3", "@username3", 300, 6, 15, 3},
-			{"4", "@username4", 400, 8, 20, 1},
+			{"1", "@username1", 100, 2, 5, true, 1},
+			{"2", "@username2", 200, 4, 10, false, 2},
+			{"3", "@username3", 300, 6, 15, true, 3},
+			{"4", "@username4", 400, 8, 20, false, 1},
 		},
 	}
 }
@@ -74,10 +78,64 @@ type Count struct {
 	UseNow   int
 }
 
+type Bonus struct {
+	ID       string
+	Username string
+	IsActive bool
+}
+
 type Getter interface {
+	GetAllServers() []*Server
 	GetAllServersStatus() []*StatusData
 	GetAllUsersCount() []*Count
 	GetAllUsersFakeCount() []*Count
+	GetAllServersBonuses() []*Bonus
+	GetServerBonus(id string) (*Bonus, error)
+	ChangeActiveAllBonuses(isSetInactive bool)
+	ChangeActiveBonus(id string, isSetInactive bool)
+}
+
+func (s *serversData) ChangeActiveAllBonuses(isSetInactive bool) {
+	for _, b := range s.storage {
+		b.IsActiveBonus = isSetInactive
+	}
+}
+
+func (s *serversData) ChangeActiveBonus(id string, isSetInactive bool) {
+	for _, b := range s.storage {
+		if id == b.ID {
+			b.IsActiveBonus = isSetInactive
+			return
+		}
+	}
+}
+
+func (s *serversData) GetAllServers() []*Server {
+	return s.storage
+}
+
+func (s *serversData) GetServerBonus(id string) (*Bonus, error) {
+	for _, server := range s.storage {
+		if id == server.ID {
+			return &Bonus{
+				ID:       server.ID,
+				Username: server.Username,
+				IsActive: server.IsActiveBonus,
+			}, nil
+		}
+	}
+	return nil, errors.New(" Server not found")
+}
+
+func (s *serversData) GetAllServersBonuses() (all []*Bonus) {
+	for _, server := range s.storage {
+		all = append(all, &Bonus{
+			ID:       server.ID,
+			Username: server.Username,
+			IsActive: server.IsActiveBonus,
+		})
+	}
+	return all
 }
 
 func (s *serversData) GetAllUsersCount() (all []*Count) {

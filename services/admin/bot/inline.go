@@ -16,6 +16,23 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 
 	callback := telegram.ParseCallBack(update.Data)
 	switch callback.Type() {
+	case BonusType:
+		switch callback.Action() {
+		case ChooseAction:
+			switch callback.ID() {
+			case AllID:
+				b.chooseAllBonusesHandler(update.Message.Chat.ID, update.Message.MessageID)
+			default:
+				b.chooseBonusHandler(update.Message.Chat.ID, update.Message.MessageID, callback.ID())
+			}
+		case ChangeActiveAction:
+			switch callback.ID() {
+			case AllID:
+				b.changeActiveAllBonusesHandler(update.Message.Chat.ID, update.Message.MessageID)
+			default:
+				b.changeActiveBonusHandler(update.Message.Chat.ID, update.Message.MessageID, callback.ID())
+			}
+		}
 	case ServerType:
 		switch callback.Action() {
 		case CheckAction:
@@ -99,7 +116,7 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 			case AddAction:
 				switch callback.ID() {
 				case YesID:
-					b.createTaskInlineHandler(update.Message.Chat.ID, update.ID, update.Message.MessageID, job)
+					b.createTaskIgitnlineHandler(update.Message.Chat.ID, update.ID, update.Message.MessageID, job)
 				case NoID:
 					b.cancelHandler(update.Message.Chat.ID, update.ID, update.Message.MessageID)
 				}
@@ -110,9 +127,106 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 }
 
 //
-//				SERVERS
+//				BONUS
 //
 
+func (b *botData) changeActiveBonusHandler(chatID int64, messageID int, callbackID string) {
+
+	bon, err := b.Servers().GetServerBonus(callbackID)
+	if err != nil {
+		_ = b.Log().Error("", "", "chooseBonusHandler: "+err.Error())
+		b.Telegram().SendError(chatID, TaskNotFound, nil)
+		return
+	}
+	b.Servers().ChangeActiveBonus(bon.ID, !bon.IsActive)
+	b.chooseBonusHandler(chatID, messageID, callbackID)
+
+}
+
+func (b *botData) changeActiveAllBonusesHandler(chatID int64, messageID int) {
+	var isSetInactive bool
+	for _, bon := range b.Servers().GetAllServersBonuses() {
+		if !bon.IsActive {
+			isSetInactive = true
+			break
+		}
+	}
+
+	b.Servers().ChangeActiveAllBonuses(isSetInactive)
+	b.chooseAllBonusesHandler(chatID, messageID)
+
+}
+
+func (b *botData) chooseAllBonusesHandler(chatID int64, messageID int) {
+
+	var (
+		txt           string
+		isSetInactive bool
+	)
+	for _, bon := range b.Servers().GetAllServersBonuses() {
+
+		var smile string
+		if bon.IsActive {
+			smile += "✅ "
+		} else {
+			smile += "❌ "
+			isSetInactive = true
+		}
+
+		txt += fmt.Sprintf("%s %s\n", smile, bon.Username)
+	}
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.EditMessageTextConfig{
+				BaseEdit: tgbotapi.BaseEdit{
+					ChatID:      chatID,
+					MessageID:   messageID,
+					ReplyMarkup: changeBonusKeyboard(AllID, isSetInactive),
+				},
+				Text:      txt,
+				ParseMode: tgbotapi.ModeMarkdown,
+			},
+			UserId: chatID,
+		})
+}
+
+func (b *botData) chooseBonusHandler(chatID int64, messageID int, callbackID string) {
+
+	server, err := b.Servers().GetServerBonus(callbackID)
+	if err != nil {
+		_ = b.Log().Error("", "", "chooseBonusHandler: "+err.Error())
+		b.Telegram().SendError(chatID, TaskNotFound, nil)
+		return
+	}
+
+	var smile string
+	if server.IsActive {
+		smile += "✅ "
+	} else {
+		smile += "❌ "
+	}
+
+	txt := fmt.Sprintf("%s %s \n", smile, server.Username)
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.EditMessageTextConfig{
+				BaseEdit: tgbotapi.BaseEdit{
+					ChatID:      chatID,
+					MessageID:   messageID,
+					ReplyMarkup: changeBonusKeyboard(server.ID, !server.IsActive),
+				},
+				Text:      txt,
+				ParseMode: tgbotapi.ModeMarkdown,
+			},
+			UserId: chatID,
+		})
+}
+
+//
+//				SERVERS
+//
 func (b *botData) checkAllServers(chatID int64, messageID int) {
 
 	b.Telegram().ToQueue(&telegram.Message{

@@ -185,10 +185,19 @@ func (b *botData) diagnosticsCommandHandler(chatID int64) {
 }
 
 func (b *botData) bonusCommandHandler(chatID int64) {
-	b.tSender.ToQueue(
+
+	b.Telegram().ToQueue(
 		&telegram.Message{
-			Message: tgbotapi.NewMessage(chatID, "Здесь будет система управления бонусами"),
-			UserId:  chatID,
+			Message: tgbotapi.MessageConfig{
+				BaseChat: tgbotapi.BaseChat{
+					ChatID:      chatID,
+					ReplyMarkup: getBonusServersKeyboard(b.Servers().GetAllServers()),
+				},
+				Text:                  "Выберите бот для управлением бонуса:",
+				ParseMode:             tgbotapi.ModeMarkdown,
+				DisableWebPagePreview: false,
+			},
+			UserId: chatID,
 		})
 	return
 }
