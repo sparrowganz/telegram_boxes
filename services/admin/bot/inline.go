@@ -116,7 +116,7 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 			case AddAction:
 				switch callback.ID() {
 				case YesID:
-					b.createTaskIgitnlineHandler(update.Message.Chat.ID, update.ID, update.Message.MessageID, job)
+					b.createTaskInlineHandler(update.Message.Chat.ID, update.ID, update.Message.MessageID, job)
 				case NoID:
 					b.cancelHandler(update.Message.Chat.ID, update.ID, update.Message.MessageID)
 				}
