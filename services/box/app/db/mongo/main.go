@@ -1,8 +1,8 @@
 package mongo
 
 import (
-	"gopkg.in/mgo.v2"
 	"time"
+	"gopkg.in/mgo.v2"
 )
 
 type Mongo interface {
@@ -84,9 +84,7 @@ func (db *DB) Close() {
 }
 
 func (db *DB) createCollections() {
-	_ = db.models.Bots().queryBot(db.session).Create(&mgo.CollectionInfo{})
-	_ = db.models.Payments().queryPayments(db.session).Create(&mgo.CollectionInfo{})
-	_ = db.models.Tasks().queryTasks(db.session).Create(&mgo.CollectionInfo{})
+	_ = db.models.Users().queryUsers(db.session).Create(&mgo.CollectionInfo{})
 }
 
 func (db *DB) GetMainSession() *mgo.Session {

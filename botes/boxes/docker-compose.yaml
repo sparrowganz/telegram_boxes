@@ -2,16 +2,33 @@ version: "3.4"
 
 services:
   box:
-    container_name: "box_"+${BOX_NAME}
-    build: 'services/box'
+    container_name: "box_TEST"
+    build: '$GOPATH/src/telegram_boxes/services/box'
     ports:
       - ${APP_PORT}:4000
     restart: always
+    volumes:
+      - ${LOCAL_PATH_DIR}:${BOX_PATH_DIR}
     environment:
       - APP_MODE=${APP_MODE}
+      - BOX_PATH_DIR=${BOX_PATH_DIR}
+      - NAME_CONFIG_FILE=${NAME_CONFIG_FILE}
+      - BOT_USERNAME=${BOT_USERNAME}
+      - TOKEN=${TOKEN}
+
+      - LOGS_HOST=${LOGS_HOST}
+      - LOGS_PORT=${LOGS_PORT}
+
+      - MONGO_HOST=${MONGO_HOST}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+      - MONGO_MECHANISM=${MONGO_MECHANISM}
+
 
   database:
-    container_name: 'database_'+${BOX_NAME}
+    container_name: 'database_TEST'
     image: bitnami/mongodb:latest
     restart: always
     environment:

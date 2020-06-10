@@ -5,6 +5,9 @@ core-env = botes/core/.env
 admin-compose = botes/admin/docker-compose.yaml
 admin-env = botes/admin/.env
 
+box-compose= botes/boxes/docker-compose.yaml
+box-env = botes/boxes/Test/.env
+
 build = build
 up = up
 start = up -d
@@ -43,7 +46,7 @@ admin-run run-admin:
 	docker-compose -f $(admin-compose) --env $(admin-env) $(up)
 
 .PHONY: admin-run-d run-admin-d
-admin-run-d run-admin-dd:
+admin-run-d run-admin-d:
 	docker-compose -f $(admin-compose) --env $(admin-env) $(start)
 
 .PHONY: admin-stop stop-admin
@@ -51,17 +54,38 @@ admin-stop stop-admin:
 	docker-compose -f $(admin-compose) --env $(admin-env) $(stop)
 
 #-----------------------------------------------------------------------------------------------------------------------
+#BOX
+#-----------------------------------------------------------------------------------------------------------------------
+
+.PHONY: box-build build-box
+box-build build-box:
+	docker-compose -f $(box-compose) --env $(box-env) $(build)
+
+.PHONY: box-run run-box
+box-run run-box:
+	docker-compose -f $(box-compose) --env $(box-env) $(up)
+
+.PHONY: admin-box-d run-box-d
+box-run-d run-box-d:
+	docker-compose -f $(box-compose) --env $(box-env) $(start)
+
+.PHONY: box-stop box-admin
+box-stop box-admin:
+	docker-compose -f $(box-compose) --env $(box-env) $(stop)
+
+
+#-----------------------------------------------------------------------------------------------------------------------
 #ALL
 #-----------------------------------------------------------------------------------------------------------------------
 
 .PHONY: build-all all-build
-build-all all-build: core-build admin-build
+build-all all-build: core-build admin-build box-build
 
 .PHONY: run-all all-run
-run-all all-run : core-run-d admin-run-d
+run-all all-run : core-run-d admin-run-d box-run-d
 
 .PHONY: stop-all all-stop
-stop-all all-stop: core-stop admin-stop
+stop-all all-stop: core-stop admin-stop box-stop
 
 #-----------------------------------------------------------------------------------------------------------------------
 #Clean

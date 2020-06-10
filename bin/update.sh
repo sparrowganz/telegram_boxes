@@ -21,3 +21,10 @@ go mod tidy
 echo "Обновление сервиса Logs"
 cd $GOPATH/src/telegram_boxes/services/logs/
 go mod tidy
+
+#----------------------------------------------------------------------------------
+#   BOX
+#----------------------------------------------------------------------------------
+echo "Обновление сервиса Box"
+cd $GOPATH/src/telegram_boxes/services/box/
+go mod tidy
