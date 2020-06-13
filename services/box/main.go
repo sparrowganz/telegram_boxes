@@ -31,12 +31,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	wg := &sync.WaitGroup{}
-	telegramSender, errSender := telegram.Create(isDebug, wg, os.Getenv("TOKEN"), 10.0)
-	if errSender != nil {
-		_ = logger.System(errSender.Error())
-		return
-	}
+
 
 	dbConnect, errInitDB := db.InitDatabaseConnect(
 		os.Getenv("MONGO_HOST"), os.Getenv("MONGO_PORT"),
@@ -55,7 +50,14 @@ func main() {
 		return
 	}
 
-	sender := bot.CreateBot(dbConnect, telegramSender, logger)
+	wg := &sync.WaitGroup{}
+	telegramSender, errSender := telegram.Create(isDebug, wg, os.Getenv("TOKEN"), 10.0)
+	if errSender != nil {
+		_ = logger.System(errSender.Error())
+		return
+	}
+
+	sender := bot.CreateBot(dbConnect, telegramSender, logger, os.Getenv("BOT_USERNAME"))
 	sender.Methods().SetTasks(task.CreateTasks())
 	sender.Methods().SetTypes(types.CreateType())
 	sender.Methods().SetServers(servers.CreateServers())

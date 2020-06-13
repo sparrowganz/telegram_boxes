@@ -203,7 +203,7 @@ func (b *botData) bonusCommandHandler(chatID int64) {
 }
 
 func (b *botData) sendUnknownCommand(chatID int64) {
-	b.tSender.ToQueue(
+	b.Telegram().ToQueue(
 		&telegram.Message{
 			Message: tgbotapi.NewMessage(chatID, "Некорректная команда, попробуйте снова"),
 			UserId:  chatID,

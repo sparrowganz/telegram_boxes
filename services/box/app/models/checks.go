@@ -7,7 +7,7 @@ type UserCheckData interface {
 	GetAll() []string
 }
 
-func (u *userData) Check(id string) bool {
+func (u *UserData) Check(id string) bool {
 	u.checkDataMutex.Lock()
 	defer u.checkDataMutex.Unlock()
 
@@ -19,7 +19,7 @@ func (u *userData) Check(id string) bool {
 	return false
 }
 
-func (u *userData) Add(id string) {
+func (u *UserData) Add(id string) {
 	if !u.Check(id) {
 
 		u.checkDataMutex.Lock()
@@ -29,7 +29,7 @@ func (u *userData) Add(id string) {
 	}
 }
 
-func (u *userData) Delete(id string) {
+func (u *UserData) Delete(id string) {
 
 	u.checkDataMutex.Lock()
 	defer u.checkDataMutex.Unlock()
@@ -46,7 +46,7 @@ func (u *userData) Delete(id string) {
 	return
 }
 
-func (u *userData) GetAll() []string {
+func (u *UserData) GetAll() []string {
 
 	return u.ChecksData
 }

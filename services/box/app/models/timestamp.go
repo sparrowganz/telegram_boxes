@@ -8,15 +8,15 @@ type Timestamp interface {
 	TimestampGetter
 }
 
-func CreateTimestamp() Timestamp {
-	return &timestampData{
+func CreateTimestamp() *TimestampData {
+	return &TimestampData{
 		Created: time.Time{},
 		Updated: time.Time{},
 		Removed: time.Time{},
 	}
 }
 
-type timestampData struct {
+type TimestampData struct {
 	Created time.Time `bson:"created"`
 	Updated time.Time `bson:"updated"`
 	Removed time.Time `bson:"removed" `
@@ -28,15 +28,15 @@ type TimestampSetter interface {
 	SetRemoveTime()
 }
 
-func (tm *timestampData) SetCreateTime() {
+func (tm *TimestampData) SetCreateTime() {
 	tm.Created = time.Now()
 }
 
-func (tm *timestampData) SetUpdateTime() {
+func (tm *TimestampData) SetUpdateTime() {
 	tm.Updated = time.Now()
 }
 
-func (tm *timestampData) SetRemoveTime() {
+func (tm *TimestampData) SetRemoveTime() {
 	tm.Removed = time.Now()
 }
 
@@ -45,11 +45,11 @@ type TimestampAborter interface {
 	AbortRemoveTime()
 }
 
-func (tm *timestampData) AbortUpdatedTime() {
+func (tm *TimestampData) AbortUpdatedTime() {
 	tm.Updated = time.Time{}
 }
 
-func (tm *timestampData) AbortRemoveTime() {
+func (tm *TimestampData) AbortRemoveTime() {
 	tm.Removed = time.Time{}
 }
 
@@ -59,7 +59,7 @@ type TimestampGetter interface {
 	RemovedNotZeroUnixNano() int64
 }
 
-func (tm *timestampData) CreatedNotZeroUnixNano() int64 {
+func (tm *TimestampData) CreatedNotZeroUnixNano() int64 {
 	if !tm.Created.IsZero() {
 		return tm.Created.UnixNano()
 	} else {
@@ -67,7 +67,7 @@ func (tm *timestampData) CreatedNotZeroUnixNano() int64 {
 	}
 }
 
-func (tm *timestampData) UpdatedNotZeroUnixNano() int64 {
+func (tm *TimestampData) UpdatedNotZeroUnixNano() int64 {
 	if !tm.Updated.IsZero() {
 		return tm.Updated.UnixNano()
 	} else {
@@ -75,7 +75,7 @@ func (tm *timestampData) UpdatedNotZeroUnixNano() int64 {
 	}
 }
 
-func (tm *timestampData) RemovedNotZeroUnixNano() int64 {
+func (tm *TimestampData) RemovedNotZeroUnixNano() int64 {
 	if !tm.Removed.IsZero() {
 		return tm.Removed.UnixNano()
 	} else {

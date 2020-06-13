@@ -13,7 +13,7 @@ type AccountData struct {
 	Mail      string `bson:"email"`
 }
 
-func CreateAccount(telegramID int64, username, firstName, lastName, email string) Account {
+func CreateAccount(telegramID int64, username, firstName, lastName, email string) *AccountData {
 	return &AccountData{
 		Id:        telegramID,
 		Username:  username,

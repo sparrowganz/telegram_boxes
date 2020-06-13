@@ -12,7 +12,7 @@ type User interface {
 }
 
 func CreateUser(telegramID int64, username, firstName, lastName, email string) User {
-	return &userData{
+	return &UserData{
 		Id:             bson.NewObjectId(),
 		Account:        CreateAccount(telegramID, username, firstName, lastName, email),
 		Balances:       CreateBalance(),
@@ -22,16 +22,18 @@ func CreateUser(telegramID int64, username, firstName, lastName, email string) U
 	}
 }
 
-type userData struct {
-	Id        bson.ObjectId `bson:"ID"`
+type UserData struct {
+	Id        bson.ObjectId `bson:"_id"`
 	IsBlocked bool          `bson:"isBlocked"`
 
-	InviterId string  `bson:"inviterID"`
-	Balances  Balance `bson:"balance"`
-	Account   Account `bson:"account"`
+	InviterId string `bson:"inviterID"`
 
-	ChecksData []string  `bson:"checks"`
-	Time       Timestamp `bson:"timestamp"`
+	IsVerified bool         `bson:"isVerified"`
+	Account    *AccountData `bson:"account"`
+	Balances   *BalanceData `bson:"balance"`
+
+	ChecksData []string       `bson:"checks"`
+	Time       *TimestampData `bson:"timestamp"`
 
 	checkDataMutex *sync.Mutex
 }
@@ -43,36 +45,46 @@ type UserGetter interface {
 	Balance() Balance
 	Telegram() Account
 	Timestamp() Timestamp
+	Verified() bool
 }
 
-func (u *userData) ID() string {
+func (u *UserData) ID() string {
 	return u.Id.Hex()
 }
 
-func (u *userData) Blocked() bool {
+func (u *UserData) Blocked() bool {
 	return u.IsBlocked
 }
-func (u *userData) InviterID() string {
+func (u *UserData) InviterID() string {
 	return u.InviterId
 }
-func (u *userData) Balance() Balance {
+func (u *UserData) Balance() Balance {
 	return u.Balances
 }
-func (u *userData) Telegram() Account {
+func (u *UserData) Telegram() Account {
 	return u.Account
 }
 
-func (u *userData) Timestamp() Timestamp {
+func (u *UserData) Verified() bool {
+	return u.IsVerified
+}
+
+func (u *UserData) Timestamp() Timestamp {
 	return u.Time
 }
 
 type UserSetter interface {
 	Blocker
 	SetInviterID(id string)
+	SetVerified()
 }
 
-func (u *userData) SetInviterID(id string) {
+func (u *UserData) SetInviterID(id string) {
 	u.InviterId = id
+}
+
+func (u *UserData) SetVerified() {
+	u.IsVerified = true
 }
 
 type Blocker interface {
@@ -80,10 +92,10 @@ type Blocker interface {
 	Unblock()
 }
 
-func (u *userData) Block() {
+func (u *UserData) Block() {
 	u.IsBlocked = true
 }
 
-func (u *userData) Unblock() {
+func (u *UserData) Unblock() {
 	u.IsBlocked = false
 }

@@ -53,16 +53,22 @@ type Botter interface {
 	Servers() servers.Servers
 	Database() db.Database
 	Config() config.Config
+	Username() string
 }
 
 type botData struct {
-	mongo   db.Database
-	tSender telegram.Sender
-	logger  log.Log
-	tasks   task.Tasks
-	types   types.Types
-	servers servers.Servers
-	config  config.Config
+	mongo    db.Database
+	tSender  telegram.Sender
+	logger   log.Log
+	tasks    task.Tasks
+	types    types.Types
+	servers  servers.Servers
+	config   config.Config
+	username string
+}
+
+func (b *botData) Username() string {
+	return b.username
 }
 
 func (b *botData) Config() config.Config {
@@ -93,11 +99,12 @@ func (b *botData) Database() db.Database {
 	return b.mongo
 }
 
-func CreateBot(mongo db.Database, t telegram.Sender, logs log.Log) Bot {
+func CreateBot(mongo db.Database, t telegram.Sender, logs log.Log, username string) Bot {
 	return &botData{
-		mongo:   mongo,
-		tSender: t,
-		logger:  logs,
+		mongo:    mongo,
+		tSender:  t,
+		logger:   logs,
+		username: username,
 	}
 }
 
@@ -128,11 +135,6 @@ func (b *botData) StartHandle() {
 			continue
 		}
 
-		b.Telegram().ToQueue(&telegram.Message{
-			Message: tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text),
-			UserId:  update.Message.Chat.ID,
-		})
-		//b.Telegram().SendError(update.Message.Chat.ID, update.Message.Text, nil)
-		//b.Validation(update)
+		b.Validation(update)
 	}
 }

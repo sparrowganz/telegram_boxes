@@ -6,10 +6,10 @@ type Balance interface {
 	BalanceAdder
 }
 
-func CreateBalance() Balance {
+func CreateBalance() *BalanceData {
 	return &BalanceData{
-		BotCost:     0,
-		PaymentCost: 0,
+		BotCost:     0.0,
+		PaymentCost: 0.0,
 	}
 }
 
