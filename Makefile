@@ -65,12 +65,12 @@ box-build build-box:
 box-run run-box:
 	docker-compose -f $(box-compose) --env $(box-env) $(up)
 
-.PHONY: admin-box-d run-box-d
+.PHONY: box-run-d run-box-d
 box-run-d run-box-d:
 	docker-compose -f $(box-compose) --env $(box-env) $(start)
 
-.PHONY: box-stop box-admin
-box-stop box-admin:
+.PHONY: box-stop stop-box
+box-stop stop-box:
 	docker-compose -f $(box-compose) --env $(box-env) $(stop)
 
 

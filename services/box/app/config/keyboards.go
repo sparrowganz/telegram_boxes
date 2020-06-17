@@ -19,7 +19,8 @@ type Keyboard struct {
 type Keyboards struct {
 	Buttons map[Type]string `json:"buttons"`
 	Main    Keyboard        `json:"main"`
-	Cancel  Keyboard        `json:"toMainMenu"`
+	Cancel  Keyboard        `json:"cancel"`
+	Output  Keyboard        `json:"output"`
 }
 
 type Result struct {
@@ -28,31 +29,19 @@ type Result struct {
 }
 
 func (k *Keyboards) GetMain() (KeyboardType, [][]Result) {
-
-	var out [][]Result
-
-	for _, row := range k.Main.Rows {
-		if len(row) > 0 {
-
-			var resRow []Result
-
-			for _, but := range row {
-				if val, ok := k.Buttons[but]; ok {
-					resRow = append(resRow, Result{Type: but, Value: val})
-				}
-			}
-			out = append(out, resRow)
-		}
-	}
-
-	return k.Main.Type, out
+	return k.Main.Type, k.getKeyboard(k.Main.Rows)
 }
 
 func (k *Keyboards) GetCancel() (KeyboardType, [][]Result) {
+	return k.Cancel.Type, k.getKeyboard(k.Cancel.Rows)
+}
 
-	var out [][]Result
+func (k *Keyboards) GetOutput() (KeyboardType, [][]Result) {
+	return k.Output.Type, k.getKeyboard(k.Output.Rows)
+}
 
-	for _, row := range k.Cancel.Rows {
+func (k *Keyboards) getKeyboard(rows []Row) (out [][]Result) {
+	for _, row := range rows {
 		if len(row) > 0 {
 
 			var resRow []Result
@@ -65,9 +54,10 @@ func (k *Keyboards) GetCancel() (KeyboardType, [][]Result) {
 			out = append(out, resRow)
 		}
 	}
-
-	return k.Cancel.Type, out
+	return
 }
+
+
 
 func (k *Keyboards) GetTypeForName(name string) (Type, error) {
 	for tp, val := range k.Buttons {

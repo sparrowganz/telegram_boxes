@@ -76,14 +76,23 @@ type Texts struct {
 	StatusReferralOk    string `json:"statusReferralOk"`
 	StatusReferralFalse string `json:"statusReferralFalse"`
 	Help                string `json:"help"`
+	Output              string `json:"output"`
+	CurrentOutput       string `json:"currentOutput"`
+	NotVerifiedOutput   string `json:"notVerifiedOutput"`
+	OutputErrorBalance  string `json:"outputErrorBalance"`
+	SetDataOutput       string `json:"setDataOutput"`
+	FinalOutput         string `json:"finalOutput"`
 }
 
 type Errors struct {
-	IncorrectCommand string `json:"incorrectCommand"`
-	Error            string `json:"error"`
+	IncorrectCommand   string `json:"incorrectCommand"`
+	Error              string `json:"error"`
+	IsSetOutput        string `json:"isSetOutput"`
+	OutputErrorBalance string `json:"outputErrorBalance"`
 }
 
 type Counts struct {
 	CostForReferral int `json:"costForReferral"`
 	VerifiedCount   int `json:"verifiedCount"`
+	MinOutput       int `json:"minOutput"`
 }

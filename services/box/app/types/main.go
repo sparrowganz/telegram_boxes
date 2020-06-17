@@ -4,7 +4,6 @@ import "errors"
 
 type Types interface {
 	Getter
-	Remover
 }
 
 type typeData struct {
@@ -17,6 +16,7 @@ type Type struct {
 	ID   string
 	Name string
 }
+
 
 func CreateType() Types {
 	//todo remove debug structure
@@ -31,12 +31,7 @@ func CreateType() Types {
 }
 
 type Getter interface {
-	GetAllTypes() []*Type
 	GetType(id string) (*Type, error)
-}
-
-func (t *typeData) GetAllTypes() []*Type {
-	return t.storage
 }
 
 func (t *typeData) GetType(id string) (*Type, error) {
@@ -46,31 +41,4 @@ func (t *typeData) GetType(id string) (*Type, error) {
 		}
 	}
 	return nil, errors.New(" Not found ")
-}
-
-type Remover interface {
-	Delete(id string) error
-}
-
-func (t *typeData) Delete(id string) error {
-	var newStorage []*Type
-	var found bool
-
-	for _, tp := range t.storage {
-		if tp.ID != id {
-
-			newStorage = append(newStorage, tp)
-
-		} else {
-			found = true
-		}
-	}
-
-	if !found {
-		return errors.New(" Not found ")
-	}
-
-	t.storage = newStorage
-
-	return nil
 }

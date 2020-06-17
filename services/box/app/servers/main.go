@@ -24,7 +24,16 @@ func (s Status) String() string {
 
 type Servers interface {
 	Initer
+	Getter
 	Sender
+}
+
+type Getter interface {
+	ID() string
+}
+
+func (s *ServersData) ID() string {
+	return s.serverID
 }
 
 type ServersData struct {

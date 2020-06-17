@@ -7,7 +7,7 @@ func (b *botData) help(telegramID int64, tp config.KeyboardType) (text string, k
 	text = b.GetHelpText()
 
 	if tp == config.Inline {
-		keyb = b.GetCancelKeyboard()
+		keyb = b.GetCancelKeyboard(config.Inline)
 	}
 
 	return

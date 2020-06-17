@@ -26,7 +26,7 @@ func (b *botData) referrals(telegramID int64, tp config.KeyboardType) (text stri
 	text = b.ReferralsText(countInvitedUsers, b.getReferralLink(telegramID), currentUser.Verified())
 
 	if tp == config.Inline {
-		keyb = b.GetCancelKeyboard()
+		keyb = b.GetCancelKeyboard(config.Inline)
 	}
 
 	return

@@ -14,24 +14,65 @@ func (b *botData) GetMainKeyboard() interface{} {
 	keyboards := b.Config().Keyboards()
 	tp, keyb := keyboards.GetMain()
 
-	return getKeyboard(tp, keyb)
+	return b.getKeyboard(tp, keyb)
 }
 
-func (b *botData) GetCancelKeyboard() interface{} {
+func (b *botData) GetOutputKeyboard() (config.KeyboardType, interface{}) {
+	if len(b.Config().Keyboards().Buttons) == 0 {
+		return "", nil
+	}
+
+	keyboards := b.Config().Keyboards()
+	tp, keyb := keyboards.GetOutput()
+
+	newKeyb := b.getKeyboard(tp, keyb)
+
+	return tp, newKeyb
+}
+
+func (b *botData) GetCancelKeyboard(tp config.KeyboardType) interface{} {
 	if len(b.Config().Keyboards().Buttons) == 0 {
 		return nil
 	}
 
 	keyboards := b.Config().Keyboards()
-	tp, keyb := keyboards.GetCancel()
+	_, keyb := keyboards.GetCancel()
 
-	return getKeyboard(tp, keyb)
+	return b.getKeyboard(tp, keyb)
 }
 
-func getKeyboard(tp config.KeyboardType, keyb [][]config.Result) interface{} {
-	switch tp {
-	case "":
+func (b *botData) GetCancelButton(tp config.KeyboardType) interface{} {
+	if len(b.Config().Keyboards().Buttons) == 0 {
 		return nil
+	}
+
+	name, ok := b.Config().Keyboards().Buttons[config.CancelType]
+	if !ok {
+		return nil
+	}
+
+	return b.getButton(tp, name, config.CancelType.ToString())
+}
+
+func (b *botData) getButton(tp config.KeyboardType, value, data string) interface{} {
+	switch tp {
+	case config.Inline:
+		inlineButton, err := keyboard.NewButton().SetText(
+			value).SetData(data).ToInline()
+		if err != nil {
+			return nil
+		}
+		return inlineButton
+	case config.Static:
+		tgbotapi.NewKeyboardButton(value)
+	default:
+		return nil
+	}
+	return nil
+}
+
+func (b *botData) getKeyboard(tp config.KeyboardType, keyb [][]config.Result) interface{} {
+	switch tp {
 	case config.Inline:
 
 		var tRows [][]tgbotapi.InlineKeyboardButton
@@ -41,7 +82,7 @@ func getKeyboard(tp config.KeyboardType, keyb [][]config.Result) interface{} {
 			for _, configType := range rows {
 
 				inlineButton, err := keyboard.NewButton().SetText(
-					configType.Value).SetData(configType.Type.ToString()).ToInline()
+					configType.Value).SetData(configType.Type.ToString(), configType.Value).ToInline()
 				if err != nil {
 					continue
 				}
@@ -75,7 +116,6 @@ func getKeyboard(tp config.KeyboardType, keyb [][]config.Result) interface{} {
 		}
 
 		return tgbotapi.NewReplyKeyboard(tRows...)
-
 	}
 	return nil
 }

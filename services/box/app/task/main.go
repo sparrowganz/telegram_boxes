@@ -2,14 +2,11 @@ package task
 
 import (
 	"errors"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type Tasks interface {
 	Getter
-	Changer
 	Remover
-	Creator
 }
 
 type tasksData struct {
@@ -40,75 +37,40 @@ func CreateTasks() Tasks {
 }
 
 type Getter interface {
-	GetAllTasks() []*Task
-	GetTask(id string) (*Task, error)
+	GetTask(completedTask []string) (*Task, error)
 }
 
-func (t *tasksData) GetAllTasks() []*Task {
-	return t.storage
-}
+func (t *tasksData) GetTask(completedTask []string) (*Task, error) {
 
-func (t *tasksData) GetTask(id string) (*Task, error) {
+	var notCompletedTask []*Task
+
 	for _, tsk := range t.storage {
-		if tsk.ID == id {
-			return tsk, nil
+		for _, cId := range completedTask {
+			if cId == tsk.ID {
+				goto END
+			}
+		}
+		notCompletedTask = append(notCompletedTask, tsk)
+	END:
+	}
+
+	if len(notCompletedTask) == 0 {
+		return nil, errors.New(" Not found ")
+	}
+
+	for _, task := range notCompletedTask {
+		if task.IsPriority {
+			return task, nil
 		}
 	}
-	return nil, errors.New(" Not found ")
-}
 
-type Changer interface {
-	ChangePriority(id string) (*Task, error)
-}
-
-func (t *tasksData) ChangePriority(id string) (*Task, error) {
-	for _, tsk := range t.storage {
-		if tsk.ID == id {
-			tsk.IsPriority = !tsk.IsPriority
-			return tsk, nil
-		}
-	}
-	return nil, errors.New(" Not found ")
+	return notCompletedTask[0], nil
 }
 
 type Remover interface {
-	Delete(id string) error
-	CleanupRun(id string) (*Task, error)
+	CleanupRun(id string)
 }
 
-func (t *tasksData) Delete(id string) error {
-	var newStorage []*Task
-	var found bool
+func (t *tasksData) CleanupRun(id string) {
 
-	for _, tsk := range t.storage {
-		if tsk.ID != id {
-
-			newStorage = append(newStorage, tsk)
-
-		} else {
-			found = true
-		}
-	}
-
-	if !found {
-		return errors.New(" Not found ")
-	}
-
-	t.storage = newStorage
-
-	return nil
-}
-
-func (t *tasksData) CleanupRun(id string) (*Task, error) {
-
-	return t.GetTask(id)
-}
-
-type Creator interface {
-	Create(t *Task)
-}
-
-func (t *tasksData) Create(tsk *Task) {
-	tsk.ID = bson.NewObjectId().Hex()
-	t.storage = append(t.storage, tsk)
 }

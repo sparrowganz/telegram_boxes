@@ -45,6 +45,8 @@ func (b *botData) commandValidation(mess *tgbotapi.Message) {
 				b.referralsCommandHandler(mess.Chat.ID)
 			case config.HelpType:
 				b.helpCommandHandler(mess.Chat.ID)
+			case config.OutputType:
+				b.outputCommandHandler(mess.Chat.ID)
 			default:
 				b.sendUnknownCommand(mess.Chat.ID)
 				return
@@ -63,6 +65,29 @@ func (b *botData) sendUnknownCommand(chatID int64) {
 			Message: tgbotapi.NewMessage(chatID, b.GetErrorCommandText()),
 			UserId:  chatID,
 		})
+}
+
+func (b *botData) outputCommandHandler(chatID int64) {
+	txt, keyb, err := b.output(chatID, config.Static)
+	if err != nil {
+		_ = b.Log().Error(b.Username(), "outputCommandHandler", err.Error())
+		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
+		return
+	}
+
+	b.Telegram().ToQueue(&telegram.Message{
+		Message: tgbotapi.MessageConfig{
+			BaseChat: tgbotapi.BaseChat{
+				ChatID:      chatID,
+				ReplyMarkup: keyb,
+			},
+			Text:                  txt,
+			ParseMode:             tgbotapi.ModeHTML,
+			DisableWebPagePreview: true,
+		},
+		UserId: chatID,
+	})
+
 }
 
 func (b *botData) helpCommandHandler(chatID int64) {

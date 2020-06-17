@@ -1,8 +1,10 @@
 package bot
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func (b *botData) GetErrorCommandText() string {
@@ -92,6 +94,83 @@ func (b *botData) GetStatusReferral(status bool) string {
 		return txt
 
 	}
+}
+
+func (b *botData) GetNotVerifiedOutputText(referralLink string) string {
+	txt := b.Config().Texts().NotVerifiedOutput
+
+	if strings.Contains(txt, "@verifiedCount") {
+		txt = strings.Replace(txt, "@verifiedCount", strconv.Itoa(b.Config().Counts().VerifiedCount), -1)
+	}
+
+	if strings.Contains(txt, "@referralLink") {
+		txt = strings.Replace(txt, "@referralLink", referralLink, -1)
+	}
+
+	return txt
+}
+
+func (b *botData) GetSettingDataOutputText(paymentGW string) string {
+	txt := b.Config().Texts().SetDataOutput
+
+	if strings.Contains(txt, "@paymentGW") {
+		txt = strings.Replace(txt, "@paymentGW", paymentGW, -1)
+	}
+	return txt
+}
+
+func (b *botData) GetNotMinOutputText() string {
+	txt := b.Config().Texts().Errors.OutputErrorBalance
+
+	if strings.Contains(txt, "@minOutput") {
+		txt = strings.Replace(txt, "@minOutput", strconv.Itoa(b.Config().Counts().MinOutput), -1)
+	}
+
+	return txt
+}
+
+func (b *botData) GetOutputText() string {
+	return b.Config().Texts().Output
+}
+
+func (b *botData) GetCurrentOutputText(cost int, gateway, data string, tm time.Time) string {
+
+	txt := b.Config().Texts().CurrentOutput
+
+	if strings.Contains(txt, "@cost") {
+		txt = strings.Replace(txt, "@cost", strconv.Itoa(cost), -1)
+	}
+
+	if strings.Contains(txt, "@gateway") {
+		txt = strings.Replace(txt, "@gateway", gateway, -1)
+	}
+
+	if strings.Contains(txt, "@data") {
+		txt = strings.Replace(txt, "@data", data, -1)
+	}
+
+	if strings.Contains(txt, "@time") {
+
+		var tmString string
+		res := tm.Sub(time.Now())
+		if res.Hours() < 24 {
+			tmString = fmt.Sprintf("%vч.", res.Hours())
+		} else {
+			tmString = fmt.Sprintf("%vд.", int(res.Hours()/24))
+		}
+
+		txt = strings.Replace(txt, "@time", tmString, -1)
+	}
+	return txt
+}
+
+func (b *botData) GetFinalOutputText(cost int, gateway, data string, tm time.Time) string {
+	txt := b.Config().Texts().FinalOutput
+
+	if strings.Contains(txt, "@currentOutput") {
+		txt = strings.Replace(txt, "@currentOutput", b.GetCurrentOutputText(cost, gateway, data, tm), -1)
+	}
+	return txt
 }
 
 func (b *botData) GetHelpText() string {

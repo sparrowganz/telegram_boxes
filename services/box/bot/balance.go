@@ -21,7 +21,7 @@ func (b *botData) balance(telegramID int64, tp config.KeyboardType) (text string
 	text = b.BalanceText(int(currentUser.Balance().Bot()), int(currentUser.Balance().Payment()),countInvitedUsers)
 
 	if tp == config.Inline {
-		keyb = b.GetCancelKeyboard()
+		keyb = b.GetCancelKeyboard(config.Inline)
 	}
 
 	return

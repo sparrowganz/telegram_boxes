@@ -22,12 +22,78 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 		b.helpInlineHandler(update.Message.Chat.ID, update.Message.MessageID)
 	case config.CancelType.ToString():
 		b.cancelInlineHandler(update.Message.Chat.ID, update.Message.MessageID)
+	case config.OutputType.ToString():
+		b.outputInlineHandler(update.Message.Chat.ID, update.Message.MessageID)
+	default:
+		if b.IsOutputGWButton(callback.Type().String()) {
+			b.outputGWInlineHandler(update.Message.Chat.ID, update.Message.MessageID, callback.Action().String())
+		}
 	}
+}
+
+func (b *botData) outputGWInlineHandler(chatID int64, messageID int, outputGW string) {
+	//b.Telegram().DeleteMessages(chatID, []int{messageID})
+	text, keyb, err := b.chooseOutputGW(chatID, config.Inline, outputGW)
+	if err != nil {
+		_ = b.Log().Error(b.Username(), "outputGWInlineHandler", err.Error())
+		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
+		return
+	}
+
+	message := tgbotapi.EditMessageTextConfig{
+		BaseEdit: tgbotapi.BaseEdit{
+			ChatID:    chatID,
+			MessageID: messageID,
+		},
+		Text:      text,
+		ParseMode: tgbotapi.ModeHTML,
+	}
+
+	switch val := keyb.(type) {
+	case *tgbotapi.InlineKeyboardMarkup:
+		message.ReplyMarkup = val
+	}
+
+	b.Telegram().ToQueue(&telegram.Message{
+		Message: message,
+		UserId:  chatID,
+	})
+}
+
+func (b *botData) outputInlineHandler(chatID int64, messageID int) {
+	text, keyb, err := b.output(chatID, config.Inline)
+	if err != nil {
+		b.Telegram().DeleteMessages(chatID, []int{messageID})
+		_ = b.Log().Error(b.Username(), "outputInlineHandler", err.Error())
+		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
+		return
+	}
+
+	message := tgbotapi.EditMessageTextConfig{
+		BaseEdit: tgbotapi.BaseEdit{
+			ChatID:    chatID,
+			MessageID: messageID,
+		},
+		Text:      text,
+		ParseMode: tgbotapi.ModeHTML,
+	}
+
+	switch val := keyb.(type) {
+	case *tgbotapi.InlineKeyboardMarkup:
+		message.ReplyMarkup = val
+	}
+
+	b.Telegram().ToQueue(&telegram.Message{
+		Message: message,
+		UserId:  chatID,
+	})
+
 }
 
 func (b *botData) helpInlineHandler(chatID int64, messageID int) {
 	text, keyb, err := b.help(chatID, config.Inline)
 	if err != nil {
+		b.Telegram().DeleteMessages(chatID, []int{messageID})
 		_ = b.Log().Error(b.Username(), "helpInlineHandler", err.Error())
 		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
 		return
@@ -57,6 +123,7 @@ func (b *botData) helpInlineHandler(chatID int64, messageID int) {
 func (b *botData) referralsInlineHandler(chatID int64, messageID int) {
 	text, keyb, err := b.referrals(chatID, config.Inline)
 	if err != nil {
+		b.Telegram().DeleteMessages(chatID, []int{messageID})
 		_ = b.Log().Error(b.Username(), "referralsInlineHandler", err.Error())
 		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
 		return
@@ -84,7 +151,15 @@ func (b *botData) referralsInlineHandler(chatID int64, messageID int) {
 }
 
 func (b *botData) cancelInlineHandler(chatID int64, messageID int) {
-	b.Telegram().DeleteMessages(chatID, []int{messageID})
+
+	j, ok := b.Telegram().Actions().Get(chatID)
+	if ok {
+		j.AddMessageId(messageID)
+		b.Telegram().DeleteMessages(chatID, j.GetMessageIDs())
+		b.Telegram().Actions().Delete(chatID)
+	} else {
+		b.Telegram().DeleteMessages(chatID, []int{messageID})
+	}
 
 	b.Telegram().ToQueue(&telegram.Message{
 		Message: tgbotapi.MessageConfig{
@@ -103,6 +178,7 @@ func (b *botData) cancelInlineHandler(chatID int64, messageID int) {
 func (b *botData) balanceInlineHandler(chatID int64, messageID int) {
 	text, keyb, err := b.balance(chatID, config.Inline)
 	if err != nil {
+		b.Telegram().DeleteMessages(chatID, []int{messageID})
 		b.Telegram().DeleteMessages(chatID, []int{messageID})
 		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
 		return
