@@ -23,6 +23,8 @@ func (b *botData) textsValidation(mess *tgbotapi.Message) {
 			b.helpCommandHandler(mess.Chat.ID)
 		case config.OutputType:
 			b.outputCommandHandler(mess.Chat.ID)
+		case config.TaskType:
+			b.getTaskCommandHandler(mess.Chat.ID)
 		default:
 
 			j, ok := b.Telegram().Actions().Get(mess.Chat.ID)

@@ -12,8 +12,14 @@ const (
 	ReferralsType Type = "referrals"
 	HelpType      Type = "help"
 	BuyType       Type = "buy"
+
+	SkipTaskType  Type = "skipTask"
+	NextTaskType  Type = "nextTask"
+	CheckTaskType Type = "checkTask"
 )
 
 func (t Type) ToString() string {
 	return string(t)
 }
+
+

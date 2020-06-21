@@ -9,14 +9,13 @@ import (
 	"path/filepath"
 	"runtime/debug"
 	"sync"
+	"telegram_boxes/services/box/app/config"
 	"telegram_boxes/services/box/app/db"
 	sLog "telegram_boxes/services/box/app/log"
 	"telegram_boxes/services/box/app/output"
 	"telegram_boxes/services/box/app/servers"
 	"telegram_boxes/services/box/app/task"
-	"telegram_boxes/services/box/app/types"
 	"telegram_boxes/services/box/bot"
-	"telegram_boxes/services/box/app/config"
 )
 
 func main() {
@@ -59,7 +58,6 @@ func main() {
 	sender := bot.CreateBot(dbConnect, telegramSender, logger, os.Getenv("BOT_USERNAME"))
 	sender.Methods().SetServers(servers.CreateServers())
 	sender.Methods().SetTasks(task.CreateTasks())
-	sender.Methods().SetTypes(types.CreateType())
 	sender.Methods().SetOutput(output.CreateOutput(sender.Methods().Servers().ID()))
 
 	sender.Methods().SetConfig(conf)

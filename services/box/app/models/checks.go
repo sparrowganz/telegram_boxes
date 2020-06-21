@@ -1,52 +1,73 @@
 package models
 
+type Status string
+
+const (
+	StatusCheck Status = "check"
+	StatusSkip  Status = "skip"
+)
+
+func (status Status) String() string {
+	return string(status)
+}
+
 type UserCheckData interface {
 	Check(id string) bool
-	Add(id string)
+	Add(id string, status Status)
 	Delete(id string)
 	GetAll() []string
+	GetAllChecks() (out []string)
 }
 
 func (u *UserData) Check(id string) bool {
-	u.checkDataMutex.Lock()
-	defer u.checkDataMutex.Unlock()
+	//u.checkDataMutex.Lock()
+	//defer u.checkDataMutex.Unlock()
 
-	for _, cID := range u.ChecksData {
-		if cID == id {
-			return true
-		}
-	}
-	return false
+	_, ok := u.ChecksData[id]
+	return ok
 }
 
-func (u *UserData) Add(id string) {
+func (u *UserData) Add(id string, status Status) {
 	if !u.Check(id) {
 
-		u.checkDataMutex.Lock()
-		defer u.checkDataMutex.Unlock()
+		if len(u.ChecksData) == 0 {
+			u.ChecksData = make(map[string]string)
+		}
 
-		u.ChecksData = append(u.ChecksData, id)
+		//u.checkDataMutex.Lock()
+		//defer u.checkDataMutex.Unlock()
+
+		u.ChecksData[id] = status.String()
 	}
 }
 
 func (u *UserData) Delete(id string) {
 
-	u.checkDataMutex.Lock()
-	defer u.checkDataMutex.Unlock()
+	//u.checkDataMutex.Lock()
+	//defer u.checkDataMutex.Unlock()
 
-	var newSlice []string
-
-	for _, cID := range u.ChecksData {
-		if cID != id {
-			newSlice = append(newSlice, cID)
-		}
-	}
-
-	u.ChecksData = newSlice
+	delete(u.ChecksData, id)
 	return
 }
 
-func (u *UserData) GetAll() []string {
+func (u *UserData) GetAll() (out []string) {
+	//u.checkDataMutex.Lock()
+	//defer u.checkDataMutex.Unlock()
+	for id := range u.ChecksData {
+		out = append(out, id)
+	}
 
-	return u.ChecksData
+	return
+}
+
+func (u *UserData) GetAllChecks() (out []string) {
+	//u.checkDataMutex.Lock()
+	//defer u.checkDataMutex.Unlock()
+	for id, status := range u.ChecksData {
+		if status == StatusCheck.String() {
+			out = append(out, id)
+		}
+	}
+
+	return
 }

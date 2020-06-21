@@ -16,7 +16,7 @@ func CreateUser(telegramID int64, username, firstName, lastName, email string) U
 		Id:             bson.NewObjectId(),
 		Account:        CreateAccount(telegramID, username, firstName, lastName, email),
 		Balances:       CreateBalance(),
-		ChecksData:     []string{},
+		ChecksData:     map[string]string{}, //[id]status
 		Time:           CreateTimestamp(),
 		checkDataMutex: &sync.Mutex{},
 	}
@@ -32,7 +32,7 @@ type UserData struct {
 	Account    *AccountData `bson:"account"`
 	Balances   *BalanceData `bson:"balance"`
 
-	ChecksData []string       `bson:"checks"`
+	ChecksData map[string]string       `bson:"checks"`
 	Time       *TimestampData `bson:"timestamp"`
 
 	checkDataMutex *sync.Mutex
@@ -40,12 +40,17 @@ type UserData struct {
 
 type UserGetter interface {
 	ID() string
+	BsonID() bson.ObjectId
 	Blocked() bool
 	InviterID() string
 	Balance() Balance
 	Telegram() Account
 	Timestamp() Timestamp
 	Verified() bool
+}
+
+func (u *UserData) BsonID() bson.ObjectId {
+	return u.Id
 }
 
 func (u *UserData) ID() string {

@@ -20,7 +20,8 @@ type Task struct {
 	ID         string
 	Name       string
 	IsPriority bool
-	TypeID     string
+	WithCheck  bool
+	Type       string
 	Link       string
 }
 
@@ -28,16 +29,42 @@ func CreateTasks() Tasks {
 	return &tasksData{
 		//todo remove debug structure
 		storage: []*Task{
-			{"1", "1", false, "1", "http://vk.com"},
-			{"2", "2", true, "2", "http://vk.com"},
-			{"3", "3", false, "3", "http://vk.com"},
-			{"4", "4", true, "1", "http://vk.com"},
+			{"1", "1", false, false, "channel", "http://vk.com"},
+			{"2", "2", true, true, "checkChannel", "http://vk.com"},
+			{"3", "3", false, false, "subscribeInstagram", "http://vk.com"},
+			{"4", "4", true, false, "likeInstagram", "http://vk.com"},
+			{"5", "5", false, false, "openWeb", "http://vk.com"},
+			{"6", "6", false, false, "activateBot", "http://vk.com"},
 		},
 	}
 }
 
 type Getter interface {
 	GetTask(completedTask []string) (*Task, error)
+	FindTask(id string) (*Task, error)
+	CheckTask(chatID int64, taskID string) (bool, error)
+}
+
+func (t *tasksData) CheckTask(chatID int64, taskID string) (bool, error) {
+	for _, task := range t.storage {
+		if task.ID == taskID {
+			if task.WithCheck {
+				return false, nil
+			} else {
+				return true, nil
+			}
+		}
+	}
+	return false, errors.New(" Task not found ")
+}
+
+func (t *tasksData) FindTask(id string) (*Task, error) {
+	for _, task := range t.storage {
+		if task.ID == id {
+			return task, nil
+		}
+	}
+	return nil, errors.New(" Task not found ")
 }
 
 func (t *tasksData) GetTask(completedTask []string) (*Task, error) {

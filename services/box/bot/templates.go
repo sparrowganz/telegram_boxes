@@ -8,11 +8,11 @@ import (
 )
 
 func (b *botData) GetErrorCommandText() string {
-	return b.Config().Texts().Errors.IncorrectCommand
+	return b.Config().Texts().IncorrectCommand
 }
 
 func (b *botData) GetErrorText() string {
-	return b.Config().Texts().Errors.Error
+	return b.Config().Texts().Error
 }
 
 func (b *botData) GetStartText() string {
@@ -120,7 +120,7 @@ func (b *botData) GetSettingDataOutputText(paymentGW string) string {
 }
 
 func (b *botData) GetNotMinOutputText() string {
-	txt := b.Config().Texts().Errors.OutputErrorBalance
+	txt := b.Config().Texts().OutputErrorBalance
 
 	if strings.Contains(txt, "@minOutput") {
 		txt = strings.Replace(txt, "@minOutput", strconv.Itoa(b.Config().Counts().MinOutput), -1)
@@ -170,6 +170,52 @@ func (b *botData) GetFinalOutputText(cost int, gateway, data string, tm time.Tim
 	if strings.Contains(txt, "@currentOutput") {
 		txt = strings.Replace(txt, "@currentOutput", b.GetCurrentOutputText(cost, gateway, data, tm), -1)
 	}
+	return txt
+}
+
+func (b *botData) TasksNotFoundText() string {
+	return b.Config().Texts().TasksNotFound
+}
+
+func (b *botData) SkipTaskText() string {
+	return b.Config().Texts().SkipTask
+}
+
+func (b *botData) TaskText(cost int, condition string) string {
+	txt := b.Config().Texts().TaskTemplate
+
+	if strings.Contains(txt, "@cost") {
+		txt = strings.Replace(txt, "@cost", strconv.Itoa(cost), -1)
+	}
+
+	if strings.Contains(txt, "@condition") {
+		txt = strings.Replace(txt, "@condition", condition, -1)
+	}
+	return txt
+}
+
+func (b *botData) ErrorCheckTask(cost int, condition string) string {
+	txt := b.Config().Texts().TaskWrongCheck
+
+	if strings.Contains(txt, "@taskTemplate") {
+		txt = strings.Replace(txt, "@taskTemplate", b.TaskText(cost, condition), -1)
+	}
+
+	return txt
+}
+
+func (b *botData) TaskIsAlreadyCheck() string {
+	return b.Config().Texts().TaskIsAlreadyCheck
+}
+
+func (b *botData) SuccessCheckTask(cost int) string {
+
+	txt := b.Config().Texts().SuccessCheckTask
+
+	if strings.Contains(txt, "@cost") {
+		txt = strings.Replace(txt, "@cost", strconv.Itoa(cost), -1)
+	}
+
 	return txt
 }
 

@@ -24,11 +24,101 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 		b.cancelInlineHandler(update.Message.Chat.ID, update.Message.MessageID)
 	case config.OutputType.ToString():
 		b.outputInlineHandler(update.Message.Chat.ID, update.Message.MessageID)
+	case config.CheckTaskType.ToString():
+		b.checkTaskInlineHandler(update.Message.Chat.ID, update.Message.MessageID, callback.Action().String())
+	case config.SkipTaskType.ToString():
+		b.skipTaskInlineHandler(update.Message.Chat.ID, update.Message.MessageID, callback.Action().String())
+	case config.NextTaskType.ToString():
+		b.nextTaskInlineHandler(update.Message.Chat.ID, update.Message.MessageID)
 	default:
 		if b.IsOutputGWButton(callback.Type().String()) {
 			b.outputGWInlineHandler(update.Message.Chat.ID, update.Message.MessageID, callback.Action().String())
 		}
 	}
+}
+
+func (b *botData) nextTaskInlineHandler(chatID int64, messageID int) {
+	text, keyb, err := b.getTask(chatID)
+	if err != nil {
+		_ = b.Log().Error(b.Username(), "nextTaskInlineHandler", err.Error())
+		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
+		return
+	}
+
+	message := tgbotapi.EditMessageTextConfig{
+		BaseEdit: tgbotapi.BaseEdit{
+			ChatID:    chatID,
+			MessageID: messageID,
+		},
+		Text:      text,
+		ParseMode: tgbotapi.ModeHTML,
+	}
+
+	switch val := keyb.(type) {
+	case *tgbotapi.InlineKeyboardMarkup:
+		message.ReplyMarkup = val
+	}
+
+	b.Telegram().ToQueue(&telegram.Message{
+		Message: message,
+		UserId:  chatID,
+	})
+}
+
+func (b *botData) skipTaskInlineHandler(chatID int64, messageID int, id string) {
+	text, keyb, err := b.skipTask(chatID, id)
+	if err != nil {
+		_ = b.Log().Error(b.Username(), "skipTaskInlineHandler", err.Error())
+		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
+		return
+	}
+
+	message := tgbotapi.EditMessageTextConfig{
+		BaseEdit: tgbotapi.BaseEdit{
+			ChatID:    chatID,
+			MessageID: messageID,
+		},
+		Text:      text,
+		ParseMode: tgbotapi.ModeHTML,
+	}
+
+	switch val := keyb.(type) {
+	case *tgbotapi.InlineKeyboardMarkup:
+		message.ReplyMarkup = val
+	}
+
+	b.Telegram().ToQueue(&telegram.Message{
+		Message: message,
+		UserId:  chatID,
+	})
+}
+
+func (b *botData) checkTaskInlineHandler(chatID int64, messageID int, id string) {
+	text, keyb, err := b.checkTask(chatID, id)
+	if err != nil {
+		_ = b.Log().Error(b.Username(), "checkTaskInlineHandler", err.Error())
+		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
+		return
+	}
+
+	message := tgbotapi.EditMessageTextConfig{
+		BaseEdit: tgbotapi.BaseEdit{
+			ChatID:    chatID,
+			MessageID: messageID,
+		},
+		Text:      text,
+		ParseMode: tgbotapi.ModeHTML,
+	}
+
+	switch val := keyb.(type) {
+	case *tgbotapi.InlineKeyboardMarkup:
+		message.ReplyMarkup = val
+	}
+
+	b.Telegram().ToQueue(&telegram.Message{
+		Message: message,
+		UserId:  chatID,
+	})
 }
 
 func (b *botData) outputGWInlineHandler(chatID int64, messageID int, outputGW string) {

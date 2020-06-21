@@ -14,45 +14,45 @@ func CreateBalance() *BalanceData {
 }
 
 type BalanceData struct {
-	BotCost     float64 `bson:"bot"`
-	PaymentCost float64 `bson:"payment"`
+	BotCost     int `bson:"bot"`
+	PaymentCost int `bson:"payment"`
 }
 
 type BalanceGetter interface {
-	Bot() float64
-	Payment() float64
+	Bot() int
+	Payment() int
 }
 
-func (b *BalanceData) Bot() float64 {
+func (b *BalanceData) Bot() int {
 	return b.BotCost
 }
 
-func (b *BalanceData) Payment() float64 {
+func (b *BalanceData) Payment() int {
 	return b.PaymentCost
 }
 
 type BalanceSetter interface {
-	SetBot(float64)
-	SetPayment(float64)
+	SetBot(int)
+	SetPayment(int)
 }
 
-func (b *BalanceData) SetBot(cost float64) {
+func (b *BalanceData) SetBot(cost int) {
 	b.BotCost = cost
 }
 
-func (b *BalanceData) SetPayment(cost float64) {
+func (b *BalanceData) SetPayment(cost int) {
 	b.PaymentCost = cost
 }
 
 type BalanceAdder interface {
-	AddBot(float64)
-	AddPayment(float64)
+	AddBot(int)
+	AddPayment(int)
 }
 
-func (b *BalanceData) AddBot(cost float64) {
+func (b *BalanceData) AddBot(cost int) {
 	b.BotCost += cost
 }
 
-func (b *BalanceData) AddPayment(cost float64) {
+func (b *BalanceData) AddPayment(cost int) {
 	b.PaymentCost += cost
 }

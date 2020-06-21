@@ -3,6 +3,7 @@ package bot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram/keyboard"
+	"strings"
 	"telegram_boxes/services/box/app/config"
 )
 
@@ -27,6 +28,12 @@ func (b *botData) GetOutputKeyboard() (config.KeyboardType, interface{}) {
 
 	newKeyb := b.getKeyboard(tp, keyb)
 
+	for _, row := range keyb {
+		for _, but := range row {
+			but.Value = but.Text
+		}
+	}
+
 	return tp, newKeyb
 }
 
@@ -39,6 +46,37 @@ func (b *botData) GetCancelKeyboard(tp config.KeyboardType) interface{} {
 	_, keyb := keyboards.GetCancel()
 
 	return b.getKeyboard(tp, keyb)
+}
+
+func (b *botData) GetTaskKeyboard(taskURL, tp, id string) interface{} {
+	if len(b.Config().Keyboards().Buttons) == 0 {
+		return nil
+	}
+
+	keyboards := b.Config().Keyboards()
+	keybType, keyb := keyboards.GetFromType(tp)
+
+	for _, row := range keyb {
+		for _, but := range row {
+			if strings.Contains(but.Type.ToString(), "URL") {
+				but.Value = taskURL
+			} else {
+				but.Value = id
+			}
+		}
+	}
+
+	return b.getKeyboard(keybType, keyb)
+}
+
+func (b *botData) NextTaskKeyboard() interface{} {
+	if len(b.Config().Keyboards().Buttons) == 0 {
+		return nil
+	}
+
+	keyboards := b.Config().Keyboards()
+	keybType, keyb := keyboards.GetNextTask()
+	return b.getKeyboard(keybType, keyb)
 }
 
 func (b *botData) GetCancelButton(tp config.KeyboardType) interface{} {
@@ -71,7 +109,7 @@ func (b *botData) getButton(tp config.KeyboardType, value, data string) interfac
 	return nil
 }
 
-func (b *botData) getKeyboard(tp config.KeyboardType, keyb [][]config.Result) interface{} {
+func (b *botData) getKeyboard(tp config.KeyboardType, keyb [][]*config.Result) interface{} {
 	switch tp {
 	case config.Inline:
 
@@ -81,10 +119,23 @@ func (b *botData) getKeyboard(tp config.KeyboardType, keyb [][]config.Result) in
 			var tRow []tgbotapi.InlineKeyboardButton
 			for _, configType := range rows {
 
-				inlineButton, err := keyboard.NewButton().SetText(
-					configType.Value).SetData(configType.Type.ToString(), configType.Value).ToInline()
-				if err != nil {
-					continue
+				var inlineButton tgbotapi.InlineKeyboardButton
+
+				if strings.Contains(configType.Type.ToString(), "URL") && configType.Value != "" {
+
+					var err error
+					inlineButton, err = keyboard.NewButton().SetText(
+						configType.Text).SetUrl(configType.Value).ToUrl()
+					if err != nil {
+						continue
+					}
+				} else {
+					var err error
+					inlineButton, err = keyboard.NewButton().SetText(
+						configType.Text).SetData(configType.Type.ToString(), configType.Value).ToInline()
+					if err != nil {
+						continue
+					}
 				}
 				tRow = append(tRow, inlineButton)
 
@@ -109,7 +160,7 @@ func (b *botData) getKeyboard(tp config.KeyboardType, keyb [][]config.Result) in
 
 			var tRow []tgbotapi.KeyboardButton
 			for _, but := range rows {
-				tRow = append(tRow, tgbotapi.NewKeyboardButton(but.Value))
+				tRow = append(tRow, tgbotapi.NewKeyboardButton(but.Text))
 			}
 
 			tRows = append(tRows, tgbotapi.NewKeyboardButtonRow(tRow...))

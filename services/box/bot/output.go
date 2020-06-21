@@ -61,7 +61,7 @@ func (b *botData) chooseOutputGW(telegramID int64, tp config.KeyboardType,
 		return
 	}
 
-	if currentUser.Balance().Bot() < float64(b.Config().Counts().MinOutput) {
+	if currentUser.Balance().Bot() < b.Config().Counts().MinOutput {
 		text = b.GetNotMinOutputText()
 		return
 	}
@@ -87,7 +87,7 @@ func (b *botData) setOutputData(telegramID int64, data string, out *output.Outpu
 		return
 	}
 
-	b.Output().Set(currentUser.ID(), out.PaymentGateway, data, int(currentUser.Balance().Bot()), currentUser.GetAll())
+	b.Output().Set(currentUser.ID(), out.PaymentGateway, data, int(currentUser.Balance().Bot()), currentUser.GetAllChecks())
 
 	b.Telegram().Actions().Delete(telegramID)
 

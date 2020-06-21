@@ -39,6 +39,8 @@ func (b *botData) commandValidation(mess *tgbotapi.Message) {
 			}
 
 			switch tp {
+			case config.TaskType:
+				b.getTaskCommandHandler(mess.Chat.ID)
 			case config.BalanceType:
 				b.balanceCommandHandler(mess.Chat.ID)
 			case config.ReferralsType:
@@ -59,12 +61,36 @@ func (b *botData) commandValidation(mess *tgbotapi.Message) {
 
 }
 
+func (b *botData) getTaskCommandHandler(chatID int64) {
+	txt, keyb, err := b.getTask(chatID)
+	if err != nil {
+		_ = b.Log().Error(b.Username(), "getTaskCommandHandler", err.Error())
+		b.Telegram().SendError(chatID, b.GetErrorText(), nil)
+		return
+	}
+
+	b.Telegram().ToQueue(&telegram.Message{
+		Message: tgbotapi.MessageConfig{
+			BaseChat: tgbotapi.BaseChat{
+				ChatID:      chatID,
+				ReplyMarkup: keyb,
+			},
+			Text:                  txt,
+			ParseMode:             tgbotapi.ModeHTML,
+			DisableWebPagePreview: true,
+		},
+		UserId: chatID,
+	})
+}
+
 func (b *botData) sendUnknownCommand(chatID int64) {
-	b.Telegram().ToQueue(
-		&telegram.Message{
-			Message: tgbotapi.NewMessage(chatID, b.GetErrorCommandText()),
-			UserId:  chatID,
-		})
+	if b.GetErrorCommandText() != "" {
+		b.Telegram().ToQueue(
+			&telegram.Message{
+				Message: tgbotapi.NewMessage(chatID, b.GetErrorCommandText()),
+				UserId:  chatID,
+			})
+	}
 }
 
 func (b *botData) outputCommandHandler(chatID int64) {
@@ -221,7 +247,7 @@ func (b *botData) startReferralCommandHandler(chatID int64, username, firstname,
 				referralUsername = strconv.Itoa(int(u.Telegram().ID()))
 			}
 
-			inviter.Balance().AddBot(float64(b.Config().Counts().CostForReferral))
+			inviter.Balance().AddBot(b.Config().Counts().CostForReferral)
 
 			countReferral := b.Database().Models().Users().GetCountInvitedUsers(inviter.ID(), session)
 			if countReferral >= b.Config().Counts().VerifiedCount {

@@ -15,6 +15,12 @@ type Data struct {
 	CommandsData  map[string]Type `json:"commands"` // /tasks -> tasks
 	TextsData     Texts           `json:"texts"`
 	CountsData    Counts          `json:"counts"`
+	KindsData     map[string]Kind `json:"kinds"`
+}
+
+type Kind struct {
+	Condition string
+	Cost      int
 }
 
 func CreateConfig(path string) (Config, error) {
@@ -36,9 +42,14 @@ func CreateConfig(path string) (Config, error) {
 type Getter interface {
 	Texts() Texts
 	Counts() Counts
+	Kinds() map[string]Kind
 	Keyboards() Keyboards
 	Commands() map[string]Type
 	GetTypeForNameCommands(name string) (Type, error)
+}
+
+func (c *Data) Kinds() map[string]Kind {
+	return c.KindsData
 }
 
 func (c *Data) Keyboards() Keyboards {
@@ -68,7 +79,9 @@ func (c *Data) Counts() Counts {
 }
 
 type Texts struct {
-	Errors              Errors `json:"errors"`
+	IncorrectCommand    string `json:"incorrectCommand"`
+	Error               string `json:"error"`
+	IsSetOutput         string `json:"isSetOutput"`
 	NotifyForReferral   string `json:"notifyForReferral"`
 	StartText           string `json:"startText"`
 	Balance             string `json:"balance"`
@@ -82,13 +95,12 @@ type Texts struct {
 	OutputErrorBalance  string `json:"outputErrorBalance"`
 	SetDataOutput       string `json:"setDataOutput"`
 	FinalOutput         string `json:"finalOutput"`
-}
-
-type Errors struct {
-	IncorrectCommand   string `json:"incorrectCommand"`
-	Error              string `json:"error"`
-	IsSetOutput        string `json:"isSetOutput"`
-	OutputErrorBalance string `json:"outputErrorBalance"`
+	TasksNotFound       string `json:"tasksNotFound"`
+	TaskTemplate        string `json:"taskTemplate"`
+	TaskWrongCheck      string `json:"taskWrongCheck"`
+	TaskIsAlreadyCheck  string `json:"taskIsAlreadyCheck"`
+	SuccessCheckTask    string `json:"successCheckTask"`
+	SkipTask            string `json:"skipTask"`
 }
 
 type Counts struct {
