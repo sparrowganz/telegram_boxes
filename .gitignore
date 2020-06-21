@@ -13,6 +13,6 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-/data/
 /logs/
-!/botes/boxes/data/
+/botes/boxes/data/
+
