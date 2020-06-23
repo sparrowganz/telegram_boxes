@@ -5,13 +5,13 @@ type Address interface {
 	AddressSetter
 }
 
-type addressData struct {
+type AddressData struct {
 	Ip      string `bson:"ip"`
 	PortNum string `bson:"port"`
 }
 
-func CreateAddress(ip, port string) Address {
-	return &addressData{
+func CreateAddress(ip, port string) *AddressData {
+	return &AddressData{
 		Ip:      ip,
 		PortNum: port,
 	}
@@ -23,15 +23,15 @@ type AddressGetter interface {
 	Addr() string
 }
 
-func (a *addressData) IP() string {
+func (a *AddressData) IP() string {
 	return a.Ip
 }
 
-func (a *addressData) Port() string {
+func (a *AddressData) Port() string {
 	return a.PortNum
 }
 
-func (a *addressData) Addr() string {
+func (a *AddressData) Addr() string {
 	return a.Ip + a.PortNum
 }
 
@@ -40,10 +40,10 @@ type AddressSetter interface {
 	SetPort(port string)
 }
 
-func (a *addressData) SetIP(ip string) {
+func (a *AddressData) SetIP(ip string) {
 	a.Ip = ip
 }
 
-func (a *addressData) SetPort(port string) {
+func (a *AddressData) SetPort(port string) {
 	a.PortNum = port
 }

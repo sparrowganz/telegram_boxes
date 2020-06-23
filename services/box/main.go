@@ -56,7 +56,18 @@ func main() {
 	}
 
 	sender := bot.CreateBot(dbConnect, telegramSender, logger, os.Getenv("BOT_USERNAME"))
-	sender.Methods().SetServers(servers.CreateServers())
+
+	servData, errCreateServers := servers.CreateServers(
+		os.Getenv("CORE_HOST"),
+		os.Getenv("CORE_PORT"),
+		sender.Methods().Username(),
+	)
+	if errCreateServers != nil {
+		_ = logger.System(errCreateServers.Error())
+		return
+	}
+
+	sender.Methods().SetServers(servData)
 	sender.Methods().SetTasks(task.CreateTasks())
 	sender.Methods().SetOutput(output.CreateOutput(sender.Methods().Servers().ID()))
 
@@ -78,9 +89,9 @@ func main() {
 		sender.StartHandle()
 	}()
 
-	_ = logger.System("Start admin bot")
+	_ = logger.System("Start @" + sender.Methods().Username() + " bot")
 
-	sender.Methods().Servers().Init()
+	//sender.Methods().Servers().Init()
 	wg.Wait()
 }
 

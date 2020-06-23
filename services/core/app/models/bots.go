@@ -9,77 +9,99 @@ type Bot interface {
 	BotSetter
 }
 
-type botData struct {
-	Id       bson.ObjectId `bson:"_id"`
-	Num      int           `bson:"number"`
-	UserName string        `bson:"username"`
-	Active   bool          `bson:"isActive"`
-	Addr     Address       `bson:"address"`
-	Bonus    Bonus         `bson:"bonus"`
-	Times    Timestamp     `bson:"timestamp"`
+type BotData struct {
+	Id bson.ObjectId `bson:"_id"`
+
+	UserName string `bson:"username"`
+	//Num      int           `bson:"number"`
+	Status    string         `bson:"status"`
+	Active    bool           `bson:"isActive"`
+	Addr      *AddressData   `bson:"address"`
+	BonusData *BonusData     `bson:"bonus"`
+	Times     *TimestampData `bson:"timestamp"`
 }
 
 func CreateBot(ip, port string) Bot {
-	return &botData{
-		Id:    bson.NewObjectId(),
-		Addr:  CreateAddress(ip, port),
-		Bonus: CreateBonus(),
-		Times: CreateTimestamp(),
+	return &BotData{
+		Id:        bson.NewObjectId(),
+		Addr:      CreateAddress(ip, port),
+		BonusData: CreateBonus(),
+		Times:     CreateTimestamp(),
 	}
 }
 
 type BotGetter interface {
 	ID() bson.ObjectId
-	Number() int
+	//Number() int
+	BotStatus() string
 	Username() string
 	IsActive() bool
+	Bonus() Bonus
 	Address() Address
 	Timestamp() Timestamp
 }
 
-func (b *botData) ID() bson.ObjectId {
+func (b *BotData) Bonus() Bonus {
+	return b.BonusData
+}
+
+func (b *BotData) BotStatus() string {
+	return b.Status
+}
+
+func (b *BotData) ID() bson.ObjectId {
 	return b.Id
 }
 
-func (b *botData) Number() int {
+/*func (b *BotData) Number() int {
 	return b.Num
-}
+}*/
 
-func (b *botData) Username() string {
+func (b *BotData) Username() string {
 	return "@" + b.UserName
 }
 
-func (b *botData) IsActive() bool {
+func (b *BotData) IsActive() bool {
 	return b.Active
 }
 
-func (b *botData) Address() Address {
+func (b *BotData) Address() Address {
 	return b.Addr
 }
 
-func (b *botData) Timestamp() Timestamp {
+func (b *BotData) Timestamp() Timestamp {
 	return b.Times
 }
 
 type BotSetter interface {
-	SetNumber(number int)
+	//SetNumber(number int)
 	SetUsername(username string)
+	SetStatus(status string)
+	SetBonus(data *BonusData)
 	SetActive()
 	InActive()
 }
 
-func (b *botData) SetNumber(number int) {
-	b.Num = number
+func (b *BotData) SetBonus(data *BonusData) {
+	b.BonusData = data
 }
 
-func (b *botData) SetUsername(username string) {
+func (b *BotData) SetStatus(status string) {
+	b.Status = status
+}
+
+/*func (b *BotData) SetNumber(number int) {
+	b.Num = number
+}*/
+
+func (b *BotData) SetUsername(username string) {
 	b.UserName = username
 }
 
-func (b *botData) SetActive() {
+func (b *BotData) SetActive() {
 	b.Active = true
 }
 
-func (b *botData) InActive() {
+func (b *BotData) InActive() {
 	b.Active = false
 }

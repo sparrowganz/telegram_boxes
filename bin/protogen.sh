@@ -6,6 +6,11 @@
 
 echo "Генерация сервера Core"
 
+echo "Генерация сервера Servers"
+protoc -I$GOPATH/src/telegram_boxes \
+    services/core/protobuf/servers.proto --go_out=plugins=grpc:.
+
+
 echo "------- Генерация клиента сервиса Logger"
 protoc -I$GOPATH/src/telegram_boxes \
     services/logs/protobuf/logs.proto --go_out=plugins=grpc:./services/core/protobuf
@@ -18,6 +23,10 @@ echo "Генерация сервера Box"
 echo "------- Генерация клиента сервиса Logger"
 protoc -I$GOPATH/src/telegram_boxes \
     services/logs/protobuf/logs.proto --go_out=plugins=grpc:./services/box/protobuf
+
+echo "------- Генерация клиента сервиса Servers"
+protoc -I$GOPATH/src/telegram_boxes \
+    services/core/protobuf/servers.proto --go_out=plugins=grpc:./services/box/protobuf
 
 #----------------------------------------------------------------------------------
 #   Admin

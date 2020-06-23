@@ -118,7 +118,7 @@ func (b *botData) StartReadErrors() {
 			})
 		} else {
 			_ = b.Log().Error("", "system", err.Err.Error())
-			b.Servers().SendError(err.Err.Error(), servers.OK)
+			_ = b.Servers().SendError(err.Err.Error(), servers.OK)
 		}
 	}
 }

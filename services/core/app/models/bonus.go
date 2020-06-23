@@ -13,7 +13,7 @@ type BonusData struct {
 	Time   string  `bson:"time"` //time in format 21:15
 }
 
-func CreateBonus() Bonus {
+func CreateBonus() *BonusData {
 	return &BonusData{}
 }
 

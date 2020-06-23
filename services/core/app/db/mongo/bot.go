@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"telegram_boxes/services/core/app/models"
 )
 
@@ -22,10 +23,19 @@ type Bots interface {
 	CreateBot(bot models.Bot, session *mgo.Session) error
 	UpdateBot(bot models.Bot, session *mgo.Session) error
 	RemoveBot(bot models.Bot, session *mgo.Session) error
+	FindByUsername(username string, session *mgo.Session) (models.Bot, error)
 }
 
 func (bd *botsData) queryBot(session *mgo.Session) *mgo.Collection {
 	return session.DB(bd.database).C(bd.collection)
+}
+
+func (bd *botsData) FindByUsername(username string, session *mgo.Session) (models.Bot, error) {
+	bot := &models.BotData{}
+	err := bd.queryBot(session).Find(bson.M{
+		"username": username,
+	}).One(&bot)
+	return bot, err
 }
 
 func (bd *botsData) CreateBot(bot models.Bot, session *mgo.Session) error {

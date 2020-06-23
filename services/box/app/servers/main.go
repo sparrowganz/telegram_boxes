@@ -1,62 +1,119 @@
 package servers
 
-import "fmt"
-
-type Status int
-
-var (
-	OK         Status = 1
-	RECOVERING Status = 2
-	FATAL      Status = 3
+import (
+	"context"
+	"errors"
+	"fmt"
+	"google.golang.org/grpc"
+	"telegram_boxes/services/box/app"
+	"telegram_boxes/services/box/protobuf/services/core/protobuf"
+	"time"
 )
 
-func (s Status) String() string {
-	switch s {
-	case OK:
-		return "OK"
-	case RECOVERING:
-		return "RECOVERING"
-	case FATAL:
-		return "FATAL"
-	}
-	return ""
-}
-
 type Servers interface {
+	connector
 	Initer
 	Getter
 	Sender
+}
+
+type connector interface {
+	connect(host, port, username string) error
+}
+
+func (data *Data) connect(host, port, username string) error {
+
+	cnnServers, err := grpc.Dial(
+		fmt.Sprintf("%s:%s", host, port),
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		return fmt.Errorf("%s.ServersConnect: %s", username, err.Error())
+	}
+
+	data.client = protobuf.NewServersClient(cnnServers)
+	_, cancel := context.WithTimeout(context.Background(), 10000*time.Millisecond)
+	defer cancel()
+	return nil
 }
 
 type Getter interface {
 	ID() string
 }
 
-func (s *ServersData) ID() string {
-	return s.serverID
+func (data *Data) ID() string {
+	return data.serverID
 }
 
-type ServersData struct {
+type Data struct {
+	host     string
+	port     string
+	username string
+	client   protobuf.ServersClient
 	serverID string
 }
 
-func CreateServers() Servers {
-	return &ServersData{}
+func CreateServers(host, port, username string) (Servers, error) {
+	d := &Data{
+		host:     host,
+		port:     port,
+		username: username,
+	}
+
+	err := d.connect(host, port, username)
+	if err != nil {
+		return nil, err
+	}
+
+	err = d.Init(username)
+	if err != nil {
+		return nil, err
+	}
+
+	return d, nil
 }
 
 type Initer interface {
-	Init()
+	Init(username string) error
 }
 
-func (s *ServersData) Init() {
-	fmt.Println("SEND INIT BOX")
-	s.serverID = "123"
+func (data *Data) Init(username string) error {
+	if data.client == nil {
+		return errors.New("client not initialize")
+	}
+
+	res, err := data.client.InitBox(
+		app.SetCallContext("init", username),
+		&protobuf.InitBoxRequest{
+			Username: username,
+		})
+	if err != nil {
+		return err
+	}
+
+	data.serverID = res.ID
+	return nil
 }
 
 type Sender interface {
-	SendError(err string, status Status)
+	SendError(err string, status protobuf.Status) error
 }
 
-func (s *ServersData) SendError(err string, status Status) {
-	fmt.Println(s.serverID, err, status)
+func (data *Data) SendError(err string, status protobuf.Status) error {
+
+	if data.client == nil {
+		return errors.New("client not initialize")
+	}
+
+	_, errSend := data.client.SendError(
+		app.SetCallContext("error", data.username),
+		&protobuf.SendErrorRequest{
+			Error:  err,
+			Status: status,
+		})
+	if errSend != nil {
+		return errSend
+	}
+
+	return nil
 }

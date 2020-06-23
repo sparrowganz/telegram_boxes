@@ -8,10 +8,29 @@ admin-env = botes/admin/.env
 box-compose= botes/boxes/docker-compose.yaml
 box-env = botes/boxes/Test/.env
 
+mongo-compose = botes/mongo/docker-compose.yaml
+mongo-env = botes/mongo/.env
+
 build = build
 up = up
 start = up -d
 stop = down
+
+#-----------------------------------------------------------------------------------------------------------------------
+#MONGO
+#-----------------------------------------------------------------------------------------------------------------------
+
+.PHONY: mongo-run run-mongo
+mongo-run run-mongo:
+	docker-compose -f $(mongo-compose) --env $(mongo-env) $(up)
+
+.PHONY: mongo-run-d run-mongo-d
+mongo-run-d run-mongo-d:
+	docker-compose -f $(mongo-compose) --env $(mongo-env) $(start)
+
+.PHONY: mongo-stop stop-mongo
+mongo-stop stop-mongo:
+	docker-compose -f $(mongo-compose) --env $(mongo-env) $(stop)
 
 #-----------------------------------------------------------------------------------------------------------------------
 #CORE

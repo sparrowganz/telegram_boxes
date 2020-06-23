@@ -9,7 +9,6 @@ import (
 	"os"
 	"runtime/debug"
 	"telegram_boxes/services/core/app/db"
-	"telegram_boxes/services/core/app/id"
 	slog "telegram_boxes/services/core/app/log"
 	"telegram_boxes/services/core/protobuf"
 )
@@ -33,7 +32,7 @@ func main() {
 	}
 
 	//Create new server
-	s := protobuf.CreateServer(dbConnect, logger, id.NewCounter())
+	s := protobuf.CreateServer(dbConnect, logger)
 
 	//
 	defer recovery(s.Log())
@@ -47,6 +46,7 @@ func main() {
 	GRPCServer := grpc.NewServer(
 		grpc.UnaryInterceptor(logger.Interceptor),
 	)
+	protobuf.RegisterServersServer(GRPCServer, s)
 
 	// attach the user protobuf to the server
 	//protobuf.RegisterCoreServer(GRPCServer, s)

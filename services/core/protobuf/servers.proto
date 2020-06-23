@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "services/core/protobuf";
+
+service Servers {
+
+    rpc InitBox (InitBoxRequest) returns (InitBoxResponse) {
+    }
+
+    rpc SendError (SendErrorRequest) returns (SendErrorResponse) {
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Init box
+//----------------------------------------------------------------------------------------------------------------------
+message InitBoxRequest {
+    string Username = 1;
+}
+
+message InitBoxResponse {
+    string ID = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Send Error
+//----------------------------------------------------------------------------------------------------------------------
+message SendErrorRequest {
+    Status status = 1;
+    string Error = 2;
+}
+
+message SendErrorResponse {
+
+}
+
+enum Status {
+    OK = 0;
+    Recovering = 1;
+    Fatal = 2;
+}
+

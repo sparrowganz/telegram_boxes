@@ -7,6 +7,8 @@ services:
     ports:
       - ${APP_PORT}:4000
     restart: always
+    depends_on:
+      - database
     volumes:
       - ${LOCAL_PATH_DIR}:${BOX_PATH_DIR}
     environment:
@@ -18,6 +20,8 @@ services:
 
       - LOGS_HOST=${LOGS_HOST}
       - LOGS_PORT=${LOGS_PORT}
+      - CORE_HOST=${CORE_HOST}
+      - CORE_PORT=${CORE_PORT}
 
       - MONGO_HOST=${MONGO_HOST}
       - MONGO_PORT=${MONGO_PORT}
@@ -25,7 +29,6 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_DATABASE=${MONGO_DATABASE}
       - MONGO_MECHANISM=${MONGO_MECHANISM}
-
 
   database:
     container_name: 'database_TEST'

@@ -1,6 +1,29 @@
 version: "3.4"
 
 services:
+  core:
+    container_name: "core"
+    build: '$GOPATH/src/telegram_boxes/services/core'
+    ports:
+      - ${CORE_PORT}:${CORE_PORT}
+    restart: always
+    depends_on:
+      - logs
+      - database
+    environment:
+      - APP_MODE=${APP_MODE}
+      - CORE_PORT=${CORE_PORT}
+
+      - LOGS_PORT=${LOGS_PORT}
+      - LOGS_HOST=${LOGS_HOST}
+
+      - MONGO_HOST=${MONGO_HOST}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+      - MONGO_MECHANISM=${MONGO_MECHANISM}
+
   logs:
     container_name: 'logs'
     build: '$GOPATH/src/telegram_boxes/services/logs'
@@ -13,3 +36,16 @@ services:
       - APP_MODE=${APP_MODE}
       - LOGS_PORT=${LOGS_PORT}
       - LOGS_PATH=${LOGS_PATH}
+
+  database:
+    container_name: 'database_CORE'
+    image: bitnami/mongodb:latest
+    restart: always
+    environment:
+      - MONGODB_USERNAME=${MONGO_USERNAME}
+      - MONGODB_PASSWORD=${MONGO_PASSWORD}
+      - MONGODB_DATABASE=${MONGO_DATABASE}
+    volumes:
+      - ./data/db:/bitnami/mongodb/data/db
+    ports:
+      - ${MONGO_PORT}:27017
