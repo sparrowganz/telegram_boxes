@@ -7,6 +7,7 @@ import (
 
 type Server interface {
 	Servers
+	Tasks
 
 	DB() db.Database
 	Log() log.Log

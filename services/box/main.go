@@ -66,8 +66,18 @@ func main() {
 		return
 	}
 
+	taskData, errCreateConnection := task.CreateTasks(
+		os.Getenv("CORE_HOST"),
+		os.Getenv("CORE_PORT"),
+		sender.Methods().Username(),
+	)
+	if errCreateConnection != nil {
+		_ = logger.System(errCreateConnection.Error())
+		return
+	}
+
 	sender.Methods().SetServers(servData)
-	sender.Methods().SetTasks(task.CreateTasks())
+	sender.Methods().SetTasks(taskData)
 
 	sender.Methods().SetConfig(conf)
 

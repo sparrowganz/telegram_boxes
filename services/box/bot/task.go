@@ -23,15 +23,15 @@ func (b *botData) getTask(chatID int64) (text string, keyb interface{}, err erro
 		return
 	}
 
-	kind, ok := b.Config().Kinds()[task.Type]
+	kind, ok := b.Config().Kinds()[task.GetType()]
 	if !ok {
-		b.Servers().SendError("unknown task type "+task.Type, servers.OK)
-		err = errors.New("unknown task type " + task.Type)
+		b.Servers().SendError("unknown task type "+task.GetType(), servers.OK)
+		err = errors.New("unknown task type " + task.GetType())
 		return
 	}
 
 	text = b.TaskText(kind.Cost, kind.Condition)
-	keyb = b.GetTaskKeyboard(task.Link, task.Type, task.ID)
+	keyb = b.GetTaskKeyboard(task.GetLink(), task.GetType(), task.GetId())
 
 	return
 
@@ -58,10 +58,10 @@ func (b *botData) checkTask(chatID int64, taskID string) (text string, keyb inte
 		return "", nil, errFindTask
 	}
 
-	kind, ok := b.Config().Kinds()[task.Type]
+	kind, ok := b.Config().Kinds()[task.GetType()]
 	if !ok {
-		b.Servers().SendError("unknown task type "+task.Type, servers.OK)
-		err = errors.New("unknown task type " + task.Type)
+		b.Servers().SendError("unknown task type "+task.GetType(), servers.OK)
+		err = errors.New("unknown task type " + task.GetType())
 		return
 	}
 
@@ -73,7 +73,7 @@ func (b *botData) checkTask(chatID int64, taskID string) (text string, keyb inte
 
 		//ERROR CHECK
 		text = b.ErrorCheckTask(kind.Cost, kind.Condition)
-		keyb = b.GetTaskKeyboard(task.Link, task.Type, task.ID)
+		keyb = b.GetTaskKeyboard(task.GetLink(), task.GetType(), task.GetId())
 		return
 	}
 

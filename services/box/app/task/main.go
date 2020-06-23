@@ -1,103 +1,115 @@
 package task
 
 import (
-	"errors"
+	"context"
+	"fmt"
+	"google.golang.org/grpc"
+	"telegram_boxes/services/box/app"
+	"telegram_boxes/services/box/protobuf/services/core/protobuf"
+	"time"
 )
 
 type Tasks interface {
+	connector
 	Getter
 	Remover
 }
 
-type tasksData struct {
-	//taskData
-	//todo remove debug structure
-	storage []*Task
+type connector interface {
+	connect(host, port, username string) error
 }
 
-//todo remove debug structure
-type Task struct {
-	ID         string
-	Name       string
-	IsPriority bool
-	WithCheck  bool
-	Type       string
-	Link       string
-}
+func (t *Data) connect(host, port, username string) error {
 
-func CreateTasks() Tasks {
-	return &tasksData{
-		//todo remove debug structure
-		storage: []*Task{
-			{"1", "1", false, false, "channel", "http://vk.com"},
-			{"2", "2", true, true, "checkChannel", "http://vk.com"},
-			{"3", "3", false, false, "subscribeInstagram", "http://vk.com"},
-			{"4", "4", true, false, "likeInstagram", "http://vk.com"},
-			{"5", "5", false, false, "openWeb", "http://vk.com"},
-			{"6", "6", false, false, "activateBot", "http://vk.com"},
-		},
+	cnnServers, err := grpc.Dial(
+		fmt.Sprintf("%s:%s", host, port),
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		return fmt.Errorf("%s.ServersConnect: %s", username, err.Error())
 	}
+
+	t.client = protobuf.NewTasksClient(cnnServers)
+	_, cancel := context.WithTimeout(context.Background(), 10000*time.Millisecond)
+	defer cancel()
+	return nil
+}
+
+type Data struct {
+	host     string
+	port     string
+	username string
+	client   protobuf.TasksClient
+	serverID string
+}
+
+func CreateTasks(host, port, username string) (Tasks, error) {
+	d := &Data{
+		host:     host,
+		port:     port,
+		username: username,
+	}
+
+	err := d.connect(host, port, username)
+	if err != nil {
+		return nil, err
+	}
+
+	return d, nil
 }
 
 type Getter interface {
-	GetTask(completedTask []string) (*Task, error)
-	FindTask(id string) (*Task, error)
+	GetTask(completedTask []string) (*protobuf.Task, error)
+	FindTask(id string) (*protobuf.Task, error)
 	CheckTask(chatID int64, taskID string) (bool, error)
 }
 
-func (t *tasksData) CheckTask(chatID int64, taskID string) (bool, error) {
-	for _, task := range t.storage {
-		if task.ID == taskID {
-			if task.WithCheck {
-				return false, nil
-			} else {
-				return true, nil
-			}
-		}
+func (t *Data) CheckTask(chatID int64, taskID string) (bool, error) {
+
+	res, err := t.client.CheckTask(
+		app.SetCallContext("checkTask", t.username),
+		&protobuf.CheckTaskRequest{
+			ChatID: chatID,
+			TaskID: taskID,
+		})
+	if err != nil {
+		return false, err
 	}
-	return false, errors.New(" Task not found ")
+
+	return res.GetIsCheck(), nil
 }
 
-func (t *tasksData) FindTask(id string) (*Task, error) {
-	for _, task := range t.storage {
-		if task.ID == id {
-			return task, nil
-		}
+func (t *Data) FindTask(id string) (*protobuf.Task, error) {
+	res, err := t.client.FindTask(
+		app.SetCallContext("findTask", t.username),
+		&protobuf.FindTaskRequest{
+			Id: id,
+		})
+	if err != nil {
+		return nil, err
 	}
-	return nil, errors.New(" Task not found ")
+
+	return res.GetTask(), nil
 }
 
-func (t *tasksData) GetTask(completedTask []string) (*Task, error) {
-
-	var notCompletedTask []*Task
-
-	for _, tsk := range t.storage {
-		for _, cId := range completedTask {
-			if cId == tsk.ID {
-				goto END
-			}
-		}
-		notCompletedTask = append(notCompletedTask, tsk)
-	END:
+func (t *Data) GetTask(completedTask []string) (*protobuf.Task, error) {
+	res, err := t.client.GetTask(
+		app.SetCallContext("getTask", t.username),
+		&protobuf.GetTaskRequest{
+			TasksID: completedTask,
+		})
+	if err != nil {
+		return nil, err
 	}
 
-	if len(notCompletedTask) == 0 {
-		return nil, errors.New(" Not found ")
-	}
+	return res.GetTask(), nil
 
-	for _, task := range notCompletedTask {
-		if task.IsPriority {
-			return task, nil
-		}
-	}
-
-	return notCompletedTask[0], nil
 }
 
 type Remover interface {
 	CleanupRun(id string)
 }
 
-func (t *tasksData) CleanupRun(id string) {
+func (t *Data) CleanupRun(id string) {
 
 }

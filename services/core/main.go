@@ -47,7 +47,7 @@ func main() {
 		grpc.UnaryInterceptor(logger.Interceptor),
 	)
 	protobuf.RegisterServersServer(GRPCServer, s)
-
+	protobuf.RegisterTasksServer(GRPCServer, s)
 
 	_ = logger.System(fmt.Sprintf("Protobuf CORE started on  :%s", os.Getenv("CORE_PORT")))
 	err = GRPCServer.Serve(lis)

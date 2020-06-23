@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "services/core/protobuf";
+
+service Tasks {
+    rpc GetTask (GetTaskRequest) returns (GetTaskResponse) {
+
+    }
+
+    rpc FindTask (FindTaskRequest) returns (FindTaskResponse) {
+
+    }
+
+    rpc CheckTask (CheckTaskRequest) returns (CheckTaskResponse) {
+
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get Task
+//----------------------------------------------------------------------------------------------------------------------
+message GetTaskRequest {
+    repeated string tasksID = 1;
+}
+
+message GetTaskResponse {
+    Task task = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Find Task
+//----------------------------------------------------------------------------------------------------------------------
+message FindTaskRequest {
+    string id = 1;
+}
+
+message FindTaskResponse {
+    Task task = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Check Task
+//----------------------------------------------------------------------------------------------------------------------
+message CheckTaskRequest {
+    int64 chatID = 1;
+    string taskID = 2;
+}
+
+message CheckTaskResponse {
+    bool isCheck = 1;
+}
+
+message Task {
+    string id = 1;
+    string name = 2;
+    string type = 3;
+    string link = 4;
+}

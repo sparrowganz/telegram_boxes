@@ -10,7 +10,7 @@ type payData struct {
 func createPaymentsModel(database string) Payments {
 	return &payData{
 		database:   database,
-		collection: "Bots",
+		collection: "Payments",
 	}
 }
 

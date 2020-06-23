@@ -13,7 +13,7 @@ type broadcastData struct {
 func createBroadcastModel(database string) Broadcasts {
 	return &broadcastData{
 		database:   database,
-		collection: "Bots",
+		collection: "Broadcasts",
 	}
 }
 
