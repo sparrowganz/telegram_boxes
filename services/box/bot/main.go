@@ -6,7 +6,6 @@ import (
 	"telegram_boxes/services/box/app/config"
 	"telegram_boxes/services/box/app/db"
 	"telegram_boxes/services/box/app/log"
-	"telegram_boxes/services/box/app/output"
 	"telegram_boxes/services/box/app/servers"
 	"telegram_boxes/services/box/app/task"
 )
@@ -24,7 +23,6 @@ func (b *botData) Methods() Botter {
 type BotSetter interface {
 	SetTasks(t task.Tasks)
 	SetServers(s servers.Servers)
-	SetOutput(o output.Outputs)
 	SetConfig(c config.Config)
 }
 
@@ -41,16 +39,12 @@ func (b *botData) SetConfig(c config.Config) {
 	b.config = c
 }
 
-func (b *botData) SetOutput(o output.Outputs) {
-	b.outputs = o
-}
 
 type Botter interface {
 	BotSetter
 	Telegram() telegram.Sender
 	Log() log.Log
 	Task() task.Tasks
-	Output() output.Outputs
 	Servers() servers.Servers
 	Database() db.Database
 	Config() config.Config
@@ -64,7 +58,6 @@ type botData struct {
 	tasks    task.Tasks
 	servers  servers.Servers
 	config   config.Config
-	outputs  output.Outputs
 	username string
 }
 
@@ -76,9 +69,6 @@ func (b *botData) Config() config.Config {
 	return b.config
 }
 
-func (b *botData) Output() output.Outputs {
-	return b.outputs
-}
 
 func (b *botData) Telegram() telegram.Sender {
 	return b.tSender

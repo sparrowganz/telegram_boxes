@@ -12,7 +12,6 @@ import (
 	"telegram_boxes/services/box/app/config"
 	"telegram_boxes/services/box/app/db"
 	sLog "telegram_boxes/services/box/app/log"
-	"telegram_boxes/services/box/app/output"
 	"telegram_boxes/services/box/app/servers"
 	"telegram_boxes/services/box/app/task"
 	"telegram_boxes/services/box/bot"
@@ -69,7 +68,6 @@ func main() {
 
 	sender.Methods().SetServers(servData)
 	sender.Methods().SetTasks(task.CreateTasks())
-	sender.Methods().SetOutput(output.CreateOutput(sender.Methods().Servers().ID()))
 
 	sender.Methods().SetConfig(conf)
 

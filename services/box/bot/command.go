@@ -238,7 +238,7 @@ func (b *botData) startReferralCommandHandler(chatID int64, username, firstname,
 
 		inviter, errFindInviter := b.Database().Models().Users().FindUserByTelegramID(int64(inviterID), session)
 		if errFindInviter == nil {
-			u.SetInviterID(inviter.ID())
+			u.SetInviterID(inviter.ID().Hex())
 
 			var referralUsername string
 			if u.Telegram().UserName() != "" {
@@ -249,7 +249,7 @@ func (b *botData) startReferralCommandHandler(chatID int64, username, firstname,
 
 			inviter.Balance().AddBot(b.Config().Counts().CostForReferral)
 
-			countReferral := b.Database().Models().Users().GetCountInvitedUsers(inviter.ID(), session)
+			countReferral := b.Database().Models().Users().GetCountInvitedUsers(inviter.ID().Hex(), session)
 			if countReferral >= b.Config().Counts().VerifiedCount {
 				inviter.SetVerified()
 			}

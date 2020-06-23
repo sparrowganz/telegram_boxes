@@ -5,7 +5,7 @@ import (
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
 	"telegram_boxes/services/box/app/config"
-	"telegram_boxes/services/box/app/output"
+	"telegram_boxes/services/box/app/models"
 )
 
 func (b *botData) textsValidation(mess *tgbotapi.Message) {
@@ -31,9 +31,9 @@ func (b *botData) textsValidation(mess *tgbotapi.Message) {
 			if ok {
 
 				if j.GetType() == OutputType.String() && j.GetAction() == AddAction.String() {
-					data := j.GetData().(*output.Output)
+					data := j.GetData().(*models.OutputData)
 					switch "" {
-					case data.Data:
+					case data.PaymentData:
 						b.setDataOutput(mess.Chat.ID, mess.Text, j)
 					}
 				}
@@ -45,7 +45,7 @@ func (b *botData) textsValidation(mess *tgbotapi.Message) {
 func (b *botData) setDataOutput(chatID int64, input string, j actions.Job) {
 	b.Telegram().DeleteMessages(chatID, j.GetMessageIDs())
 
-	txt, keyb, err := b.setOutputData(chatID, input, j.GetData().(*output.Output))
+	txt, keyb, err := b.setOutputData(chatID, input, j.GetData().(*models.OutputData))
 	if err != nil {
 		_ = b.Log().Error(b.Username(), "setDataOutput", err.Error())
 		b.Telegram().SendError(chatID, b.GetErrorText(), nil)

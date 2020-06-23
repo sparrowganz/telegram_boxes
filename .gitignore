@@ -16,4 +16,4 @@
 /logs/
 /botes/boxes/data/
 
-!/botes/core/data/
+/botes/core/data/

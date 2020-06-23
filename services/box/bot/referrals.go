@@ -21,7 +21,7 @@ func (b *botData) referrals(telegramID int64, tp config.KeyboardType) (text stri
 		return
 	}
 
-	countInvitedUsers := b.Database().Models().Users().GetCountInvitedUsers(currentUser.ID(), session)
+	countInvitedUsers := b.Database().Models().Users().GetCountInvitedUsers(currentUser.ID().Hex(), session)
 
 	text = b.ReferralsText(countInvitedUsers, b.getReferralLink(telegramID), currentUser.Verified())
 

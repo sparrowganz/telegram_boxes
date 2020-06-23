@@ -26,13 +26,15 @@ func (b *botData) GetOutputKeyboard() (config.KeyboardType, interface{}) {
 	keyboards := b.Config().Keyboards()
 	tp, keyb := keyboards.GetOutput()
 
-	newKeyb := b.getKeyboard(tp, keyb)
 
 	for _, row := range keyb {
 		for _, but := range row {
 			but.Value = but.Text
 		}
 	}
+
+	newKeyb := b.getKeyboard(tp, keyb)
+
 
 	return tp, newKeyb
 }

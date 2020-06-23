@@ -16,7 +16,7 @@ func (b *botData) balance(telegramID int64, tp config.KeyboardType) (text string
 		return
 	}
 
-	countInvitedUsers := b.Database().Models().Users().GetCountInvitedUsers(currentUser.ID(), session)
+	countInvitedUsers := b.Database().Models().Users().GetCountInvitedUsers(currentUser.ID().Hex(), session)
 
 	text = b.BalanceText(int(currentUser.Balance().Bot()), int(currentUser.Balance().Payment()),countInvitedUsers)
 

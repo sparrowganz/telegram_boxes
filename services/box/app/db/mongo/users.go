@@ -53,10 +53,10 @@ func (users *usersData) CreateUser(user models.User, session *mgo.Session) error
 
 func (users *usersData) UpdateUser(user models.User, session *mgo.Session) error {
 	user.Timestamp().SetUpdateTime()
-	return users.queryUsers(session).UpdateId(user.BsonID(), user)
+	return users.queryUsers(session).UpdateId(user.ID(), user)
 }
 
 func (users *usersData) RemoveUser(user models.User, session *mgo.Session) error {
 	user.Timestamp().SetRemoveTime()
-	return users.queryUsers(session).UpdateId(user.BsonID(), user)
+	return users.queryUsers(session).UpdateId(user.ID(), user)
 }

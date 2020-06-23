@@ -48,8 +48,6 @@ func main() {
 	)
 	protobuf.RegisterServersServer(GRPCServer, s)
 
-	// attach the user protobuf to the server
-	//protobuf.RegisterCoreServer(GRPCServer, s)
 
 	_ = logger.System(fmt.Sprintf("Protobuf CORE started on  :%s", os.Getenv("CORE_PORT")))
 	err = GRPCServer.Serve(lis)

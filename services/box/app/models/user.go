@@ -2,7 +2,6 @@ package models
 
 import (
 	"gopkg.in/mgo.v2/bson"
-	"sync"
 )
 
 type User interface {
@@ -18,7 +17,6 @@ func CreateUser(telegramID int64, username, firstName, lastName, email string) U
 		Balances:       CreateBalance(),
 		ChecksData:     map[string]string{}, //[id]status
 		Time:           CreateTimestamp(),
-		checkDataMutex: &sync.Mutex{},
 	}
 }
 
@@ -34,13 +32,10 @@ type UserData struct {
 
 	ChecksData map[string]string       `bson:"checks"`
 	Time       *TimestampData `bson:"timestamp"`
-
-	checkDataMutex *sync.Mutex
 }
 
 type UserGetter interface {
-	ID() string
-	BsonID() bson.ObjectId
+	ID() bson.ObjectId
 	Blocked() bool
 	InviterID() string
 	Balance() Balance
@@ -49,12 +44,8 @@ type UserGetter interface {
 	Verified() bool
 }
 
-func (u *UserData) BsonID() bson.ObjectId {
+func (u *UserData) ID() bson.ObjectId {
 	return u.Id
-}
-
-func (u *UserData) ID() string {
-	return u.Id.Hex()
 }
 
 func (u *UserData) Blocked() bool {

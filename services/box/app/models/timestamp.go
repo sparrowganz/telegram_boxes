@@ -10,16 +10,16 @@ type Timestamp interface {
 
 func CreateTimestamp() *TimestampData {
 	return &TimestampData{
-		Created: time.Time{},
-		Updated: time.Time{},
-		Removed: time.Time{},
+		CreatedData: time.Time{},
+		Updated:     time.Time{},
+		Removed:     time.Time{},
 	}
 }
 
 type TimestampData struct {
-	Created time.Time `bson:"created"`
-	Updated time.Time `bson:"updated"`
-	Removed time.Time `bson:"removed" `
+	CreatedData time.Time `bson:"created"`
+	Updated     time.Time `bson:"updated"`
+	Removed     time.Time `bson:"removed" `
 }
 
 type TimestampSetter interface {
@@ -29,7 +29,7 @@ type TimestampSetter interface {
 }
 
 func (tm *TimestampData) SetCreateTime() {
-	tm.Created = time.Now()
+	tm.CreatedData = time.Now()
 }
 
 func (tm *TimestampData) SetUpdateTime() {
@@ -54,14 +54,19 @@ func (tm *TimestampData) AbortRemoveTime() {
 }
 
 type TimestampGetter interface {
+	Created() time.Time
 	CreatedNotZeroUnixNano() int64
 	UpdatedNotZeroUnixNano() int64
 	RemovedNotZeroUnixNano() int64
 }
 
+func (tm *TimestampData) Created() time.Time {
+	return tm.CreatedData
+}
+
 func (tm *TimestampData) CreatedNotZeroUnixNano() int64 {
-	if !tm.Created.IsZero() {
-		return tm.Created.UnixNano()
+	if !tm.Created().IsZero() {
+		return tm.Created().UnixNano()
 	} else {
 		return 0
 	}

@@ -11,6 +11,7 @@ protoc -I$GOPATH/src/telegram_boxes \
     services/core/protobuf/servers.proto --go_out=plugins=grpc:.
 
 
+
 echo "------- Генерация клиента сервиса Logger"
 protoc -I$GOPATH/src/telegram_boxes \
     services/logs/protobuf/logs.proto --go_out=plugins=grpc:./services/core/protobuf
@@ -27,6 +28,8 @@ protoc -I$GOPATH/src/telegram_boxes \
 echo "------- Генерация клиента сервиса Servers"
 protoc -I$GOPATH/src/telegram_boxes \
     services/core/protobuf/servers.proto --go_out=plugins=grpc:./services/box/protobuf
+
+
 
 #----------------------------------------------------------------------------------
 #   Admin

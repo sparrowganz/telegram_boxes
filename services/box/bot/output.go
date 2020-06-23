@@ -2,10 +2,10 @@ package bot
 
 import (
 	"github.com/sparrowganz/teleFly/telegram/actions"
+	"gopkg.in/mgo.v2"
 	"strings"
 	"telegram_boxes/services/box/app/config"
 	"telegram_boxes/services/box/app/models"
-	"telegram_boxes/services/box/app/output"
 	"time"
 )
 
@@ -28,14 +28,18 @@ func (b *botData) output(telegramID int64, tp config.KeyboardType) (text string,
 		return
 	}
 
-	out, errOutput := b.Output().GetOutput(currentUser.ID())
+	out, errOutput := b.Database().Models().Outputs().FindOutputByUserID(currentUser.ID().Hex(), session)
 	if errOutput != nil {
+
+		if errOutput != mgo.ErrNotFound {
+			return "", nil, errOutput
+		}
 
 		text = b.GetOutputText()
 		_, keyb = b.GetOutputKeyboard()
 
 	} else {
-		text = b.GetCurrentOutputText(out.Cost, out.PaymentGateway, out.Data, out.Timestamp.Add(time.Hour*24*5))
+		text = b.GetCurrentOutputText(out.Cost(), out.PaymentGW(), out.Data(), out.Timestamp().Created().Add(time.Hour*24*5))
 		if tp == config.Inline {
 			keyb = b.GetCancelKeyboard(config.Inline)
 		}
@@ -66,9 +70,9 @@ func (b *botData) chooseOutputGW(telegramID int64, tp config.KeyboardType,
 		return
 	}
 
-	b.Telegram().Actions().New(telegramID, actions.NewJob(AddAction.String(), OutputType.String(), &output.Output{
+	b.Telegram().Actions().New(telegramID, actions.NewJob(AddAction.String(), OutputType.String(), &models.OutputData{
 		PaymentGateway: nameGW,
-	}, 0, false))
+	}, 0, true))
 
 	text = b.GetSettingDataOutputText(nameGW)
 	keyb = b.GetCancelKeyboard(tp)
@@ -76,7 +80,7 @@ func (b *botData) chooseOutputGW(telegramID int64, tp config.KeyboardType,
 	return
 }
 
-func (b *botData) setOutputData(telegramID int64, data string, out *output.Output) (text string, keyb interface{}, err error) {
+func (b *botData) setOutputData(telegramID int64, data string, out *models.OutputData) (text string, keyb interface{}, err error) {
 
 	session := b.Database().GetMainSession().Clone()
 	defer session.Close()
@@ -87,11 +91,14 @@ func (b *botData) setOutputData(telegramID int64, data string, out *output.Outpu
 		return
 	}
 
-	b.Output().Set(currentUser.ID(), out.PaymentGateway, data, int(currentUser.Balance().Bot()), currentUser.GetAllChecks())
+	output := models.CreateOutput(
+		currentUser.ID().Hex(), out.PaymentGateway, data, currentUser.Balance().Bot(), currentUser.GetAllChecks())
+
+	_ = b.Database().Models().Outputs().CreateOutput(output, session)
 
 	b.Telegram().Actions().Delete(telegramID)
 
-	text = b.GetFinalOutputText(int(currentUser.Balance().Bot()), out.PaymentGateway, data, time.Now().Add(time.Hour*24*5))
+	text = b.GetFinalOutputText(currentUser.Balance().Bot(), out.PaymentGateway, data, time.Now().Add(time.Hour*24*5))
 	keyb = b.GetMainKeyboard()
 
 	currentUser.Balance().SetBot(0)
