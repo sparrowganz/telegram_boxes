@@ -1,6 +1,10 @@
 package models
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+	"time"
+)
 
 type Bonus interface {
 	BonusGetter
@@ -8,9 +12,9 @@ type Bonus interface {
 }
 
 type BonusData struct {
-	Active bool    `bson:"isActive"`
-	Money  float64 `bson:"cost"`
-	Time   string  `bson:"time"` //time in format 21:15
+	Active bool      `bson:"isActive"`
+	Money  int64     `bson:"cost"`
+	Time   time.Time `bson:"time"` //time in format 21:15
 }
 
 func CreateBonus() *BonusData {
@@ -19,32 +23,26 @@ func CreateBonus() *BonusData {
 
 type BonusGetter interface {
 	IsActive() bool
-	Cost() float64
-	InTime() (hour, minutes string) // return (hour,minutes)
+	Cost() int64
+	InTime() time.Time // return (hour,minutes)
 }
 
 func (b *BonusData) IsActive() bool {
 	return b.Active
 }
 
-func (b *BonusData) Cost() float64 {
+func (b *BonusData) Cost() int64 {
 	return b.Money
 }
 
-func (b *BonusData) InTime() (hour, minutes string) {
-	parts := strings.Split(b.Time, ":")
-	if len(parts) == 2 {
-		return parts[0], parts[1]
-	} else if len(parts) == 1 {
-		return parts[0], "00"
-	}
-	return "00", "00"
+func (b *BonusData) InTime() time.Time {
+	return b.Time
 }
 
 type BonusSetter interface {
 	SetActive()
 	Inactive()
-	SetCost(val float64)
+	SetCost(val int64)
 	SetTime(time string)
 }
 
@@ -56,13 +54,33 @@ func (b *BonusData) Inactive() {
 	b.Active = false
 }
 
-func (b *BonusData) SetCost(val float64) {
+func (b *BonusData) SetCost(val int64) {
 	b.Money = val
 }
 
-func (b *BonusData) SetTime(time string) {
-	if !strings.Contains(time, ":") {
-		time += ":00"
+func (b *BonusData) SetTime(tm string) {
+
+	var (
+		hour    int
+		minutes int
+		err     error
+	)
+
+	parts := strings.Split(tm, ":")
+	if len(parts) < 2 {
+		minutes = 0
+	}else{
+		minutes, err = strconv.Atoi(parts[0])
+		if err != nil || minutes > 60 {
+			minutes = 0
+			err = nil
+		}
 	}
-	b.Time = time
+
+	hour, err = strconv.Atoi(parts[0])
+	if err != nil || hour > 24 {
+		hour = 0
+	}
+
+	b.Time = time.Date(0, 0, 0, hour, minutes, 0, 0, time.Local)
 }

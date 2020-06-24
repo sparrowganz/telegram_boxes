@@ -5,7 +5,7 @@ import (
 	"telegram_boxes/services/core/app/log"
 )
 
-type Server interface {
+type MainServer interface {
 	Servers
 	Tasks
 
@@ -20,7 +20,7 @@ type serverData struct {
 
 func CreateServer(
 	database db.Database,
-	log log.Log) Server {
+	log log.Log) MainServer {
 
 	return &serverData{
 		database: database,

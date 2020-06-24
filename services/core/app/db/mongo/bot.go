@@ -24,10 +24,16 @@ type Bots interface {
 	UpdateBot(bot models.Bot, session *mgo.Session) error
 	RemoveBot(bot models.Bot, session *mgo.Session) error
 	FindByUsername(username string, session *mgo.Session) (models.Bot, error)
+	GetAll(session *mgo.Session) ([]*models.BotData, error)
 }
 
 func (bd *botsData) queryBot(session *mgo.Session) *mgo.Collection {
 	return session.DB(bd.database).C(bd.collection)
+}
+
+func (bd *botsData) GetAll(session *mgo.Session) (bots []*models.BotData, err error) {
+	err = bd.queryBot(session).Find(nil).All(&bots)
+	return
 }
 
 func (bd *botsData) FindByUsername(username string, session *mgo.Session) (models.Bot, error) {

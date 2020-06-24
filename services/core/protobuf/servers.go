@@ -13,6 +13,38 @@ import (
 type Servers interface {
 	InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxResponse, error)
 	SendError(ctx context.Context, r *SendErrorRequest) (*SendErrorResponse, error)
+	GetListServers(ctx context.Context, r *GetListServersRequest) (*GetListServersResponse, error)
+}
+
+func (sd *serverData) GetListServers(ctx context.Context, r *GetListServersRequest) (*GetListServersResponse, error) {
+	out := &GetListServersResponse{}
+
+	action, username := app.GetDataContext(ctx)
+
+	session := sd.DB().GetMainSession().Clone()
+	defer session.Close()
+
+	bots, err := sd.DB().Models().Bots().GetAll(session)
+	if err != nil {
+		_ = sd.Log().Error(action, username, err.Error())
+		return out, err
+	}
+
+	for _, bot := range bots {
+		out.Servers = append(out.Servers, &Server{
+			Id:       bot.ID().Hex(),
+			Username: bot.Username(),
+			Status:   bot.Status,
+			IsActive: bot.IsActive(),
+			Bonus: &Bonus{
+				IsActive: bot.Bonus().IsActive(),
+				Cost:     bot.Bonus().Cost(),
+				Time:     bot.Bonus().InTime().UnixNano(),
+			},
+		})
+	}
+
+	return out, nil
 }
 
 func (sd *serverData) SendError(ctx context.Context, r *SendErrorRequest) (*SendErrorResponse, error) {

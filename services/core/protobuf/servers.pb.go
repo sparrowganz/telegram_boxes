@@ -587,7 +587,7 @@ func (x *GetListServersResponse) GetServers() []*Server {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//  Get Server
+//  Get MainServer
 //----------------------------------------------------------------------------------------------------------------------
 type GetServerRequest struct {
 	state         protoimpl.MessageState
@@ -915,7 +915,7 @@ func (x *Server) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Server.ProtoReflect.Descriptor instead.
+// Deprecated: Use MainServer.ProtoReflect.Descriptor instead.
 func (*Server) Descriptor() ([]byte, []int) {
 	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{16}
 }
@@ -1169,7 +1169,7 @@ var file_services_core_protobuf_servers_proto_goTypes = []interface{}{
 	(*InitBoxResponse)(nil),           // 14: protobuf.InitBoxResponse
 	(*SendErrorRequest)(nil),          // 15: protobuf.SendErrorRequest
 	(*SendErrorResponse)(nil),         // 16: protobuf.SendErrorResponse
-	(*Server)(nil),                    // 17: protobuf.Server
+	(*Server)(nil),                    // 17: protobuf.MainServer
 	(*Bonus)(nil),                     // 18: protobuf.Bonus
 }
 var file_services_core_protobuf_servers_proto_depIdxs = []int32{
@@ -1177,11 +1177,11 @@ var file_services_core_protobuf_servers_proto_depIdxs = []int32{
 	7,  // 1: protobuf.GetAllUsersCountResponse.counts:type_name -> protobuf.Counts
 	8,  // 2: protobuf.Counts.old:type_name -> protobuf.Count
 	8,  // 3: protobuf.Counts.new:type_name -> protobuf.Count
-	17, // 4: protobuf.GetListServersResponse.servers:type_name -> protobuf.Server
-	17, // 5: protobuf.GetServerResponse.server:type_name -> protobuf.Server
+	17, // 4: protobuf.GetListServersResponse.servers:type_name -> protobuf.MainServer
+	17, // 5: protobuf.GetServerResponse.server:type_name -> protobuf.MainServer
 	0,  // 6: protobuf.SendErrorRequest.status:type_name -> protobuf.Status
-	0,  // 7: protobuf.Server.status:type_name -> protobuf.Status
-	18, // 8: protobuf.Server.bonus:type_name -> protobuf.Bonus
+	0,  // 7: protobuf.MainServer.status:type_name -> protobuf.Status
+	18, // 8: protobuf.MainServer.bonus:type_name -> protobuf.Bonus
 	9,  // 9: protobuf.Servers.GetListServers:input_type -> protobuf.GetListServersRequest
 	11, // 10: protobuf.Servers.GetServer:input_type -> protobuf.GetServerRequest
 	5,  // 11: protobuf.Servers.GetAllUsersCount:input_type -> protobuf.GetAllUsersCountRequest

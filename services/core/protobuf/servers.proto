@@ -132,7 +132,7 @@ enum Status {
 message Server {
     string id = 1;
     string username = 2;
-    Status status = 3;
+    string status = 3;
     bool isActive = 4;
     Bonus bonus = 5;
 }
