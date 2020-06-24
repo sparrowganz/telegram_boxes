@@ -5,8 +5,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
-	"telegram_boxes/services/admin/app/servers"
 	"telegram_boxes/services/admin/app/task"
+	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 )
 
 type Command string
@@ -110,24 +110,32 @@ func (b *botData) addTaskCommandHandler(chatID int64) {
 func (b *botData) statisticsCommandHandler(chatID int64, isFake bool) {
 
 	var (
-		data []*servers.Count
+		data []*protobuf.Counts
+		err  error
 		keyb interface{}
 	)
 
 	if !isFake {
-		data = b.Servers().GetAllUsersCount()
+		data, err = b.Servers().GetAllUsersCount(false)
 		keyb, _ = fakeDataButton().ToKeyboard()
 	} else {
-		data = b.Servers().GetAllUsersFakeCount()
+		data, err = b.Servers().GetAllUsersCount(true)
+	}
+
+	if err != nil {
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
 	}
 
 	var txt string
 
 	for _, status := range data {
-		txt += fmt.Sprintf("%s (%v)\n", status.Username, status.All)
-		txt += fmt.Sprintf("Активных: %v\n", status.All-status.Blocked)
-		txt += fmt.Sprintf("Заблокировали: %v\n", status.Blocked)
-		txt += fmt.Sprintf("Пользуются сейчас: %v\n", status.UseNow)
+		txt += fmt.Sprintf("%s %v (%v)\n", status.GetUsername(),
+			status.GetNew().GetAll(), status.GetNew().GetAll()-status.GetOld().GetAll())
+		txt += fmt.Sprintf("Активных: %v\n", status.GetNew().GetAll()-status.GetNew().GetBlocked())
+		txt += fmt.Sprintf("Заблокировали: %v (%v)\n", status.GetNew().GetBlocked(),
+			status.GetNew().GetBlocked()-status.GetOld().GetBlocked())
+		txt += fmt.Sprintf("Пользуются сейчас: %v\n", status.GetCurrent())
 		txt += "\n\n"
 	}
 
@@ -158,12 +166,16 @@ func (b *botData) broadcastCommandHandler(chatID int64) {
 
 func (b *botData) diagnosticsCommandHandler(chatID int64) {
 
-	sStatus := b.Servers().GetAllServersStatus()
+	sStatus, err := b.Servers().GetAllServers()
+	if err != nil {
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
 
 	var txt string
 
 	for _, status := range sStatus {
-		txt += status.Username + " (" + status.Status.String() + ")\n"
+		txt += status.GetUsername() + " (" + status.GetStatus().String() + ")\n"
 	}
 
 	keyb, _ := hardCheckButton().ToKeyboard()
@@ -186,12 +198,18 @@ func (b *botData) diagnosticsCommandHandler(chatID int64) {
 
 func (b *botData) bonusCommandHandler(chatID int64) {
 
+	serv, err := b.Servers().GetAllServers()
+	if err != nil {
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
+
 	b.Telegram().ToQueue(
 		&telegram.Message{
 			Message: tgbotapi.MessageConfig{
 				BaseChat: tgbotapi.BaseChat{
 					ChatID:      chatID,
-					ReplyMarkup: getBonusServersKeyboard(b.Servers().GetAllServers()),
+					ReplyMarkup: getBonusServersKeyboard(serv),
 				},
 				Text:                  "Выберите бот для управлением бонуса:",
 				ParseMode:             tgbotapi.ModeMarkdown,

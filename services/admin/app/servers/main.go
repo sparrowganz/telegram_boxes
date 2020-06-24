@@ -1,204 +1,180 @@
 package servers
 
 import (
-	"errors"
+	"context"
+	"fmt"
+	"google.golang.org/grpc"
+	"io"
+	"telegram_boxes/services/admin/app"
+	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 	"time"
 )
 
-type Status int
-
 var (
-	OK         Status = 1
-	RECOVERING Status = 2
-	FATAL      Status = 3
+	OK         = protobuf.Status_OK
+	RECOVERING = protobuf.Status_Recovering
+	FATAL      = protobuf.Status_Fatal
 )
 
-func (s Status) String() string {
-	switch s {
-	case OK:
-		return "OK"
-	case RECOVERING:
-		return "RECOVERING"
-	case FATAL:
-		return "FATAL"
-	}
-	return ""
-}
-
 type Servers interface {
+	connector
 	Getter
 	Checker
 }
 
+type connector interface {
+	connect(host, port, username string) error
+}
+
+func (s *serversData) connect(host, port, username string) error {
+
+	cnnServers, err := grpc.Dial(
+		fmt.Sprintf("%s:%s", host, port),
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		return fmt.Errorf("%s.ServersConnect: %s", username, err.Error())
+	}
+
+	s.client = protobuf.NewServersClient(cnnServers)
+	_, cancel := context.WithTimeout(context.Background(), 10000*time.Millisecond)
+	defer cancel()
+	return nil
+}
+
 type serversData struct {
-	//taskData
-	//todo remove debug structure
-	storage     []*Server
-	coefficient int
+	host        string
+	port        string
+	client      protobuf.ServersClient
+	coefficient int64
 }
 
-//todo remove debug structure
-type Server struct {
-	ID       string
-	Username string
-
-	All     int
-	Blocked int
-	UseNow  int
-
-	IsActiveBonus bool
-
-	Status Status
-}
-
-func CreateServers() Servers {
+func CreateServers(host, port string) Servers {
 	return &serversData{
-		//todo remove debug structure
+		host:        host,
+		port:        port,
 		coefficient: 11,
-		storage: []*Server{
-			{"1", "@username1", 100, 2, 5, true, 1},
-			{"2", "@username2", 200, 4, 10, false, 2},
-			{"3", "@username3", 300, 6, 15, true, 3},
-			{"4", "@username4", 400, 8, 20, false, 1},
-		},
 	}
 }
 
-type StatusData struct {
-	ID       string
-	Username string
-	Status   Status
-}
-
-type Count struct {
-	ID       string
-	Username string
-	All      int
-	Blocked  int
-	UseNow   int
-}
-
-type Bonus struct {
-	ID       string
-	Username string
-	IsActive bool
-}
 
 type Getter interface {
-	GetAllServers() []*Server
-	GetAllServersStatus() []*StatusData
-	GetAllUsersCount() []*Count
-	GetAllUsersFakeCount() []*Count
-	GetAllServersBonuses() []*Bonus
-	GetServerBonus(id string) (*Bonus, error)
-	ChangeActiveAllBonuses(isSetInactive bool)
-	ChangeActiveBonus(id string, isSetInactive bool)
+	GetAllServers() ([]*protobuf.Server, error)
+	GetServer(id string) (*protobuf.Server, error)
+	GetAllUsersCount(isFake bool) ([]*protobuf.Counts, error)
+	ChangeActiveAllBonuses() error
+	ChangeActiveBonus(id string) error
 }
 
-func (s *serversData) ChangeActiveAllBonuses(isSetInactive bool) {
-	for _, b := range s.storage {
-		b.IsActiveBonus = isSetInactive
+func (s *serversData) ChangeActiveAllBonuses() error {
+
+	_, err := s.client.ChangeBonusActive(
+		app.SetCallContext("ChangeActiveAllBonuses", "admin"),
+		&protobuf.ChangeBonusActiveRequest{Id: "all"})
+
+	if err != nil {
+		return err
 	}
+	return nil
 }
 
-func (s *serversData) ChangeActiveBonus(id string, isSetInactive bool) {
-	for _, b := range s.storage {
-		if id == b.ID {
-			b.IsActiveBonus = isSetInactive
-			return
+func (s *serversData) ChangeActiveBonus(id string) error {
+	_, err := s.client.ChangeBonusActive(
+		app.SetCallContext("ChangeActiveAllBonuses", "admin"),
+		&protobuf.ChangeBonusActiveRequest{Id: id})
+	return err
+}
+
+func (s *serversData) GetAllServers() ([]*protobuf.Server, error) {
+	res, err := s.client.GetListServers(
+		app.SetCallContext("getAllServers", "admin"),
+		&protobuf.GetListServersRequest{})
+	if err != nil {
+		return nil, err
+	}
+
+	return res.GetServers(), nil
+}
+
+func (s *serversData) GetServer(id string) (*protobuf.Server, error) {
+	res, err := s.client.GetServer(
+		app.SetCallContext("GetServer", "admin"),
+		&protobuf.GetServerRequest{
+			Id: id,
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	return res.GetServer(), nil
+}
+
+func (s *serversData) GetAllUsersCount(isFake bool) ([]*protobuf.Counts, error) {
+	res, err := s.client.GetAllUsersCount(
+		app.SetCallContext("GetAllUsersCount", "admin"),
+		&protobuf.GetAllUsersCountRequest{})
+	if err != nil {
+		return []*protobuf.Counts{}, err
+	}
+
+	if isFake {
+		for _, c := range res.GetCounts() {
+			c.GetOld().All *= s.coefficient
+			c.GetOld().Blocked *= s.coefficient
+			c.GetNew().All *= s.coefficient
+			c.GetNew().Blocked *= s.coefficient
 		}
 	}
-}
 
-func (s *serversData) GetAllServers() []*Server {
-	return s.storage
-}
-
-func (s *serversData) GetServerBonus(id string) (*Bonus, error) {
-	for _, server := range s.storage {
-		if id == server.ID {
-			return &Bonus{
-				ID:       server.ID,
-				Username: server.Username,
-				IsActive: server.IsActiveBonus,
-			}, nil
-		}
-	}
-	return nil, errors.New(" Server not found")
-}
-
-func (s *serversData) GetAllServersBonuses() (all []*Bonus) {
-	for _, server := range s.storage {
-		all = append(all, &Bonus{
-			ID:       server.ID,
-			Username: server.Username,
-			IsActive: server.IsActiveBonus,
-		})
-	}
-	return all
-}
-
-func (s *serversData) GetAllUsersCount() (all []*Count) {
-	for _, server := range s.storage {
-		all = append(all, &Count{
-			ID:       server.ID,
-			Username: server.Username,
-			All:      server.All,
-			Blocked:  server.Blocked,
-			UseNow:   server.UseNow,
-		})
-	}
-	return all
-}
-
-func (s *serversData) GetAllUsersFakeCount() (all []*Count) {
-	for _, server := range s.storage {
-		all = append(all, &Count{
-			ID:       server.ID,
-			Username: server.Username,
-			All:      server.All * s.coefficient,
-			Blocked:  server.Blocked,
-			UseNow:   server.UseNow * s.coefficient,
-		})
-	}
-	return all
-}
-
-func (s *serversData) GetAllServersStatus() (all []*StatusData) {
-	for _, server := range s.storage {
-		all = append(all, &StatusData{
-			ID:       server.ID,
-			Username: server.Username,
-			Status:   server.Status,
-		})
-	}
-	return
+	return res.GetCounts(), err
 }
 
 type Checker interface {
-	HardCheckAll(ch chan *StatusData, userID int64)
+	HardCheckAll(ch chan *Check, userID int64)
 }
 
-func (s *serversData) HardCheckAll(ch chan *StatusData, userID int64) {
-	for _, server := range s.storage {
-		time.Sleep(time.Second * 2)
+type Check struct {
+	ID       string
+	Username string
+	Status   protobuf.Status
+	Error    string
+}
 
-		ch <- &StatusData{
-			ID:       server.ID,
-			Username: server.Username,
-			Status:   OK,
+func (s *serversData) HardCheckAll(ch chan *Check, userID int64) {
+
+	defer close(ch)
+
+	stream, err := s.client.HardCheck(
+		app.SetCallContext("HardCheck", "admin"),
+		&protobuf.HardCheckRequest{
+			UserID:   userID,
+		})
+
+	if err != nil {
+		ch <- &Check{
+			Error: err.Error(),
+		}
+		return
+	}
+
+	for {
+		status, errRecv := stream.Recv()
+		if errRecv != nil {
+			if errRecv == io.EOF || app.ParseGRPCError(errRecv) == context.Canceled.Error() {
+				return
+			}
+			ch <- &Check{
+				Error: errRecv.Error(),
+			}
+			return
 		}
 
-		server.Status = OK
+		ch <- &Check{
+			ID:       status.Id,
+			Username: status.Username,
+			Status:   status.Status,
+		}
+
 	}
-	close(ch)
 }
 
-func (s *serversData) HardCheck(id string) (bool, error) {
-	for _, server := range s.storage {
-		if server.ID == id {
-			return true, nil
-		}
-	}
-	return false, errors.New(" Server not found")
-}

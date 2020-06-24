@@ -78,6 +78,611 @@ func (Status) EnumDescriptor() ([]byte, []int) {
 	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{0}
 }
 
+type HardCheckRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserID int64 `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty"`
+}
+
+func (x *HardCheckRequest) Reset() {
+	*x = HardCheckRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *HardCheckRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HardCheckRequest) ProtoMessage() {}
+
+func (x *HardCheckRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HardCheckRequest.ProtoReflect.Descriptor instead.
+func (*HardCheckRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *HardCheckRequest) GetUserID() int64 {
+	if x != nil {
+		return x.UserID
+	}
+	return 0
+}
+
+type Check struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	Status   Status `protobuf:"varint,3,opt,name=status,proto3,enum=protobuf.Status" json:"status,omitempty"`
+}
+
+func (x *Check) Reset() {
+	*x = Check{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Check) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Check) ProtoMessage() {}
+
+func (x *Check) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Check.ProtoReflect.Descriptor instead.
+func (*Check) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Check) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Check) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Check) GetStatus() Status {
+	if x != nil {
+		return x.Status
+	}
+	return Status_OK
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Change All Bonus Active
+//----------------------------------------------------------------------------------------------------------------------
+type ChangeBonusActiveRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *ChangeBonusActiveRequest) Reset() {
+	*x = ChangeBonusActiveRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ChangeBonusActiveRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChangeBonusActiveRequest) ProtoMessage() {}
+
+func (x *ChangeBonusActiveRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChangeBonusActiveRequest.ProtoReflect.Descriptor instead.
+func (*ChangeBonusActiveRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ChangeBonusActiveRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type ChangeBonusActiveResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ChangeBonusActiveResponse) Reset() {
+	*x = ChangeBonusActiveResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ChangeBonusActiveResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChangeBonusActiveResponse) ProtoMessage() {}
+
+func (x *ChangeBonusActiveResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChangeBonusActiveResponse.ProtoReflect.Descriptor instead.
+func (*ChangeBonusActiveResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{3}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get All Users Count
+//----------------------------------------------------------------------------------------------------------------------
+type GetAllUsersCountRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetAllUsersCountRequest) Reset() {
+	*x = GetAllUsersCountRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetAllUsersCountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllUsersCountRequest) ProtoMessage() {}
+
+func (x *GetAllUsersCountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllUsersCountRequest.ProtoReflect.Descriptor instead.
+func (*GetAllUsersCountRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{4}
+}
+
+type GetAllUsersCountResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Counts []*Counts `protobuf:"bytes,1,rep,name=counts,proto3" json:"counts,omitempty"`
+}
+
+func (x *GetAllUsersCountResponse) Reset() {
+	*x = GetAllUsersCountResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetAllUsersCountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllUsersCountResponse) ProtoMessage() {}
+
+func (x *GetAllUsersCountResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllUsersCountResponse.ProtoReflect.Descriptor instead.
+func (*GetAllUsersCountResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetAllUsersCountResponse) GetCounts() []*Counts {
+	if x != nil {
+		return x.Counts
+	}
+	return nil
+}
+
+type Counts struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	Old      *Count `protobuf:"bytes,3,opt,name=old,proto3" json:"old,omitempty"`
+	New      *Count `protobuf:"bytes,4,opt,name=new,proto3" json:"new,omitempty"`
+	Current  int64  `protobuf:"varint,5,opt,name=current,proto3" json:"current,omitempty"`
+}
+
+func (x *Counts) Reset() {
+	*x = Counts{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Counts) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Counts) ProtoMessage() {}
+
+func (x *Counts) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Counts.ProtoReflect.Descriptor instead.
+func (*Counts) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Counts) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Counts) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Counts) GetOld() *Count {
+	if x != nil {
+		return x.Old
+	}
+	return nil
+}
+
+func (x *Counts) GetNew() *Count {
+	if x != nil {
+		return x.New
+	}
+	return nil
+}
+
+func (x *Counts) GetCurrent() int64 {
+	if x != nil {
+		return x.Current
+	}
+	return 0
+}
+
+type Count struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	All     int64 `protobuf:"varint,1,opt,name=all,proto3" json:"all,omitempty"`
+	Blocked int64 `protobuf:"varint,2,opt,name=blocked,proto3" json:"blocked,omitempty"`
+}
+
+func (x *Count) Reset() {
+	*x = Count{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Count) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Count) ProtoMessage() {}
+
+func (x *Count) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Count.ProtoReflect.Descriptor instead.
+func (*Count) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *Count) GetAll() int64 {
+	if x != nil {
+		return x.All
+	}
+	return 0
+}
+
+func (x *Count) GetBlocked() int64 {
+	if x != nil {
+		return x.Blocked
+	}
+	return 0
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get All Servers
+//----------------------------------------------------------------------------------------------------------------------
+type GetListServersRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetListServersRequest) Reset() {
+	*x = GetListServersRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetListServersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetListServersRequest) ProtoMessage() {}
+
+func (x *GetListServersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetListServersRequest.ProtoReflect.Descriptor instead.
+func (*GetListServersRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{8}
+}
+
+type GetListServersResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Servers []*Server `protobuf:"bytes,1,rep,name=servers,proto3" json:"servers,omitempty"`
+}
+
+func (x *GetListServersResponse) Reset() {
+	*x = GetListServersResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetListServersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetListServersResponse) ProtoMessage() {}
+
+func (x *GetListServersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetListServersResponse.ProtoReflect.Descriptor instead.
+func (*GetListServersResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetListServersResponse) GetServers() []*Server {
+	if x != nil {
+		return x.Servers
+	}
+	return nil
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get Server
+//----------------------------------------------------------------------------------------------------------------------
+type GetServerRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *GetServerRequest) Reset() {
+	*x = GetServerRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetServerRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetServerRequest) ProtoMessage() {}
+
+func (x *GetServerRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetServerRequest.ProtoReflect.Descriptor instead.
+func (*GetServerRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetServerRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetServerResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Server *Server `protobuf:"bytes,1,opt,name=server,proto3" json:"server,omitempty"`
+}
+
+func (x *GetServerResponse) Reset() {
+	*x = GetServerResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetServerResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetServerResponse) ProtoMessage() {}
+
+func (x *GetServerResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetServerResponse.ProtoReflect.Descriptor instead.
+func (*GetServerResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetServerResponse) GetServer() *Server {
+	if x != nil {
+		return x.Server
+	}
+	return nil
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 //  Init box
 //----------------------------------------------------------------------------------------------------------------------
@@ -92,7 +697,7 @@ type InitBoxRequest struct {
 func (x *InitBoxRequest) Reset() {
 	*x = InitBoxRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_servers_proto_msgTypes[0]
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -105,7 +710,7 @@ func (x *InitBoxRequest) String() string {
 func (*InitBoxRequest) ProtoMessage() {}
 
 func (x *InitBoxRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_servers_proto_msgTypes[0]
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -118,7 +723,7 @@ func (x *InitBoxRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitBoxRequest.ProtoReflect.Descriptor instead.
 func (*InitBoxRequest) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{0}
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *InitBoxRequest) GetUsername() string {
@@ -139,7 +744,7 @@ type InitBoxResponse struct {
 func (x *InitBoxResponse) Reset() {
 	*x = InitBoxResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_servers_proto_msgTypes[1]
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -152,7 +757,7 @@ func (x *InitBoxResponse) String() string {
 func (*InitBoxResponse) ProtoMessage() {}
 
 func (x *InitBoxResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_servers_proto_msgTypes[1]
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -165,7 +770,7 @@ func (x *InitBoxResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use InitBoxResponse.ProtoReflect.Descriptor instead.
 func (*InitBoxResponse) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{1}
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *InitBoxResponse) GetID() string {
@@ -190,7 +795,7 @@ type SendErrorRequest struct {
 func (x *SendErrorRequest) Reset() {
 	*x = SendErrorRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_servers_proto_msgTypes[2]
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -203,7 +808,7 @@ func (x *SendErrorRequest) String() string {
 func (*SendErrorRequest) ProtoMessage() {}
 
 func (x *SendErrorRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_servers_proto_msgTypes[2]
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -216,7 +821,7 @@ func (x *SendErrorRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendErrorRequest.ProtoReflect.Descriptor instead.
 func (*SendErrorRequest) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{2}
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *SendErrorRequest) GetStatus() Status {
@@ -242,7 +847,7 @@ type SendErrorResponse struct {
 func (x *SendErrorResponse) Reset() {
 	*x = SendErrorResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_servers_proto_msgTypes[3]
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -255,7 +860,7 @@ func (x *SendErrorResponse) String() string {
 func (*SendErrorResponse) ProtoMessage() {}
 
 func (x *SendErrorResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_servers_proto_msgTypes[3]
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -268,7 +873,149 @@ func (x *SendErrorResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendErrorResponse.ProtoReflect.Descriptor instead.
 func (*SendErrorResponse) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{3}
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{15}
+}
+
+type Server struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	Status   Status `protobuf:"varint,3,opt,name=status,proto3,enum=protobuf.Status" json:"status,omitempty"`
+	IsActive bool   `protobuf:"varint,4,opt,name=isActive,proto3" json:"isActive,omitempty"`
+	Bonus    *Bonus `protobuf:"bytes,5,opt,name=bonus,proto3" json:"bonus,omitempty"`
+}
+
+func (x *Server) Reset() {
+	*x = Server{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Server) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Server) ProtoMessage() {}
+
+func (x *Server) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Server.ProtoReflect.Descriptor instead.
+func (*Server) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *Server) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Server) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *Server) GetStatus() Status {
+	if x != nil {
+		return x.Status
+	}
+	return Status_OK
+}
+
+func (x *Server) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *Server) GetBonus() *Bonus {
+	if x != nil {
+		return x.Bonus
+	}
+	return nil
+}
+
+type Bonus struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	IsActive bool  `protobuf:"varint,1,opt,name=isActive,proto3" json:"isActive,omitempty"`
+	Cost     int64 `protobuf:"varint,2,opt,name=cost,proto3" json:"cost,omitempty"`
+	Time     int64 `protobuf:"varint,3,opt,name=time,proto3" json:"time,omitempty"`
+}
+
+func (x *Bonus) Reset() {
+	*x = Bonus{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_servers_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Bonus) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Bonus) ProtoMessage() {}
+
+func (x *Bonus) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_servers_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Bonus.ProtoReflect.Descriptor instead.
+func (*Bonus) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_servers_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *Bonus) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *Bonus) GetCost() int64 {
+	if x != nil {
+		return x.Cost
+	}
+	return 0
+}
+
+func (x *Bonus) GetTime() int64 {
+	if x != nil {
+		return x.Time
+	}
+	return 0
 }
 
 var File_services_core_protobuf_servers_proto protoreflect.FileDescriptor
@@ -277,32 +1024,117 @@ var file_services_core_protobuf_servers_proto_rawDesc = []byte{
 	0x0a, 0x24, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x22, 0x2c, 0x0a, 0x0e, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x55, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x55, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x21,
-	0x0a, 0x0f, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x49,
-	0x44, 0x22, 0x52, 0x0a, 0x10, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x28, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12,
-	0x14, 0x0a, 0x05, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x45, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x13, 0x0a, 0x11, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x72, 0x72,
-	0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2a, 0x2b, 0x0a, 0x06, 0x53, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x12, 0x06, 0x0a, 0x02, 0x4f, 0x4b, 0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a,
-	0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x69, 0x6e, 0x67, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05,
-	0x46, 0x61, 0x74, 0x61, 0x6c, 0x10, 0x02, 0x32, 0x93, 0x01, 0x0a, 0x07, 0x53, 0x65, 0x72, 0x76,
-	0x65, 0x72, 0x73, 0x12, 0x40, 0x0a, 0x07, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x12, 0x18,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f,
-	0x78, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x75, 0x66, 0x2e, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x09, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x72, 0x72,
-	0x6f, 0x72, 0x12, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x65,
-	0x6e, 0x64, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x72,
-	0x72, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x18, 0x5a,
-	0x16, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x22, 0x2a, 0x0a, 0x10, 0x48, 0x61, 0x72, 0x64, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x44, 0x22, 0x5d, 0x0a, 0x05,
+	0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x12, 0x28, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x0e, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x61,
+	0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x2a, 0x0a, 0x18, 0x43,
+	0x68, 0x61, 0x6e, 0x67, 0x65, 0x42, 0x6f, 0x6e, 0x75, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x1b, 0x0a, 0x19, 0x43, 0x68, 0x61, 0x6e, 0x67,
+	0x65, 0x42, 0x6f, 0x6e, 0x75, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x19, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x55, 0x73,
+	0x65, 0x72, 0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22,
+	0x44, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x73, 0x43, 0x6f,
+	0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x28, 0x0a, 0x06, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x52, 0x06, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x73, 0x22, 0x94, 0x01, 0x0a, 0x06, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x73,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
+	0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x21, 0x0a, 0x03,
+	0x6f, 0x6c, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x03, 0x6f, 0x6c, 0x64, 0x12,
+	0x21, 0x0a, 0x03, 0x6e, 0x65, 0x77, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x03, 0x6e,
+	0x65, 0x77, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x22, 0x33, 0x0a, 0x05,
+	0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x61, 0x6c, 0x6c, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x03, 0x61, 0x6c, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x65,
+	0x64, 0x22, 0x17, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76,
+	0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x44, 0x0a, 0x16, 0x47, 0x65,
+	0x74, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2a, 0x0a, 0x07, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x52, 0x07, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73,
+	0x22, 0x22, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x69, 0x64, 0x22, 0x3d, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65,
+	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x28, 0x0a, 0x06, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x52, 0x06, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x22, 0x2c, 0x0a, 0x0e, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x55, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x55, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x22, 0x21, 0x0a, 0x0f, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x49, 0x44, 0x22, 0x52, 0x0a, 0x10, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x72, 0x72, 0x6f,
+	0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x28, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x13, 0x0a, 0x11, 0x53, 0x65, 0x6e, 0x64,
+	0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xa1, 0x01,
+	0x0a, 0x06, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72,
+	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72,
+	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x28, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x0e, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1a,
+	0x0a, 0x08, 0x69, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x08, 0x69, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x12, 0x25, 0x0a, 0x05, 0x62, 0x6f,
+	0x6e, 0x75, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x42, 0x6f, 0x6e, 0x75, 0x73, 0x52, 0x05, 0x62, 0x6f, 0x6e, 0x75,
+	0x73, 0x22, 0x4b, 0x0a, 0x05, 0x42, 0x6f, 0x6e, 0x75, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x69, 0x73,
+	0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x69, 0x73,
+	0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x73, 0x74, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x63, 0x6f, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x69,
+	0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x2a, 0x2b,
+	0x0a, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x06, 0x0a, 0x02, 0x4f, 0x4b, 0x10, 0x00,
+	0x12, 0x0e, 0x0a, 0x0a, 0x52, 0x65, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x69, 0x6e, 0x67, 0x10, 0x01,
+	0x12, 0x09, 0x0a, 0x05, 0x46, 0x61, 0x74, 0x61, 0x6c, 0x10, 0x02, 0x32, 0xad, 0x04, 0x0a, 0x07,
+	0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73, 0x12, 0x55, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x4c, 0x69,
+	0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73, 0x12, 0x1f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76,
+	0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46,
+	0x0a, 0x09, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x12, 0x1a, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x5b, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c,
+	0x55, 0x73, 0x65, 0x72, 0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x21, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x72,
+	0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x55,
+	0x73, 0x65, 0x72, 0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x12, 0x5e, 0x0a, 0x11, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x42, 0x6f, 0x6e,
+	0x75, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x12, 0x22, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x42, 0x6f, 0x6e, 0x75, 0x73, 0x41,
+	0x63, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x42, 0x6f,
+	0x6e, 0x75, 0x73, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x09, 0x48, 0x61, 0x72, 0x64, 0x43, 0x68, 0x65, 0x63, 0x6b,
+	0x12, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x48, 0x61, 0x72, 0x64,
+	0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0f, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x22, 0x00, 0x30,
+	0x01, 0x12, 0x40, 0x0a, 0x07, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x12, 0x18, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x49, 0x6e, 0x69, 0x74, 0x42, 0x6f, 0x78, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x09, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x72, 0x72, 0x6f, 0x72,
+	0x12, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x65, 0x6e, 0x64,
+	0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x72, 0x72, 0x6f,
+	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x18, 0x5a, 0x16, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -318,25 +1150,57 @@ func file_services_core_protobuf_servers_proto_rawDescGZIP() []byte {
 }
 
 var file_services_core_protobuf_servers_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_services_core_protobuf_servers_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_services_core_protobuf_servers_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_services_core_protobuf_servers_proto_goTypes = []interface{}{
-	(Status)(0),               // 0: protobuf.Status
-	(*InitBoxRequest)(nil),    // 1: protobuf.InitBoxRequest
-	(*InitBoxResponse)(nil),   // 2: protobuf.InitBoxResponse
-	(*SendErrorRequest)(nil),  // 3: protobuf.SendErrorRequest
-	(*SendErrorResponse)(nil), // 4: protobuf.SendErrorResponse
+	(Status)(0),                       // 0: protobuf.Status
+	(*HardCheckRequest)(nil),          // 1: protobuf.HardCheckRequest
+	(*Check)(nil),                     // 2: protobuf.Check
+	(*ChangeBonusActiveRequest)(nil),  // 3: protobuf.ChangeBonusActiveRequest
+	(*ChangeBonusActiveResponse)(nil), // 4: protobuf.ChangeBonusActiveResponse
+	(*GetAllUsersCountRequest)(nil),   // 5: protobuf.GetAllUsersCountRequest
+	(*GetAllUsersCountResponse)(nil),  // 6: protobuf.GetAllUsersCountResponse
+	(*Counts)(nil),                    // 7: protobuf.Counts
+	(*Count)(nil),                     // 8: protobuf.Count
+	(*GetListServersRequest)(nil),     // 9: protobuf.GetListServersRequest
+	(*GetListServersResponse)(nil),    // 10: protobuf.GetListServersResponse
+	(*GetServerRequest)(nil),          // 11: protobuf.GetServerRequest
+	(*GetServerResponse)(nil),         // 12: protobuf.GetServerResponse
+	(*InitBoxRequest)(nil),            // 13: protobuf.InitBoxRequest
+	(*InitBoxResponse)(nil),           // 14: protobuf.InitBoxResponse
+	(*SendErrorRequest)(nil),          // 15: protobuf.SendErrorRequest
+	(*SendErrorResponse)(nil),         // 16: protobuf.SendErrorResponse
+	(*Server)(nil),                    // 17: protobuf.Server
+	(*Bonus)(nil),                     // 18: protobuf.Bonus
 }
 var file_services_core_protobuf_servers_proto_depIdxs = []int32{
-	0, // 0: protobuf.SendErrorRequest.status:type_name -> protobuf.Status
-	1, // 1: protobuf.Servers.InitBox:input_type -> protobuf.InitBoxRequest
-	3, // 2: protobuf.Servers.SendError:input_type -> protobuf.SendErrorRequest
-	2, // 3: protobuf.Servers.InitBox:output_type -> protobuf.InitBoxResponse
-	4, // 4: protobuf.Servers.SendError:output_type -> protobuf.SendErrorResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0,  // 0: protobuf.Check.status:type_name -> protobuf.Status
+	7,  // 1: protobuf.GetAllUsersCountResponse.counts:type_name -> protobuf.Counts
+	8,  // 2: protobuf.Counts.old:type_name -> protobuf.Count
+	8,  // 3: protobuf.Counts.new:type_name -> protobuf.Count
+	17, // 4: protobuf.GetListServersResponse.servers:type_name -> protobuf.Server
+	17, // 5: protobuf.GetServerResponse.server:type_name -> protobuf.Server
+	0,  // 6: protobuf.SendErrorRequest.status:type_name -> protobuf.Status
+	0,  // 7: protobuf.Server.status:type_name -> protobuf.Status
+	18, // 8: protobuf.Server.bonus:type_name -> protobuf.Bonus
+	9,  // 9: protobuf.Servers.GetListServers:input_type -> protobuf.GetListServersRequest
+	11, // 10: protobuf.Servers.GetServer:input_type -> protobuf.GetServerRequest
+	5,  // 11: protobuf.Servers.GetAllUsersCount:input_type -> protobuf.GetAllUsersCountRequest
+	3,  // 12: protobuf.Servers.ChangeBonusActive:input_type -> protobuf.ChangeBonusActiveRequest
+	1,  // 13: protobuf.Servers.HardCheck:input_type -> protobuf.HardCheckRequest
+	13, // 14: protobuf.Servers.InitBox:input_type -> protobuf.InitBoxRequest
+	15, // 15: protobuf.Servers.SendError:input_type -> protobuf.SendErrorRequest
+	10, // 16: protobuf.Servers.GetListServers:output_type -> protobuf.GetListServersResponse
+	12, // 17: protobuf.Servers.GetServer:output_type -> protobuf.GetServerResponse
+	6,  // 18: protobuf.Servers.GetAllUsersCount:output_type -> protobuf.GetAllUsersCountResponse
+	4,  // 19: protobuf.Servers.ChangeBonusActive:output_type -> protobuf.ChangeBonusActiveResponse
+	2,  // 20: protobuf.Servers.HardCheck:output_type -> protobuf.Check
+	14, // 21: protobuf.Servers.InitBox:output_type -> protobuf.InitBoxResponse
+	16, // 22: protobuf.Servers.SendError:output_type -> protobuf.SendErrorResponse
+	16, // [16:23] is the sub-list for method output_type
+	9,  // [9:16] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_services_core_protobuf_servers_proto_init() }
@@ -346,7 +1210,7 @@ func file_services_core_protobuf_servers_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_services_core_protobuf_servers_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InitBoxRequest); i {
+			switch v := v.(*HardCheckRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -358,7 +1222,7 @@ func file_services_core_protobuf_servers_proto_init() {
 			}
 		}
 		file_services_core_protobuf_servers_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InitBoxResponse); i {
+			switch v := v.(*Check); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -370,7 +1234,7 @@ func file_services_core_protobuf_servers_proto_init() {
 			}
 		}
 		file_services_core_protobuf_servers_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SendErrorRequest); i {
+			switch v := v.(*ChangeBonusActiveRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -382,7 +1246,175 @@ func file_services_core_protobuf_servers_proto_init() {
 			}
 		}
 		file_services_core_protobuf_servers_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ChangeBonusActiveResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetAllUsersCountRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetAllUsersCountResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Counts); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Count); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetListServersRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetListServersResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetServerRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetServerResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*InitBoxRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*InitBoxResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SendErrorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SendErrorResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Server); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_servers_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Bonus); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -400,7 +1432,7 @@ func file_services_core_protobuf_servers_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_services_core_protobuf_servers_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -427,6 +1459,12 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ServersClient interface {
+	GetListServers(ctx context.Context, in *GetListServersRequest, opts ...grpc.CallOption) (*GetListServersResponse, error)
+	GetServer(ctx context.Context, in *GetServerRequest, opts ...grpc.CallOption) (*GetServerResponse, error)
+	GetAllUsersCount(ctx context.Context, in *GetAllUsersCountRequest, opts ...grpc.CallOption) (*GetAllUsersCountResponse, error)
+	ChangeBonusActive(ctx context.Context, in *ChangeBonusActiveRequest, opts ...grpc.CallOption) (*ChangeBonusActiveResponse, error)
+	HardCheck(ctx context.Context, in *HardCheckRequest, opts ...grpc.CallOption) (Servers_HardCheckClient, error)
+	//BOX METHODS
 	InitBox(ctx context.Context, in *InitBoxRequest, opts ...grpc.CallOption) (*InitBoxResponse, error)
 	SendError(ctx context.Context, in *SendErrorRequest, opts ...grpc.CallOption) (*SendErrorResponse, error)
 }
@@ -437,6 +1475,74 @@ type serversClient struct {
 
 func NewServersClient(cc grpc.ClientConnInterface) ServersClient {
 	return &serversClient{cc}
+}
+
+func (c *serversClient) GetListServers(ctx context.Context, in *GetListServersRequest, opts ...grpc.CallOption) (*GetListServersResponse, error) {
+	out := new(GetListServersResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Servers/GetListServers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serversClient) GetServer(ctx context.Context, in *GetServerRequest, opts ...grpc.CallOption) (*GetServerResponse, error) {
+	out := new(GetServerResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Servers/GetServer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serversClient) GetAllUsersCount(ctx context.Context, in *GetAllUsersCountRequest, opts ...grpc.CallOption) (*GetAllUsersCountResponse, error) {
+	out := new(GetAllUsersCountResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Servers/GetAllUsersCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serversClient) ChangeBonusActive(ctx context.Context, in *ChangeBonusActiveRequest, opts ...grpc.CallOption) (*ChangeBonusActiveResponse, error) {
+	out := new(ChangeBonusActiveResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Servers/ChangeBonusActive", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serversClient) HardCheck(ctx context.Context, in *HardCheckRequest, opts ...grpc.CallOption) (Servers_HardCheckClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Servers_serviceDesc.Streams[0], "/protobuf.Servers/HardCheck", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &serversHardCheckClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Servers_HardCheckClient interface {
+	Recv() (*Check, error)
+	grpc.ClientStream
+}
+
+type serversHardCheckClient struct {
+	grpc.ClientStream
+}
+
+func (x *serversHardCheckClient) Recv() (*Check, error) {
+	m := new(Check)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func (c *serversClient) InitBox(ctx context.Context, in *InitBoxRequest, opts ...grpc.CallOption) (*InitBoxResponse, error) {
@@ -459,6 +1565,12 @@ func (c *serversClient) SendError(ctx context.Context, in *SendErrorRequest, opt
 
 // ServersServer is the server API for Servers service.
 type ServersServer interface {
+	GetListServers(context.Context, *GetListServersRequest) (*GetListServersResponse, error)
+	GetServer(context.Context, *GetServerRequest) (*GetServerResponse, error)
+	GetAllUsersCount(context.Context, *GetAllUsersCountRequest) (*GetAllUsersCountResponse, error)
+	ChangeBonusActive(context.Context, *ChangeBonusActiveRequest) (*ChangeBonusActiveResponse, error)
+	HardCheck(*HardCheckRequest, Servers_HardCheckServer) error
+	//BOX METHODS
 	InitBox(context.Context, *InitBoxRequest) (*InitBoxResponse, error)
 	SendError(context.Context, *SendErrorRequest) (*SendErrorResponse, error)
 }
@@ -467,6 +1579,21 @@ type ServersServer interface {
 type UnimplementedServersServer struct {
 }
 
+func (*UnimplementedServersServer) GetListServers(context.Context, *GetListServersRequest) (*GetListServersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetListServers not implemented")
+}
+func (*UnimplementedServersServer) GetServer(context.Context, *GetServerRequest) (*GetServerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServer not implemented")
+}
+func (*UnimplementedServersServer) GetAllUsersCount(context.Context, *GetAllUsersCountRequest) (*GetAllUsersCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllUsersCount not implemented")
+}
+func (*UnimplementedServersServer) ChangeBonusActive(context.Context, *ChangeBonusActiveRequest) (*ChangeBonusActiveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeBonusActive not implemented")
+}
+func (*UnimplementedServersServer) HardCheck(*HardCheckRequest, Servers_HardCheckServer) error {
+	return status.Errorf(codes.Unimplemented, "method HardCheck not implemented")
+}
 func (*UnimplementedServersServer) InitBox(context.Context, *InitBoxRequest) (*InitBoxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitBox not implemented")
 }
@@ -476,6 +1603,99 @@ func (*UnimplementedServersServer) SendError(context.Context, *SendErrorRequest)
 
 func RegisterServersServer(s *grpc.Server, srv ServersServer) {
 	s.RegisterService(&_Servers_serviceDesc, srv)
+}
+
+func _Servers_GetListServers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetListServersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServersServer).GetListServers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Servers/GetListServers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServersServer).GetListServers(ctx, req.(*GetListServersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Servers_GetServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServersServer).GetServer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Servers/GetServer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServersServer).GetServer(ctx, req.(*GetServerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Servers_GetAllUsersCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllUsersCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServersServer).GetAllUsersCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Servers/GetAllUsersCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServersServer).GetAllUsersCount(ctx, req.(*GetAllUsersCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Servers_ChangeBonusActive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeBonusActiveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServersServer).ChangeBonusActive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Servers/ChangeBonusActive",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServersServer).ChangeBonusActive(ctx, req.(*ChangeBonusActiveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Servers_HardCheck_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(HardCheckRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ServersServer).HardCheck(m, &serversHardCheckServer{stream})
+}
+
+type Servers_HardCheckServer interface {
+	Send(*Check) error
+	grpc.ServerStream
+}
+
+type serversHardCheckServer struct {
+	grpc.ServerStream
+}
+
+func (x *serversHardCheckServer) Send(m *Check) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 func _Servers_InitBox_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -519,6 +1739,22 @@ var _Servers_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServersServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "GetListServers",
+			Handler:    _Servers_GetListServers_Handler,
+		},
+		{
+			MethodName: "GetServer",
+			Handler:    _Servers_GetServer_Handler,
+		},
+		{
+			MethodName: "GetAllUsersCount",
+			Handler:    _Servers_GetAllUsersCount_Handler,
+		},
+		{
+			MethodName: "ChangeBonusActive",
+			Handler:    _Servers_ChangeBonusActive_Handler,
+		},
+		{
 			MethodName: "InitBox",
 			Handler:    _Servers_InitBox_Handler,
 		},
@@ -527,6 +1763,12 @@ var _Servers_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Servers_SendError_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "HardCheck",
+			Handler:       _Servers_HardCheck_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "services/core/protobuf/servers.proto",
 }

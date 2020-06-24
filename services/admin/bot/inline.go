@@ -131,30 +131,21 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 //
 
 func (b *botData) changeActiveBonusHandler(chatID int64, messageID int, callbackID string) {
-
-	bon, err := b.Servers().GetServerBonus(callbackID)
+	err := b.Servers().ChangeActiveBonus(callbackID)
 	if err != nil {
-		_ = b.Log().Error("", "", "chooseBonusHandler: "+err.Error())
-		b.Telegram().SendError(chatID, TaskNotFound, nil)
-		return
+		_ = b.Log().Error("", "", "changeActiveBonusHandler: "+err.Error())
+		b.Telegram().SendError(chatID, err.Error(), nil)
 	}
-	b.Servers().ChangeActiveBonus(bon.ID, !bon.IsActive)
 	b.chooseBonusHandler(chatID, messageID, callbackID)
-
 }
 
 func (b *botData) changeActiveAllBonusesHandler(chatID int64, messageID int) {
-	var isSetInactive bool
-	for _, bon := range b.Servers().GetAllServersBonuses() {
-		if !bon.IsActive {
-			isSetInactive = true
-			break
-		}
+	err := b.Servers().ChangeActiveAllBonuses()
+	if err != nil {
+		_ = b.Log().Error("", "", "changeActiveAllBonusesHandler: "+err.Error())
+		b.Telegram().SendError(chatID, err.Error(), nil)
 	}
-
-	b.Servers().ChangeActiveAllBonuses(isSetInactive)
 	b.chooseAllBonusesHandler(chatID, messageID)
-
 }
 
 func (b *botData) chooseAllBonusesHandler(chatID int64, messageID int) {
@@ -163,17 +154,25 @@ func (b *botData) chooseAllBonusesHandler(chatID int64, messageID int) {
 		txt           string
 		isSetInactive bool
 	)
-	for _, bon := range b.Servers().GetAllServersBonuses() {
+
+	srv , err := b.Servers().GetAllServers()
+	if err != nil {
+		_ = b.Log().Error("", "", "chooseBonusHandler: "+err.Error())
+		b.Telegram().SendError(chatID, TaskNotFound, nil)
+		return
+	}
+
+	for _, bon := range srv {
 
 		var smile string
-		if bon.IsActive {
+		if bon.GetIsActive() {
 			smile += "✅ "
 		} else {
 			smile += "❌ "
 			isSetInactive = true
 		}
 
-		txt += fmt.Sprintf("%s %s\n", smile, bon.Username)
+		txt += fmt.Sprintf("%s %s\n", smile, bon.GetUsername())
 	}
 
 	b.Telegram().ToQueue(
@@ -193,7 +192,7 @@ func (b *botData) chooseAllBonusesHandler(chatID int64, messageID int) {
 
 func (b *botData) chooseBonusHandler(chatID int64, messageID int, callbackID string) {
 
-	server, err := b.Servers().GetServerBonus(callbackID)
+	server, err := b.Servers().GetServer(callbackID)
 	if err != nil {
 		_ = b.Log().Error("", "", "chooseBonusHandler: "+err.Error())
 		b.Telegram().SendError(chatID, TaskNotFound, nil)
@@ -201,13 +200,13 @@ func (b *botData) chooseBonusHandler(chatID int64, messageID int, callbackID str
 	}
 
 	var smile string
-	if server.IsActive {
+	if server.GetIsActive() {
 		smile += "✅ "
 	} else {
 		smile += "❌ "
 	}
 
-	txt := fmt.Sprintf("%s %s \n", smile, server.Username)
+	txt := fmt.Sprintf("%s %s \n", smile, server.GetUsername())
 
 	b.Telegram().ToQueue(
 		&telegram.Message{
@@ -215,7 +214,7 @@ func (b *botData) chooseBonusHandler(chatID int64, messageID int, callbackID str
 				BaseEdit: tgbotapi.BaseEdit{
 					ChatID:      chatID,
 					MessageID:   messageID,
-					ReplyMarkup: changeBonusKeyboard(server.ID, !server.IsActive),
+					ReplyMarkup: changeBonusKeyboard(server.GetId(), !server.GetIsActive()),
 				},
 				Text:      txt,
 				ParseMode: tgbotapi.ModeMarkdown,
@@ -242,7 +241,7 @@ func (b *botData) checkAllServers(chatID int64, messageID int) {
 		UserId: chatID,
 	})
 
-	chResult := make(chan *servers.StatusData, 10)
+	chResult := make(chan *servers.Check, 100)
 	go b.Servers().HardCheckAll(chResult, chatID)
 
 	for res := range chResult {

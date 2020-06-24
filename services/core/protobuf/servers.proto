@@ -5,12 +5,99 @@ package protobuf;
 option go_package = "services/core/protobuf";
 
 service Servers {
+    //ADMIN METHODS
 
+    rpc GetListServers (GetListServersRequest) returns (GetListServersResponse) {
+    }
+
+    rpc GetServer (GetServerRequest) returns (GetServerResponse) {
+    }
+
+    rpc GetAllUsersCount (GetAllUsersCountRequest) returns (GetAllUsersCountResponse) {
+    }
+
+    rpc ChangeBonusActive (ChangeBonusActiveRequest) returns (ChangeBonusActiveResponse) {
+
+    }
+
+    rpc HardCheck (HardCheckRequest) returns (stream Check) {
+    }
+
+    //BOX METHODS
     rpc InitBox (InitBoxRequest) returns (InitBoxResponse) {
     }
 
     rpc SendError (SendErrorRequest) returns (SendErrorResponse) {
     }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Hard Check All
+//----------------------------------------------------------------------------------------------------------------------
+
+message HardCheckRequest {
+    int64 userID = 1;
+}
+
+message Check {
+    string id = 1;
+    string username = 2;
+    Status status = 3;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Change All Bonus Active
+//----------------------------------------------------------------------------------------------------------------------
+message ChangeBonusActiveRequest {
+    string id = 1;
+}
+
+message ChangeBonusActiveResponse {
+}
+//----------------------------------------------------------------------------------------------------------------------
+//  Get All Users Count
+//----------------------------------------------------------------------------------------------------------------------
+message GetAllUsersCountRequest {
+
+}
+
+message GetAllUsersCountResponse {
+    repeated Counts counts = 1;
+}
+
+message Counts {
+    string id = 1;
+    string username = 2;
+    Count old = 3;
+    Count new = 4;
+    int64 current = 5;
+}
+
+message Count {
+    int64 all = 1;
+    int64 blocked = 2;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get All Servers
+//----------------------------------------------------------------------------------------------------------------------
+message GetListServersRequest {
+
+}
+
+message GetListServersResponse {
+    repeated Server servers = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get Server
+//----------------------------------------------------------------------------------------------------------------------
+message GetServerRequest {
+    string id = 1;
+}
+
+message GetServerResponse {
+    Server server = 1;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -41,4 +128,19 @@ enum Status {
     Recovering = 1;
     Fatal = 2;
 }
+
+message Server {
+    string id = 1;
+    string username = 2;
+    Status status = 3;
+    bool isActive = 4;
+    Bonus bonus = 5;
+}
+
+message Bonus {
+    bool isActive = 1;
+    int64 cost = 2;
+    int64 time = 3;
+}
+
 

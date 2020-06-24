@@ -14,19 +14,22 @@ type BotData struct {
 
 	UserName string `bson:"username"`
 	//Num      int           `bson:"number"`
-	Status    string         `bson:"status"`
-	Active    bool           `bson:"isActive"`
-	Addr      *AddressData   `bson:"address"`
-	BonusData *BonusData     `bson:"bonus"`
-	Times     *TimestampData `bson:"timestamp"`
+	Status string `bson:"status"`
+	Active bool   `bson:"isActive"`
+
+	Statistics *StatisticsData `bson:"statisticsData"`
+	Addr       *AddressData    `bson:"address"`
+	BonusData  *BonusData      `bson:"bonus"`
+	Times      *TimestampData  `bson:"timestamp"`
 }
 
 func CreateBot(ip, port string) Bot {
 	return &BotData{
-		Id:        bson.NewObjectId(),
-		Addr:      CreateAddress(ip, port),
-		BonusData: CreateBonus(),
-		Times:     CreateTimestamp(),
+		Id:         bson.NewObjectId(),
+		Addr:       CreateAddress(ip, port),
+		Statistics: CreateStatistics(),
+		BonusData:  CreateBonus(),
+		Times:      CreateTimestamp(),
 	}
 }
 

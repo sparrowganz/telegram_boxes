@@ -3,9 +3,9 @@ package bot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram/keyboard"
-	"telegram_boxes/services/admin/app/servers"
 	"telegram_boxes/services/admin/app/task"
 	"telegram_boxes/services/admin/app/types"
+	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 )
 
 func cancelButton() (b keyboard.Button) {
@@ -39,12 +39,12 @@ func changeBonusKeyboard(id string, isActive bool) *tgbotapi.InlineKeyboardMarku
 	return &k
 }
 
-func getBonusServersKeyboard(servers []*servers.Server) *tgbotapi.InlineKeyboardMarkup {
+func getBonusServersKeyboard(servers []*protobuf.Server) *tgbotapi.InlineKeyboardMarkup {
 
 	var rows [][]tgbotapi.InlineKeyboardButton
 	for _, server := range servers {
-		but, err := keyboard.NewButton().SetText(server.Username).SetData(
-			BonusType.String(), ChooseAction.String(), server.ID).ToInline()
+		but, err := keyboard.NewButton().SetText(server.GetUsername()).SetData(
+			BonusType.String(), ChooseAction.String(), server.GetId()).ToInline()
 		if err != nil {
 			return nil
 		}
