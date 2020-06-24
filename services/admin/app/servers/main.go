@@ -49,12 +49,18 @@ type serversData struct {
 	coefficient int64
 }
 
-func CreateServers(host, port string) Servers {
-	return &serversData{
+func CreateServers(host, port string) (Servers, error) {
+	d := &serversData{
 		host:        host,
 		port:        port,
 		coefficient: 11,
 	}
+
+	err := d.connect(host, port, "admin")
+	if err != nil {
+		return nil, err
+	}
+	return d, nil
 }
 
 

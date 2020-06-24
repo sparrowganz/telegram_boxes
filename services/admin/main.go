@@ -31,7 +31,7 @@ func main() {
 	}
 
 	wg := &sync.WaitGroup{}
-	telegramSender, errSender := telegram.Create(isDebug, wg, os.Getenv("TOKEN"), 10.0)
+	telegramSender, errSender := telegram.Create(isDebug, wg, os.Getenv("ADMIN_TOKEN"), 10.0)
 	if errSender != nil {
 		_ = logger.System(errSender.Error())
 		return
@@ -55,7 +55,14 @@ func main() {
 	sender := bot.CreateBot(a, telegramSender, logger)
 	sender.Methods().SetTasks(task.CreateTasks())
 	sender.Methods().SetTypes(types.CreateType())
-	sender.Methods().SetServers(servers.CreateServers())
+
+	servers , errCreateServers := servers.CreateServers(os.Getenv("CORE_HOST"), os.Getenv("CORE_PORT"))
+	if errCreateServers != nil {
+		_ = logger.System(errCreateServers.Error())
+		return
+	}
+
+	sender.Methods().SetServers(servers)
 
 	wg.Add(1)
 	go func() {

@@ -6,15 +6,18 @@ import (
 	"github.com/sparrowganz/teleFly/telegram"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"runtime/debug"
 	"sync"
+	"syscall"
 	"telegram_boxes/services/box/app/config"
 	"telegram_boxes/services/box/app/db"
 	sLog "telegram_boxes/services/box/app/log"
 	"telegram_boxes/services/box/app/servers"
 	"telegram_boxes/services/box/app/task"
 	"telegram_boxes/services/box/bot"
+	"telegram_boxes/services/box/protobuf/services/core/protobuf"
 )
 
 func main() {
@@ -29,6 +32,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer recovery(logger)
 
 	dbConnect, errInitDB := db.InitDatabaseConnect(
 		os.Getenv("MONGO_HOST"), os.Getenv("MONGO_PORT"),
@@ -55,7 +59,6 @@ func main() {
 	}
 
 	sender := bot.CreateBot(dbConnect, telegramSender, logger, os.Getenv("BOT_USERNAME"))
-
 	servData, errCreateServers := servers.CreateServers(
 		os.Getenv("CORE_HOST"),
 		os.Getenv("CORE_PORT"),
@@ -84,7 +87,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer recovery(logger)
-		defer wg.Done()
+		//defer wg.Done()
 
 		sender.StartReadErrors()
 	}()
@@ -92,15 +95,30 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer recovery(logger)
-		defer wg.Done()
+		//defer wg.Done()
 
 		sender.StartHandle()
 	}()
 
 	_ = logger.System("Start @" + sender.Methods().Username() + " bot")
 
-	//sender.Methods().Servers().Init()
+
+
+	go waitForShutdown(sender)
 	wg.Wait()
+}
+
+func waitForShutdown(b bot.Bot) {
+	interruptChan := make(chan os.Signal, 1)
+	signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	// Block until we receive our signal.
+	<-interruptChan
+
+	b.Close()
+
+	_ = b.Methods().Servers().SendError("SHUTDOWN SERVER @"+b.Methods().Username(), protobuf.Status_Fatal)
+	os.Exit(0)
 }
 
 func recovery(l sLog.Log) {

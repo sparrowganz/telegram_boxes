@@ -14,6 +14,7 @@ type Bot interface {
 	StartHandle()
 	StartReadErrors()
 	Methods() Botter
+	Close()
 }
 
 func (b *botData) Methods() Botter {
@@ -97,6 +98,11 @@ func CreateBot(mongo db.Database, t telegram.Sender, logs log.Log, username stri
 		logger:   logs,
 		username: username,
 	}
+}
+
+
+func (b *botData) Close() {
+	b.Telegram().Close()
 }
 
 func (b *botData) StartReadErrors() {

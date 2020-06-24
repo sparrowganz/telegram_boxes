@@ -17,31 +17,41 @@ type BotData struct {
 	Status string `bson:"status"`
 	Active bool   `bson:"isActive"`
 
-	Statistics *StatisticsData `bson:"statisticsData"`
-	Addr       *AddressData    `bson:"address"`
-	BonusData  *BonusData      `bson:"bonus"`
-	Times      *TimestampData  `bson:"timestamp"`
+	StatisticsData *StatisticsData `bson:"statistics"`
+	Addr           *AddressData    `bson:"address"`
+	BonusData      *BonusData      `bson:"bonus"`
+	Times          *TimestampData  `bson:"timestamp"`
 }
 
 func CreateBot(ip, port string) Bot {
 	return &BotData{
-		Id:         bson.NewObjectId(),
-		Addr:       CreateAddress(ip, port),
-		Statistics: CreateStatistics(),
-		BonusData:  CreateBonus(),
-		Times:      CreateTimestamp(),
+		Id:             bson.NewObjectId(),
+		Addr:           CreateAddress(ip, port),
+		StatisticsData: CreateStatistics(),
+		BonusData:      CreateBonus(),
+		Times:          CreateTimestamp(),
 	}
 }
 
 type BotGetter interface {
 	ID() bson.ObjectId
+	Object() *BotData
 	//Number() int
 	BotStatus() string
 	Username() string
 	IsActive() bool
+	Statistics() Statistics
 	Bonus() Bonus
 	Address() Address
 	Timestamp() Timestamp
+}
+
+func (b *BotData) Object() *BotData {
+	return b
+}
+
+func (b *BotData) Statistics() Statistics {
+	return b.StatisticsData
 }
 
 func (b *BotData) Bonus() Bonus {

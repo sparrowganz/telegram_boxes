@@ -17,3 +17,6 @@
 /botes/boxes/data/
 
 /botes/core/data/
+/services/core/vendor/
+/services/admin/vendor/
+/services/box/vendor/

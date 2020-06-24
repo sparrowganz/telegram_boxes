@@ -5,7 +5,9 @@ import (
 	"errors"
 	"google.golang.org/grpc/peer"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"strings"
+	"sync"
 	"telegram_boxes/services/core/app"
 	"telegram_boxes/services/core/app/models"
 )
@@ -14,6 +16,170 @@ type Servers interface {
 	InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxResponse, error)
 	SendError(ctx context.Context, r *SendErrorRequest) (*SendErrorResponse, error)
 	GetListServers(ctx context.Context, r *GetListServersRequest) (*GetListServersResponse, error)
+	GetServer(ctx context.Context, r *GetServerRequest) (*GetServerResponse, error)
+	GetAllUsersCount(ctx context.Context, r *GetAllUsersCountRequest) (*GetAllUsersCountResponse, error)
+	ChangeBonusActive(ctx context.Context, r *ChangeBonusActiveRequest) (*ChangeBonusActiveResponse, error)
+	HardCheck(r *HardCheckRequest, server Servers_HardCheckServer) error
+}
+
+func (sd *serverData) HardCheck(r *HardCheckRequest, stream Servers_HardCheckServer) error {
+
+	action, username := app.GetDataContext(stream.Context())
+
+	session := sd.DB().GetMainSession().Clone()
+	defer session.Close()
+
+	bots, err := sd.DB().Models().Bots().GetAll(session)
+	if err != nil {
+		_ = sd.Log().Error(action, username, err.Error())
+		return err
+	}
+
+	chResult := make(chan *Check, 100)
+
+	wg := &sync.WaitGroup{}
+
+	for  range bots {
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			//todo send request to box
+
+
+		}()
+	}
+
+	readWg := &sync.WaitGroup{}
+	readWg.Add(1)
+	go func() {
+		defer readWg.Done()
+		for res := range chResult {
+			_ = stream.Send(res)
+		}
+	}()
+
+	wg.Wait()
+	close(chResult)
+	readWg.Wait()
+
+	return nil
+}
+
+func (sd *serverData) ChangeBonusActive(ctx context.Context,
+	r *ChangeBonusActiveRequest) (*ChangeBonusActiveResponse, error) {
+	out := &ChangeBonusActiveResponse{}
+
+	action, username := app.GetDataContext(ctx)
+
+	session := sd.DB().GetMainSession().Clone()
+	defer session.Close()
+
+	var bots []*models.BotData
+
+	if r.GetId() == "all" {
+		var err error
+		bots, err = sd.DB().Models().Bots().GetAll(session)
+		if err != nil {
+			_ = sd.Log().Error(action, username, err.Error())
+			return out, err
+		}
+	} else {
+		bot, err := sd.DB().Models().Bots().FindByID(bson.ObjectIdHex(r.GetId()), session)
+		if err != nil {
+			_ = sd.Log().Error(action, username, err.Error())
+			return out, err
+		}
+		bots = append(bots, bot.Object())
+	}
+
+	var setStatus bool
+
+	for _, bot := range bots {
+		if !bot.Bonus().IsActive() {
+			setStatus = true
+		}
+	}
+
+	for _, bot := range bots {
+		if setStatus {
+			bot.Bonus().SetActive()
+		} else {
+			bot.Bonus().Inactive()
+		}
+		_ = sd.DB().Models().Bots().UpdateBot(bot, session)
+	}
+
+	return out, nil
+}
+
+func (sd *serverData) GetAllUsersCount(ctx context.Context,
+	r *GetAllUsersCountRequest) (*GetAllUsersCountResponse, error) {
+	out := &GetAllUsersCountResponse{}
+
+	action, username := app.GetDataContext(ctx)
+
+	session := sd.DB().GetMainSession().Clone()
+	defer session.Close()
+
+	bots, err := sd.DB().Models().Bots().GetAll(session)
+	if err != nil {
+		_ = sd.Log().Error(action, username, err.Error())
+		return out, err
+	}
+
+	for _, bot := range bots {
+		//todo get new info from bots
+
+		out.Counts = append(out.Counts, &Counts{
+			Id:       bot.ID().Hex(),
+			Username: bot.Username(),
+			Old: &Count{
+				All:     bot.Statistics().GetAll(),
+				Blocked: bot.Statistics().GetAll(),
+			},
+			New: &Count{
+				All:     0,
+				Blocked: 0,
+			},
+			Current: 0,
+		})
+
+		bot.Statistics().SetAll(0)
+		bot.Statistics().SetBlocked(0)
+		_ = sd.DB().Models().Bots().UpdateBot(bot, session)
+	}
+
+	return out, nil
+}
+
+func (sd *serverData) GetServer(ctx context.Context, r *GetServerRequest) (*GetServerResponse, error) {
+	out := &GetServerResponse{}
+
+	action, username := app.GetDataContext(ctx)
+
+	session := sd.DB().GetMainSession().Clone()
+	defer session.Close()
+
+	bot, err := sd.DB().Models().Bots().FindByID(bson.ObjectIdHex(r.GetId()), session)
+	if err != nil {
+		_ = sd.Log().Error(action, username, err.Error())
+		return out, err
+	}
+
+	out.Server = &Server{
+		Id:       bot.ID().Hex(),
+		Username: bot.Username(),
+		Status:   bot.BotStatus(),
+		IsActive: bot.IsActive(),
+		Bonus: &Bonus{
+			IsActive: bot.Bonus().IsActive(),
+			Cost:     bot.Bonus().Cost(),
+			Time:     bot.Bonus().InTime().UnixNano(),
+		},
+	}
+
+	return out, nil
 }
 
 func (sd *serverData) GetListServers(ctx context.Context, r *GetListServersRequest) (*GetListServersResponse, error) {
@@ -34,7 +200,7 @@ func (sd *serverData) GetListServers(ctx context.Context, r *GetListServersReque
 		out.Servers = append(out.Servers, &Server{
 			Id:       bot.ID().Hex(),
 			Username: bot.Username(),
-			Status:   bot.Status,
+			Status:   bot.BotStatus(),
 			IsActive: bot.IsActive(),
 			Bonus: &Bonus{
 				IsActive: bot.Bonus().IsActive(),

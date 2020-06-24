@@ -2,9 +2,6 @@
 core-compose = botes/core/docker-compose.yaml
 core-env = botes/core/.env
 
-admin-compose = botes/admin/docker-compose.yaml
-admin-env = botes/admin/.env
-
 box-compose= botes/boxes/docker-compose.yaml
 box-env = botes/boxes/Test/.env
 
@@ -53,26 +50,6 @@ core-stop stop-core:
 	docker-compose -f $(core-compose) --env $(core-env) $(stop)
 
 #-----------------------------------------------------------------------------------------------------------------------
-#ADMIN
-#-----------------------------------------------------------------------------------------------------------------------
-
-.PHONY: admin-build build-admin
-admin-build build-admin:
-	docker-compose -f $(admin-compose) --env $(admin-env) $(build)
-
-.PHONY: admin-run run-admin
-admin-run run-admin:
-	docker-compose -f $(admin-compose) --env $(admin-env) $(up)
-
-.PHONY: admin-run-d run-admin-d
-admin-run-d run-admin-d:
-	docker-compose -f $(admin-compose) --env $(admin-env) $(start)
-
-.PHONY: admin-stop stop-admin
-admin-stop stop-admin:
-	docker-compose -f $(admin-compose) --env $(admin-env) $(stop)
-
-#-----------------------------------------------------------------------------------------------------------------------
 #BOX
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -98,13 +75,13 @@ box-stop stop-box:
 #-----------------------------------------------------------------------------------------------------------------------
 
 .PHONY: build-all all-build
-build-all all-build: core-build admin-build box-build
+build-all all-build: core-build box-build
 
 .PHONY: run-all all-run
-run-all all-run : core-run-d admin-run-d box-run-d
+run-all all-run : core-run-d box-run-d
 
 .PHONY: stop-all all-stop
-stop-all all-stop: core-stop admin-stop box-stop
+stop-all all-stop: core-stop  box-stop
 
 #-----------------------------------------------------------------------------------------------------------------------
 #Clean

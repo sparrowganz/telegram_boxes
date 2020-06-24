@@ -1,6 +1,24 @@
 version: "3.4"
 
 services:
+  admin:
+    container_name: 'service'
+    build: '$GOPATH/src/telegram_boxes/services/admin'
+    restart: always
+    depends_on:
+      - core
+    environment:
+      - APP_MODE=${APP_MODE}
+
+      - ADMINS=${ADMINS}
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+
+      - LOGS_HOST=${LOGS_HOST}
+      - LOGS_PORT=${LOGS_PORT}
+
+      - CORE_HOST=${CORE_HOST}
+      - CORE_PORT=${CORE_PORT}
+
   core:
     container_name: "core"
     build: '$GOPATH/src/telegram_boxes/services/core'

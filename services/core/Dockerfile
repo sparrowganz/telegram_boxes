@@ -4,7 +4,7 @@ WORKDIR /go/src/telegram_botes/services/core
 
 COPY . .
 
-RUN go get && CGO_ENABLED=0 GO111MODULE=on go build -v -o core .
+RUN  CGO_ENABLED=0 GO111MODULE=on go build -mod=vendor -v -o core .
 
 
 FROM alpine:latest

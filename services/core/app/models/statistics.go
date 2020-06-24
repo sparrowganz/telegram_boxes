@@ -6,8 +6,8 @@ type Statistics interface {
 }
 
 type StatisticsData struct {
-	All     int
-	Blocked int
+	All     int64
+	Blocked int64
 }
 
 func CreateStatistics() *StatisticsData {
@@ -18,27 +18,27 @@ func CreateStatistics() *StatisticsData {
 }
 
 type StatisticsGetter interface {
-	GetAll() int
-	GetBlocked() int
+	GetAll() int64
+	GetBlocked() int64
 }
 
-func (s *StatisticsData) GetAll() int {
+func (s *StatisticsData) GetAll() int64 {
 	return s.All
 }
 
-func (s *StatisticsData) GetBlocked() int {
+func (s *StatisticsData) GetBlocked() int64 {
 	return s.Blocked
 }
 
 type StatisticsSetter interface {
-	SetAll(count int)
-	SetBlocked(count int)
+	SetAll(count int64)
+	SetBlocked(count int64)
 }
 
-func (s *StatisticsData) SetAll(count int) {
+func (s *StatisticsData) SetAll(count int64) {
 	s.All = count
 }
 
-func (s *StatisticsData) SetBlocked(count int) {
+func (s *StatisticsData) SetBlocked(count int64) {
 	s.Blocked = count
 }
