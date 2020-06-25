@@ -7,6 +7,7 @@
 echo "Обновление сервиса Admin"
 cd $GOPATH/src/telegram_boxes/services/admin/
 go mod tidy
+go mod vendor
 
 #----------------------------------------------------------------------------------
 #   Core
@@ -14,13 +15,7 @@ go mod tidy
 echo "Обновление сервиса Core"
 cd $GOPATH/src/telegram_boxes/services/core/
 go mod tidy
-
-#----------------------------------------------------------------------------------
-#   Logs
-#----------------------------------------------------------------------------------
-echo "Обновление сервиса Logs"
-cd $GOPATH/src/telegram_boxes/services/logs/
-go mod tidy
+go mod vendor
 
 #----------------------------------------------------------------------------------
 #   BOX
@@ -28,3 +23,13 @@ go mod tidy
 echo "Обновление сервиса Box"
 cd $GOPATH/src/telegram_boxes/services/box/
 go mod tidy
+go mod vendor
+
+#----------------------------------------------------------------------------------
+#   Logs
+#----------------------------------------------------------------------------------
+echo "Обновление сервиса Logs"
+cd $GOPATH/src/telegram_boxes/services/logs/
+go mod tidy
+go mod vendor
+

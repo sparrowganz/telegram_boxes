@@ -5,7 +5,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
-	"telegram_boxes/services/admin/app/task"
 	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 )
 
@@ -53,7 +52,11 @@ func (b *botData) startCommandHandler(chatID int64) {
 
 func (b *botData) tasksCommandHandler(chatID int64) {
 
-	allTasks := b.Task().GetAllTasks()
+	allTasks ,err := b.Task().GetAllTasks()
+	if err != nil {
+		b.Telegram().SendError(chatID, err.Error(), nil)
+		return
+	}
 
 	var (
 		txt  string
@@ -89,7 +92,7 @@ func (b *botData) addTaskCommandHandler(chatID int64) {
 		b.Telegram().Actions().Delete(chatID)
 	}
 	b.Telegram().Actions().New(chatID,
-		actions.NewJob(AddAction.String(), TaskType.String(), &task.Task{}, 0, false),
+		actions.NewJob(AddAction.String(), TaskType.String(), &protobuf.Task{}, 0, false),
 	)
 
 	b.Telegram().ToQueue(

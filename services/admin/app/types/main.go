@@ -8,24 +8,24 @@ type Types interface {
 }
 
 type typeData struct {
-	//todo remove debug structure
 	storage []*Type
 }
 
-//todo remove debug structure
+
 type Type struct {
 	ID   string
 	Name string
 }
 
 func CreateType() Types {
-	//todo remove debug structure
 	return &typeData{
 		storage: []*Type{
-			{"1", "TYPE 1"},
-			{"2", "TYPE 2"},
-			{"3", "TYPE 3"},
-			{"4", "TYPE 4"},
+			{"channel", "Телеграмм подписка"},
+			{"checkChannel", "Телеграмм подписка (check)"},
+			{"subscribeInstagram", "Подписка инстаграм"},
+			{"likeInstagram", "Лайки инстаграм"},
+			{"openWeb","Открыть ссылку"},
+			{"activateBot","Активировать бота"},
 		},
 	}
 }

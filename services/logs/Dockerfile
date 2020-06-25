@@ -4,7 +4,7 @@ WORKDIR /go/src/telegram_botes/services/logs
 
 COPY . .
 
-RUN go get -u && CGO_ENABLED=0 GO111MODULE=on go build -v -o logs_service .
+RUN CGO_ENABLED=0 GO111MODULE=on go build -mod vendor -v -o logs_service .
 
 
 FROM alpine:latest

@@ -6,7 +6,7 @@ import (
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
 	"net/url"
-	"telegram_boxes/services/admin/app/task"
+	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 )
 
 func (b *botData) textValidation(update *tgbotapi.Message) {
@@ -23,7 +23,7 @@ func (b *botData) textValidation(update *tgbotapi.Message) {
 			switch job.GetAction() {
 			case AddAction.String():
 
-				data := job.GetData().(*task.Task)
+				data := job.GetData().(*protobuf.Task)
 
 				switch "" {
 				case data.Name:
@@ -41,7 +41,7 @@ func (b *botData) setNameToAddTaskHandler(chatID int64, message string, job acti
 	b.Telegram().DeleteMessages(chatID, job.GetMessageIDs())
 	job.FlushMessageId()
 
-	data := job.GetData().(*task.Task)
+	data := job.GetData().(*protobuf.Task)
 	data.Name = message
 
 	keyboard, _ := cancelButton().ToKeyboard()
@@ -81,10 +81,10 @@ func (b *botData) setLinkToAddTaskHandler(chatID int64, message string, job acti
 	b.Telegram().DeleteMessages(chatID, job.GetMessageIDs())
 	job.FlushMessageId()
 
-	data := job.GetData().(*task.Task)
+	data := job.GetData().(*protobuf.Task)
 	data.Link = message
 
-	tp, errGetType := b.Types().GetType(data.TypeID)
+	tp, errGetType := b.Types().GetType(data.GetType())
 	if errGetType != nil {
 		b.Telegram().ToQueue(&telegram.Message{
 			Message: tgbotapi.MessageConfig{

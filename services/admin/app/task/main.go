@@ -1,8 +1,12 @@
 package task
 
 import (
-	"errors"
-	"gopkg.in/mgo.v2/bson"
+	"context"
+	"fmt"
+	"google.golang.org/grpc"
+	"telegram_boxes/services/admin/app"
+	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
+	"time"
 )
 
 type Tasks interface {
@@ -10,105 +14,131 @@ type Tasks interface {
 	Changer
 	Remover
 	Creator
+	connector
+}
+
+type connector interface {
+	connect(host, port, username string) error
+}
+
+func (t *tasksData) connect(host, port, username string) error {
+
+	cnnServers, err := grpc.Dial(
+		fmt.Sprintf("%s:%s", host, port),
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		return fmt.Errorf("%s.ServersConnect: %s", username, err.Error())
+	}
+
+	t.client = protobuf.NewTasksClient(cnnServers)
+	_, cancel := context.WithTimeout(context.Background(), 10000*time.Millisecond)
+	defer cancel()
+	return nil
 }
 
 type tasksData struct {
-	//taskData
-	//todo remove debug structure
-	storage []*Task
+	host   string
+	port   string
+	client protobuf.TasksClient
 }
 
-//todo remove debug structure
-type Task struct {
-	ID         string
-	Name       string
-	IsPriority bool
-	TypeID     string
-	Link       string
-}
-
-func CreateTasks() Tasks {
-	return &tasksData{
-		//todo remove debug structure
-		storage: []*Task{
-			{"1", "1", false, "1", "http://vk.com"},
-			{"2", "2", true, "2", "http://vk.com"},
-			{"3", "3", false, "3", "http://vk.com"},
-			{"4", "4", true, "1", "http://vk.com"},
-		},
+func CreateTasks(host, port string) (Tasks, error) {
+	d := &tasksData{
+		host: host,
+		port: port,
 	}
+
+	err := d.connect(host, port, "admin")
+	if err != nil {
+		return nil, err
+	}
+	return d, nil
 }
 
 type Getter interface {
-	GetAllTasks() []*Task
-	GetTask(id string) (*Task, error)
+	GetAllTasks() ([]*protobuf.Task, error)
+	GetTask(id string) (*protobuf.Task, error)
 }
 
-func (t *tasksData) GetAllTasks() []*Task {
-	return t.storage
-}
-
-func (t *tasksData) GetTask(id string) (*Task, error) {
-	for _, tsk := range t.storage {
-		if tsk.ID == id {
-			return tsk, nil
-		}
+func (t *tasksData) GetAllTasks() ([]*protobuf.Task, error) {
+	res, err := t.client.GetAllTask(
+		app.SetCallContext("GetAllTasks", "admin"),
+		&protobuf.GetAllTaskRequest{})
+	if err != nil {
+		return []*protobuf.Task{}, err
 	}
-	return nil, errors.New(" Not found ")
+
+	return res.GetTasks(), nil
+}
+
+func (t *tasksData) GetTask(id string) (*protobuf.Task, error) {
+	res, err := t.client.FindTask(
+		app.SetCallContext("GetTask", "admin"),
+		&protobuf.FindTaskRequest{Id: id},
+	)
+	if err != nil {
+		return &protobuf.Task{}, err
+	}
+
+	return res.GetTask(), nil
 }
 
 type Changer interface {
-	ChangePriority(id string) (*Task, error)
+	ChangePriority(id string) (*protobuf.Task, error)
 }
 
-func (t *tasksData) ChangePriority(id string) (*Task, error) {
-	for _, tsk := range t.storage {
-		if tsk.ID == id {
-			tsk.IsPriority = !tsk.IsPriority
-			return tsk, nil
-		}
+func (t *tasksData) ChangePriority(id string) (*protobuf.Task, error) {
+	res, err := t.client.ChangePriorityTask(
+		app.SetCallContext("ChangePriority", "admin"),
+		&protobuf.ChangePriorityTaskRequest{
+			TaskID: id,
+		})
+	if err != nil {
+		return &protobuf.Task{}, err
 	}
-	return nil, errors.New(" Not found ")
+
+	return res.GetTask(), nil
 }
 
 type Remover interface {
 	Delete(id string) error
-	CleanupRun(id string) (*Task, error)
+	CleanupRun(id string) (*protobuf.Task, error)
 }
 
 func (t *tasksData) Delete(id string) error {
-	var newStorage []*Task
-	var found bool
 
-	for _, tsk := range t.storage {
-		if tsk.ID != id {
-
-			newStorage = append(newStorage, tsk)
-
-		} else {
-			found = true
-		}
-	}
-
-	if !found {
-		return errors.New(" Not found ")
-	}
-
-	t.storage = newStorage
-
-	return nil
+	_, err := t.client.DeleteTask(
+		app.SetCallContext("Delete", "admin"),
+		&protobuf.DeleteTaskRequest{
+			TaskID: id,
+		})
+	return err
 }
 
-func (t *tasksData) CleanupRun(id string) (*Task, error) {
+func (t *tasksData) CleanupRun(id string) (*protobuf.Task, error) {
+	res, err := t.client.CleanupRunTask(
+		app.SetCallContext("ChangePriority", "admin"),
+		&protobuf.CleanupRunTaskRequest{
+			TaskID: id,
+		})
+	if err != nil {
+		return &protobuf.Task{}, err
+	}
 
-	return t.GetTask(id)
+	return res.GetTask(), nil
 }
 
 type Creator interface {
-	Create(t *Task)
+	Create(t *protobuf.Task) error
 }
 
-func (t *tasksData) Create(tsk *Task) {
-	tsk.ID = bson.NewObjectId().Hex()
-	t.storage = append(t.storage, tsk)
+func (t *tasksData) Create(tsk *protobuf.Task) error {
+	_, err := t.client.CreateTask(
+		app.SetCallContext("CreateTask", "admin"), tsk)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

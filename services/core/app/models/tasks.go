@@ -4,6 +4,7 @@ import "gopkg.in/mgo.v2/bson"
 
 type Task interface {
 	TaskGetter
+	TaskSetter
 }
 
 type TaskData struct {
@@ -65,3 +66,10 @@ func (t *TaskData) WithCheck() bool {
 func (t *TaskData) Timestamp() Timestamp {
 	return t.TimestampData
 }
+ type TaskSetter interface {
+ 	ChangePriority()
+ }
+
+ func (t *TaskData) ChangePriority() {
+ 	t.Priority = !t.Priority
+ }

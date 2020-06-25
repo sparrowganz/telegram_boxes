@@ -5,6 +5,9 @@ package protobuf;
 option go_package = "services/core/protobuf";
 
 service Tasks {
+    rpc GetAllTask (GetAllTaskRequest) returns (GetAllTaskResponse) {
+    }
+
     rpc GetTask (GetTaskRequest) returns (GetTaskResponse) {
 
     }
@@ -13,11 +16,74 @@ service Tasks {
 
     }
 
+    rpc ChangePriorityTask (ChangePriorityTaskRequest) returns (ChangePriorityTaskResponse) {
+
+    }
+
+    rpc DeleteTask (DeleteTaskRequest) returns (DeleteTaskResponse) {
+    }
+
+    rpc CleanupRunTask (CleanupRunTaskRequest) returns (CleanupRunTaskResponse) {
+    }
+
+    rpc CreateTask (Task) returns (CreateTaskResponse) {
+
+    }
+
     rpc CheckTask (CheckTaskRequest) returns (CheckTaskResponse) {
 
     }
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+//  Get All Task
+//----------------------------------------------------------------------------------------------------------------------
+message GetAllTaskRequest {
+}
+
+message GetAllTaskResponse {
+    repeated Task tasks = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Change Priority Task
+//----------------------------------------------------------------------------------------------------------------------
+message ChangePriorityTaskRequest {
+    string taskID = 1;
+}
+
+message ChangePriorityTaskResponse {
+    Task task = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Delete Task
+//----------------------------------------------------------------------------------------------------------------------
+message DeleteTaskRequest {
+    string taskID = 1;
+}
+
+message DeleteTaskResponse {
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Cleanup Run Task
+//----------------------------------------------------------------------------------------------------------------------
+message CleanupRunTaskRequest {
+    string taskID = 1;
+}
+
+message CleanupRunTaskResponse {
+    Task task = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Create Task
+//----------------------------------------------------------------------------------------------------------------------
+
+message CreateTaskResponse {
+    Task task = 1;
+}
 //----------------------------------------------------------------------------------------------------------------------
 //  Get Task
 //----------------------------------------------------------------------------------------------------------------------
@@ -57,4 +123,6 @@ message Task {
     string name = 2;
     string type = 3;
     string link = 4;
+    bool isPriority = 5;
+    bool withCheck = 6;
 }

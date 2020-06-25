@@ -30,6 +30,423 @@ const (
 const _ = proto.ProtoPackageIsVersion4
 
 //----------------------------------------------------------------------------------------------------------------------
+//  Get All Task
+//----------------------------------------------------------------------------------------------------------------------
+type GetAllTaskRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetAllTaskRequest) Reset() {
+	*x = GetAllTaskRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetAllTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllTaskRequest) ProtoMessage() {}
+
+func (x *GetAllTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllTaskRequest.ProtoReflect.Descriptor instead.
+func (*GetAllTaskRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{0}
+}
+
+type GetAllTaskResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Tasks []*Task `protobuf:"bytes,1,rep,name=tasks,proto3" json:"tasks,omitempty"`
+}
+
+func (x *GetAllTaskResponse) Reset() {
+	*x = GetAllTaskResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetAllTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllTaskResponse) ProtoMessage() {}
+
+func (x *GetAllTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllTaskResponse.ProtoReflect.Descriptor instead.
+func (*GetAllTaskResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetAllTaskResponse) GetTasks() []*Task {
+	if x != nil {
+		return x.Tasks
+	}
+	return nil
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Change Priority Task
+//----------------------------------------------------------------------------------------------------------------------
+type ChangePriorityTaskRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskID string `protobuf:"bytes,1,opt,name=taskID,proto3" json:"taskID,omitempty"`
+}
+
+func (x *ChangePriorityTaskRequest) Reset() {
+	*x = ChangePriorityTaskRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ChangePriorityTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChangePriorityTaskRequest) ProtoMessage() {}
+
+func (x *ChangePriorityTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChangePriorityTaskRequest.ProtoReflect.Descriptor instead.
+func (*ChangePriorityTaskRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ChangePriorityTaskRequest) GetTaskID() string {
+	if x != nil {
+		return x.TaskID
+	}
+	return ""
+}
+
+type ChangePriorityTaskResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Task *Task `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
+}
+
+func (x *ChangePriorityTaskResponse) Reset() {
+	*x = ChangePriorityTaskResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ChangePriorityTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChangePriorityTaskResponse) ProtoMessage() {}
+
+func (x *ChangePriorityTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChangePriorityTaskResponse.ProtoReflect.Descriptor instead.
+func (*ChangePriorityTaskResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ChangePriorityTaskResponse) GetTask() *Task {
+	if x != nil {
+		return x.Task
+	}
+	return nil
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Delete Task
+//----------------------------------------------------------------------------------------------------------------------
+type DeleteTaskRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskID string `protobuf:"bytes,1,opt,name=taskID,proto3" json:"taskID,omitempty"`
+}
+
+func (x *DeleteTaskRequest) Reset() {
+	*x = DeleteTaskRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTaskRequest) ProtoMessage() {}
+
+func (x *DeleteTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTaskRequest.ProtoReflect.Descriptor instead.
+func (*DeleteTaskRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DeleteTaskRequest) GetTaskID() string {
+	if x != nil {
+		return x.TaskID
+	}
+	return ""
+}
+
+type DeleteTaskResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteTaskResponse) Reset() {
+	*x = DeleteTaskResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTaskResponse) ProtoMessage() {}
+
+func (x *DeleteTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTaskResponse.ProtoReflect.Descriptor instead.
+func (*DeleteTaskResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{5}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Cleanup Run Task
+//----------------------------------------------------------------------------------------------------------------------
+type CleanupRunTaskRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskID string `protobuf:"bytes,1,opt,name=taskID,proto3" json:"taskID,omitempty"`
+}
+
+func (x *CleanupRunTaskRequest) Reset() {
+	*x = CleanupRunTaskRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CleanupRunTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CleanupRunTaskRequest) ProtoMessage() {}
+
+func (x *CleanupRunTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CleanupRunTaskRequest.ProtoReflect.Descriptor instead.
+func (*CleanupRunTaskRequest) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CleanupRunTaskRequest) GetTaskID() string {
+	if x != nil {
+		return x.TaskID
+	}
+	return ""
+}
+
+type CleanupRunTaskResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Task *Task `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
+}
+
+func (x *CleanupRunTaskResponse) Reset() {
+	*x = CleanupRunTaskResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CleanupRunTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CleanupRunTaskResponse) ProtoMessage() {}
+
+func (x *CleanupRunTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CleanupRunTaskResponse.ProtoReflect.Descriptor instead.
+func (*CleanupRunTaskResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *CleanupRunTaskResponse) GetTask() *Task {
+	if x != nil {
+		return x.Task
+	}
+	return nil
+}
+
+type CreateTaskResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Task *Task `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
+}
+
+func (x *CreateTaskResponse) Reset() {
+	*x = CreateTaskResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTaskResponse) ProtoMessage() {}
+
+func (x *CreateTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTaskResponse.ProtoReflect.Descriptor instead.
+func (*CreateTaskResponse) Descriptor() ([]byte, []int) {
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *CreateTaskResponse) GetTask() *Task {
+	if x != nil {
+		return x.Task
+	}
+	return nil
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 //  Get Task
 //----------------------------------------------------------------------------------------------------------------------
 type GetTaskRequest struct {
@@ -43,7 +460,7 @@ type GetTaskRequest struct {
 func (x *GetTaskRequest) Reset() {
 	*x = GetTaskRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_tasks_proto_msgTypes[0]
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -56,7 +473,7 @@ func (x *GetTaskRequest) String() string {
 func (*GetTaskRequest) ProtoMessage() {}
 
 func (x *GetTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_tasks_proto_msgTypes[0]
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -69,7 +486,7 @@ func (x *GetTaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTaskRequest.ProtoReflect.Descriptor instead.
 func (*GetTaskRequest) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{0}
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetTaskRequest) GetTasksID() []string {
@@ -90,7 +507,7 @@ type GetTaskResponse struct {
 func (x *GetTaskResponse) Reset() {
 	*x = GetTaskResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_tasks_proto_msgTypes[1]
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -103,7 +520,7 @@ func (x *GetTaskResponse) String() string {
 func (*GetTaskResponse) ProtoMessage() {}
 
 func (x *GetTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_tasks_proto_msgTypes[1]
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -116,7 +533,7 @@ func (x *GetTaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTaskResponse.ProtoReflect.Descriptor instead.
 func (*GetTaskResponse) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{1}
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetTaskResponse) GetTask() *Task {
@@ -140,7 +557,7 @@ type FindTaskRequest struct {
 func (x *FindTaskRequest) Reset() {
 	*x = FindTaskRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_tasks_proto_msgTypes[2]
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -153,7 +570,7 @@ func (x *FindTaskRequest) String() string {
 func (*FindTaskRequest) ProtoMessage() {}
 
 func (x *FindTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_tasks_proto_msgTypes[2]
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -166,7 +583,7 @@ func (x *FindTaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindTaskRequest.ProtoReflect.Descriptor instead.
 func (*FindTaskRequest) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{2}
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *FindTaskRequest) GetId() string {
@@ -187,7 +604,7 @@ type FindTaskResponse struct {
 func (x *FindTaskResponse) Reset() {
 	*x = FindTaskResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_tasks_proto_msgTypes[3]
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -200,7 +617,7 @@ func (x *FindTaskResponse) String() string {
 func (*FindTaskResponse) ProtoMessage() {}
 
 func (x *FindTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_tasks_proto_msgTypes[3]
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -213,7 +630,7 @@ func (x *FindTaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindTaskResponse.ProtoReflect.Descriptor instead.
 func (*FindTaskResponse) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{3}
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *FindTaskResponse) GetTask() *Task {
@@ -238,7 +655,7 @@ type CheckTaskRequest struct {
 func (x *CheckTaskRequest) Reset() {
 	*x = CheckTaskRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_tasks_proto_msgTypes[4]
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -251,7 +668,7 @@ func (x *CheckTaskRequest) String() string {
 func (*CheckTaskRequest) ProtoMessage() {}
 
 func (x *CheckTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_tasks_proto_msgTypes[4]
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -264,7 +681,7 @@ func (x *CheckTaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckTaskRequest.ProtoReflect.Descriptor instead.
 func (*CheckTaskRequest) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{4}
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *CheckTaskRequest) GetChatID() int64 {
@@ -292,7 +709,7 @@ type CheckTaskResponse struct {
 func (x *CheckTaskResponse) Reset() {
 	*x = CheckTaskResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_tasks_proto_msgTypes[5]
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -305,7 +722,7 @@ func (x *CheckTaskResponse) String() string {
 func (*CheckTaskResponse) ProtoMessage() {}
 
 func (x *CheckTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_tasks_proto_msgTypes[5]
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -318,7 +735,7 @@ func (x *CheckTaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckTaskResponse.ProtoReflect.Descriptor instead.
 func (*CheckTaskResponse) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{5}
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *CheckTaskResponse) GetIsCheck() bool {
@@ -333,16 +750,18 @@ type Task struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Type string `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
-	Link string `protobuf:"bytes,4,opt,name=link,proto3" json:"link,omitempty"`
+	Id         string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name       string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Type       string `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
+	Link       string `protobuf:"bytes,4,opt,name=link,proto3" json:"link,omitempty"`
+	IsPriority bool   `protobuf:"varint,5,opt,name=isPriority,proto3" json:"isPriority,omitempty"`
+	WithCheck  bool   `protobuf:"varint,6,opt,name=withCheck,proto3" json:"withCheck,omitempty"`
 }
 
 func (x *Task) Reset() {
 	*x = Task{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_core_protobuf_tasks_proto_msgTypes[6]
+		mi := &file_services_core_protobuf_tasks_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -355,7 +774,7 @@ func (x *Task) String() string {
 func (*Task) ProtoMessage() {}
 
 func (x *Task) ProtoReflect() protoreflect.Message {
-	mi := &file_services_core_protobuf_tasks_proto_msgTypes[6]
+	mi := &file_services_core_protobuf_tasks_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -368,7 +787,7 @@ func (x *Task) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Task.ProtoReflect.Descriptor instead.
 func (*Task) Descriptor() ([]byte, []int) {
-	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{6}
+	return file_services_core_protobuf_tasks_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *Task) GetId() string {
@@ -399,52 +818,122 @@ func (x *Task) GetLink() string {
 	return ""
 }
 
+func (x *Task) GetIsPriority() bool {
+	if x != nil {
+		return x.IsPriority
+	}
+	return false
+}
+
+func (x *Task) GetWithCheck() bool {
+	if x != nil {
+		return x.WithCheck
+	}
+	return false
+}
+
 var File_services_core_protobuf_tasks_proto protoreflect.FileDescriptor
 
 var file_services_core_protobuf_tasks_proto_rawDesc = []byte{
 	0x0a, 0x22, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x22, 0x2a,
-	0x0a, 0x0e, 0x47, 0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x18, 0x0a, 0x07, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x49, 0x44, 0x18, 0x01, 0x20, 0x03, 0x28,
-	0x09, 0x52, 0x07, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x49, 0x44, 0x22, 0x35, 0x0a, 0x0f, 0x47, 0x65,
-	0x74, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a,
-	0x04, 0x74, 0x61, 0x73, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x04, 0x74, 0x61, 0x73,
-	0x6b, 0x22, 0x21, 0x0a, 0x0f, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x02, 0x69, 0x64, 0x22, 0x36, 0x0a, 0x10, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73, 0x6b,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x04, 0x74, 0x61, 0x73, 0x6b,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
-	0x66, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x22, 0x42, 0x0a, 0x10,
-	0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x16, 0x0a, 0x06, 0x63, 0x68, 0x61, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03,
-	0x52, 0x06, 0x63, 0x68, 0x61, 0x74, 0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x74, 0x61, 0x73, 0x6b,
-	0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x44,
-	0x22, 0x2d, 0x0a, 0x11, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x69, 0x73, 0x43, 0x68, 0x65, 0x63, 0x6b,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x69, 0x73, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x22,
-	0x52, 0x0a, 0x04, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74,
-	0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12,
-	0x12, 0x0a, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6c,
-	0x69, 0x6e, 0x6b, 0x32, 0xd6, 0x01, 0x0a, 0x05, 0x54, 0x61, 0x73, 0x6b, 0x73, 0x12, 0x40, 0x0a,
-	0x07, 0x47, 0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x18, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65,
-	0x74, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
-	0x43, 0x0a, 0x08, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x19, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
-	0x66, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x09, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73,
-	0x6b, 0x12, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x65,
-	0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61,
-	0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x18, 0x5a, 0x16,
-	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x22, 0x13,
+	0x0a, 0x11, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x22, 0x3a, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x54, 0x61, 0x73,
+	0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24, 0x0a, 0x05, 0x74, 0x61, 0x73,
+	0x6b, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x05, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x22,
+	0x33, 0x0a, 0x19, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x50, 0x72, 0x69, 0x6f, 0x72, 0x69, 0x74,
+	0x79, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06,
+	0x74, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x61,
+	0x73, 0x6b, 0x49, 0x44, 0x22, 0x40, 0x0a, 0x1a, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x50, 0x72,
+	0x69, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x22, 0x0a, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x61, 0x73, 0x6b,
+	0x52, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x22, 0x2b, 0x0a, 0x11, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x74,
+	0x61, 0x73, 0x6b, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x61, 0x73,
+	0x6b, 0x49, 0x44, 0x22, 0x14, 0x0a, 0x12, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x54, 0x61, 0x73,
+	0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2f, 0x0a, 0x15, 0x43, 0x6c, 0x65,
+	0x61, 0x6e, 0x75, 0x70, 0x52, 0x75, 0x6e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x22, 0x3c, 0x0a, 0x16, 0x43, 0x6c,
+	0x65, 0x61, 0x6e, 0x75, 0x70, 0x52, 0x75, 0x6e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x61,
+	0x73, 0x6b, 0x52, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x22, 0x38, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22,
+	0x0a, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x04, 0x74, 0x61,
+	0x73, 0x6b, 0x22, 0x2a, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x49, 0x44, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x49, 0x44, 0x22, 0x35,
+	0x0a, 0x0f, 0x47, 0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x22, 0x0a, 0x04, 0x74, 0x61, 0x73, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52,
+	0x04, 0x74, 0x61, 0x73, 0x6b, 0x22, 0x21, 0x0a, 0x0f, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73,
+	0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x36, 0x0a, 0x10, 0x46, 0x69, 0x6e, 0x64,
+	0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x04,
+	0x74, 0x61, 0x73, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x04, 0x74, 0x61, 0x73, 0x6b,
+	0x22, 0x42, 0x0a, 0x10, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x68, 0x61, 0x74, 0x49, 0x44, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x63, 0x68, 0x61, 0x74, 0x49, 0x44, 0x12, 0x16, 0x0a, 0x06,
+	0x74, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x61,
+	0x73, 0x6b, 0x49, 0x44, 0x22, 0x2d, 0x0a, 0x11, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73,
+	0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x69, 0x73, 0x43,
+	0x68, 0x65, 0x63, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x69, 0x73, 0x43, 0x68,
+	0x65, 0x63, 0x6b, 0x22, 0x90, 0x01, 0x0a, 0x04, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04,
+	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x74, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x12, 0x1e, 0x0a, 0x0a, 0x69, 0x73, 0x50, 0x72,
+	0x69, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x69, 0x73,
+	0x50, 0x72, 0x69, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x1c, 0x0a, 0x09, 0x77, 0x69, 0x74, 0x68,
+	0x43, 0x68, 0x65, 0x63, 0x6b, 0x18, 0x06, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x77, 0x69, 0x74,
+	0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x32, 0xe4, 0x04, 0x0a, 0x05, 0x54, 0x61, 0x73, 0x6b, 0x73,
+	0x12, 0x49, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x1b,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c,
+	0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x54, 0x61, 0x73,
+	0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x40, 0x0a, 0x07, 0x47,
+	0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x18, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x47, 0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74, 0x54,
+	0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x43, 0x0a,
+	0x08, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x19, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x46, 0x69, 0x6e, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x61, 0x0a, 0x12, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x50, 0x72, 0x69, 0x6f,
+	0x72, 0x69, 0x74, 0x79, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x23, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x50, 0x72, 0x69, 0x6f, 0x72, 0x69,
+	0x74, 0x79, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x50,
+	0x72, 0x69, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x0a, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x54,
+	0x61, 0x73, 0x6b, 0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x1c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x12, 0x55, 0x0a, 0x0e, 0x43, 0x6c, 0x65, 0x61, 0x6e, 0x75, 0x70, 0x52, 0x75, 0x6e, 0x54, 0x61,
+	0x73, 0x6b, 0x12, 0x1f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x6c,
+	0x65, 0x61, 0x6e, 0x75, 0x70, 0x52, 0x75, 0x6e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43,
+	0x6c, 0x65, 0x61, 0x6e, 0x75, 0x70, 0x52, 0x75, 0x6e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x0a, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x65, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x54, 0x61, 0x73, 0x6b, 0x1a, 0x1c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x09, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61,
+	0x73, 0x6b, 0x12, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68,
+	0x65, 0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54,
+	0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x18, 0x5a,
+	0x16, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -459,30 +948,53 @@ func file_services_core_protobuf_tasks_proto_rawDescGZIP() []byte {
 	return file_services_core_protobuf_tasks_proto_rawDescData
 }
 
-var file_services_core_protobuf_tasks_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_services_core_protobuf_tasks_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_services_core_protobuf_tasks_proto_goTypes = []interface{}{
-	(*GetTaskRequest)(nil),    // 0: protobuf.GetTaskRequest
-	(*GetTaskResponse)(nil),   // 1: protobuf.GetTaskResponse
-	(*FindTaskRequest)(nil),   // 2: protobuf.FindTaskRequest
-	(*FindTaskResponse)(nil),  // 3: protobuf.FindTaskResponse
-	(*CheckTaskRequest)(nil),  // 4: protobuf.CheckTaskRequest
-	(*CheckTaskResponse)(nil), // 5: protobuf.CheckTaskResponse
-	(*Task)(nil),              // 6: protobuf.Task
+	(*GetAllTaskRequest)(nil),          // 0: protobuf.GetAllTaskRequest
+	(*GetAllTaskResponse)(nil),         // 1: protobuf.GetAllTaskResponse
+	(*ChangePriorityTaskRequest)(nil),  // 2: protobuf.ChangePriorityTaskRequest
+	(*ChangePriorityTaskResponse)(nil), // 3: protobuf.ChangePriorityTaskResponse
+	(*DeleteTaskRequest)(nil),          // 4: protobuf.DeleteTaskRequest
+	(*DeleteTaskResponse)(nil),         // 5: protobuf.DeleteTaskResponse
+	(*CleanupRunTaskRequest)(nil),      // 6: protobuf.CleanupRunTaskRequest
+	(*CleanupRunTaskResponse)(nil),     // 7: protobuf.CleanupRunTaskResponse
+	(*CreateTaskResponse)(nil),         // 8: protobuf.CreateTaskResponse
+	(*GetTaskRequest)(nil),             // 9: protobuf.GetTaskRequest
+	(*GetTaskResponse)(nil),            // 10: protobuf.GetTaskResponse
+	(*FindTaskRequest)(nil),            // 11: protobuf.FindTaskRequest
+	(*FindTaskResponse)(nil),           // 12: protobuf.FindTaskResponse
+	(*CheckTaskRequest)(nil),           // 13: protobuf.CheckTaskRequest
+	(*CheckTaskResponse)(nil),          // 14: protobuf.CheckTaskResponse
+	(*Task)(nil),                       // 15: protobuf.Task
 }
 var file_services_core_protobuf_tasks_proto_depIdxs = []int32{
-	6, // 0: protobuf.GetTaskResponse.task:type_name -> protobuf.Task
-	6, // 1: protobuf.FindTaskResponse.task:type_name -> protobuf.Task
-	0, // 2: protobuf.Tasks.GetTask:input_type -> protobuf.GetTaskRequest
-	2, // 3: protobuf.Tasks.FindTask:input_type -> protobuf.FindTaskRequest
-	4, // 4: protobuf.Tasks.CheckTask:input_type -> protobuf.CheckTaskRequest
-	1, // 5: protobuf.Tasks.GetTask:output_type -> protobuf.GetTaskResponse
-	3, // 6: protobuf.Tasks.FindTask:output_type -> protobuf.FindTaskResponse
-	5, // 7: protobuf.Tasks.CheckTask:output_type -> protobuf.CheckTaskResponse
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	15, // 0: protobuf.GetAllTaskResponse.tasks:type_name -> protobuf.Task
+	15, // 1: protobuf.ChangePriorityTaskResponse.task:type_name -> protobuf.Task
+	15, // 2: protobuf.CleanupRunTaskResponse.task:type_name -> protobuf.Task
+	15, // 3: protobuf.CreateTaskResponse.task:type_name -> protobuf.Task
+	15, // 4: protobuf.GetTaskResponse.task:type_name -> protobuf.Task
+	15, // 5: protobuf.FindTaskResponse.task:type_name -> protobuf.Task
+	0,  // 6: protobuf.Tasks.GetAllTask:input_type -> protobuf.GetAllTaskRequest
+	9,  // 7: protobuf.Tasks.GetTask:input_type -> protobuf.GetTaskRequest
+	11, // 8: protobuf.Tasks.FindTask:input_type -> protobuf.FindTaskRequest
+	2,  // 9: protobuf.Tasks.ChangePriorityTask:input_type -> protobuf.ChangePriorityTaskRequest
+	4,  // 10: protobuf.Tasks.DeleteTask:input_type -> protobuf.DeleteTaskRequest
+	6,  // 11: protobuf.Tasks.CleanupRunTask:input_type -> protobuf.CleanupRunTaskRequest
+	15, // 12: protobuf.Tasks.CreateTask:input_type -> protobuf.Task
+	13, // 13: protobuf.Tasks.CheckTask:input_type -> protobuf.CheckTaskRequest
+	1,  // 14: protobuf.Tasks.GetAllTask:output_type -> protobuf.GetAllTaskResponse
+	10, // 15: protobuf.Tasks.GetTask:output_type -> protobuf.GetTaskResponse
+	12, // 16: protobuf.Tasks.FindTask:output_type -> protobuf.FindTaskResponse
+	3,  // 17: protobuf.Tasks.ChangePriorityTask:output_type -> protobuf.ChangePriorityTaskResponse
+	5,  // 18: protobuf.Tasks.DeleteTask:output_type -> protobuf.DeleteTaskResponse
+	7,  // 19: protobuf.Tasks.CleanupRunTask:output_type -> protobuf.CleanupRunTaskResponse
+	8,  // 20: protobuf.Tasks.CreateTask:output_type -> protobuf.CreateTaskResponse
+	14, // 21: protobuf.Tasks.CheckTask:output_type -> protobuf.CheckTaskResponse
+	14, // [14:22] is the sub-list for method output_type
+	6,  // [6:14] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_services_core_protobuf_tasks_proto_init() }
@@ -492,7 +1004,7 @@ func file_services_core_protobuf_tasks_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_services_core_protobuf_tasks_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetTaskRequest); i {
+			switch v := v.(*GetAllTaskRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -504,7 +1016,7 @@ func file_services_core_protobuf_tasks_proto_init() {
 			}
 		}
 		file_services_core_protobuf_tasks_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetTaskResponse); i {
+			switch v := v.(*GetAllTaskResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -516,7 +1028,7 @@ func file_services_core_protobuf_tasks_proto_init() {
 			}
 		}
 		file_services_core_protobuf_tasks_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindTaskRequest); i {
+			switch v := v.(*ChangePriorityTaskRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -528,7 +1040,7 @@ func file_services_core_protobuf_tasks_proto_init() {
 			}
 		}
 		file_services_core_protobuf_tasks_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FindTaskResponse); i {
+			switch v := v.(*ChangePriorityTaskResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -540,7 +1052,7 @@ func file_services_core_protobuf_tasks_proto_init() {
 			}
 		}
 		file_services_core_protobuf_tasks_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckTaskRequest); i {
+			switch v := v.(*DeleteTaskRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -552,7 +1064,7 @@ func file_services_core_protobuf_tasks_proto_init() {
 			}
 		}
 		file_services_core_protobuf_tasks_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckTaskResponse); i {
+			switch v := v.(*DeleteTaskResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -564,6 +1076,114 @@ func file_services_core_protobuf_tasks_proto_init() {
 			}
 		}
 		file_services_core_protobuf_tasks_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CleanupRunTaskRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CleanupRunTaskResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateTaskResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetTaskRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetTaskResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FindTaskRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FindTaskResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CheckTaskRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CheckTaskResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_core_protobuf_tasks_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Task); i {
 			case 0:
 				return &v.state
@@ -582,7 +1202,7 @@ func file_services_core_protobuf_tasks_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_services_core_protobuf_tasks_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -608,8 +1228,13 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type TasksClient interface {
+	GetAllTask(ctx context.Context, in *GetAllTaskRequest, opts ...grpc.CallOption) (*GetAllTaskResponse, error)
 	GetTask(ctx context.Context, in *GetTaskRequest, opts ...grpc.CallOption) (*GetTaskResponse, error)
 	FindTask(ctx context.Context, in *FindTaskRequest, opts ...grpc.CallOption) (*FindTaskResponse, error)
+	ChangePriorityTask(ctx context.Context, in *ChangePriorityTaskRequest, opts ...grpc.CallOption) (*ChangePriorityTaskResponse, error)
+	DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*DeleteTaskResponse, error)
+	CleanupRunTask(ctx context.Context, in *CleanupRunTaskRequest, opts ...grpc.CallOption) (*CleanupRunTaskResponse, error)
+	CreateTask(ctx context.Context, in *Task, opts ...grpc.CallOption) (*CreateTaskResponse, error)
 	CheckTask(ctx context.Context, in *CheckTaskRequest, opts ...grpc.CallOption) (*CheckTaskResponse, error)
 }
 
@@ -619,6 +1244,15 @@ type tasksClient struct {
 
 func NewTasksClient(cc grpc.ClientConnInterface) TasksClient {
 	return &tasksClient{cc}
+}
+
+func (c *tasksClient) GetAllTask(ctx context.Context, in *GetAllTaskRequest, opts ...grpc.CallOption) (*GetAllTaskResponse, error) {
+	out := new(GetAllTaskResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Tasks/GetAllTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *tasksClient) GetTask(ctx context.Context, in *GetTaskRequest, opts ...grpc.CallOption) (*GetTaskResponse, error) {
@@ -639,6 +1273,42 @@ func (c *tasksClient) FindTask(ctx context.Context, in *FindTaskRequest, opts ..
 	return out, nil
 }
 
+func (c *tasksClient) ChangePriorityTask(ctx context.Context, in *ChangePriorityTaskRequest, opts ...grpc.CallOption) (*ChangePriorityTaskResponse, error) {
+	out := new(ChangePriorityTaskResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Tasks/ChangePriorityTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tasksClient) DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*DeleteTaskResponse, error) {
+	out := new(DeleteTaskResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Tasks/DeleteTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tasksClient) CleanupRunTask(ctx context.Context, in *CleanupRunTaskRequest, opts ...grpc.CallOption) (*CleanupRunTaskResponse, error) {
+	out := new(CleanupRunTaskResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Tasks/CleanupRunTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tasksClient) CreateTask(ctx context.Context, in *Task, opts ...grpc.CallOption) (*CreateTaskResponse, error) {
+	out := new(CreateTaskResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Tasks/CreateTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *tasksClient) CheckTask(ctx context.Context, in *CheckTaskRequest, opts ...grpc.CallOption) (*CheckTaskResponse, error) {
 	out := new(CheckTaskResponse)
 	err := c.cc.Invoke(ctx, "/protobuf.Tasks/CheckTask", in, out, opts...)
@@ -650,8 +1320,13 @@ func (c *tasksClient) CheckTask(ctx context.Context, in *CheckTaskRequest, opts 
 
 // TasksServer is the server API for Tasks service.
 type TasksServer interface {
+	GetAllTask(context.Context, *GetAllTaskRequest) (*GetAllTaskResponse, error)
 	GetTask(context.Context, *GetTaskRequest) (*GetTaskResponse, error)
 	FindTask(context.Context, *FindTaskRequest) (*FindTaskResponse, error)
+	ChangePriorityTask(context.Context, *ChangePriorityTaskRequest) (*ChangePriorityTaskResponse, error)
+	DeleteTask(context.Context, *DeleteTaskRequest) (*DeleteTaskResponse, error)
+	CleanupRunTask(context.Context, *CleanupRunTaskRequest) (*CleanupRunTaskResponse, error)
+	CreateTask(context.Context, *Task) (*CreateTaskResponse, error)
 	CheckTask(context.Context, *CheckTaskRequest) (*CheckTaskResponse, error)
 }
 
@@ -659,11 +1334,26 @@ type TasksServer interface {
 type UnimplementedTasksServer struct {
 }
 
+func (*UnimplementedTasksServer) GetAllTask(context.Context, *GetAllTaskRequest) (*GetAllTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllTask not implemented")
+}
 func (*UnimplementedTasksServer) GetTask(context.Context, *GetTaskRequest) (*GetTaskResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTask not implemented")
 }
 func (*UnimplementedTasksServer) FindTask(context.Context, *FindTaskRequest) (*FindTaskResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindTask not implemented")
+}
+func (*UnimplementedTasksServer) ChangePriorityTask(context.Context, *ChangePriorityTaskRequest) (*ChangePriorityTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePriorityTask not implemented")
+}
+func (*UnimplementedTasksServer) DeleteTask(context.Context, *DeleteTaskRequest) (*DeleteTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTask not implemented")
+}
+func (*UnimplementedTasksServer) CleanupRunTask(context.Context, *CleanupRunTaskRequest) (*CleanupRunTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CleanupRunTask not implemented")
+}
+func (*UnimplementedTasksServer) CreateTask(context.Context, *Task) (*CreateTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTask not implemented")
 }
 func (*UnimplementedTasksServer) CheckTask(context.Context, *CheckTaskRequest) (*CheckTaskResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckTask not implemented")
@@ -671,6 +1361,24 @@ func (*UnimplementedTasksServer) CheckTask(context.Context, *CheckTaskRequest) (
 
 func RegisterTasksServer(s *grpc.Server, srv TasksServer) {
 	s.RegisterService(&_Tasks_serviceDesc, srv)
+}
+
+func _Tasks_GetAllTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).GetAllTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Tasks/GetAllTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).GetAllTask(ctx, req.(*GetAllTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Tasks_GetTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -709,6 +1417,78 @@ func _Tasks_FindTask_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Tasks_ChangePriorityTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangePriorityTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).ChangePriorityTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Tasks/ChangePriorityTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).ChangePriorityTask(ctx, req.(*ChangePriorityTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tasks_DeleteTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).DeleteTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Tasks/DeleteTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).DeleteTask(ctx, req.(*DeleteTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tasks_CleanupRunTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CleanupRunTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).CleanupRunTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Tasks/CleanupRunTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).CleanupRunTask(ctx, req.(*CleanupRunTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Tasks_CreateTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Task)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TasksServer).CreateTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Tasks/CreateTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TasksServer).CreateTask(ctx, req.(*Task))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Tasks_CheckTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CheckTaskRequest)
 	if err := dec(in); err != nil {
@@ -732,12 +1512,32 @@ var _Tasks_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*TasksServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "GetAllTask",
+			Handler:    _Tasks_GetAllTask_Handler,
+		},
+		{
 			MethodName: "GetTask",
 			Handler:    _Tasks_GetTask_Handler,
 		},
 		{
 			MethodName: "FindTask",
 			Handler:    _Tasks_FindTask_Handler,
+		},
+		{
+			MethodName: "ChangePriorityTask",
+			Handler:    _Tasks_ChangePriorityTask_Handler,
+		},
+		{
+			MethodName: "DeleteTask",
+			Handler:    _Tasks_DeleteTask_Handler,
+		},
+		{
+			MethodName: "CleanupRunTask",
+			Handler:    _Tasks_CleanupRunTask_Handler,
+		},
+		{
+			MethodName: "CreateTask",
+			Handler:    _Tasks_CreateTask_Handler,
 		},
 		{
 			MethodName: "CheckTask",

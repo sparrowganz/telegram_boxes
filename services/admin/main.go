@@ -52,17 +52,22 @@ func main() {
 		return
 	}
 
-	sender := bot.CreateBot(a, telegramSender, logger)
-	sender.Methods().SetTasks(task.CreateTasks())
-	sender.Methods().SetTypes(types.CreateType())
+	tasks , errCreateTasks := task.CreateTasks(os.Getenv("CORE_HOST"), os.Getenv("CORE_PORT"))
+	if errCreateTasks != nil {
+		_ = logger.System(errCreateTasks.Error())
+		return
+	}
 
-	servers , errCreateServers := servers.CreateServers(os.Getenv("CORE_HOST"), os.Getenv("CORE_PORT"))
+	srv , errCreateServers := servers.CreateServers(os.Getenv("CORE_HOST"), os.Getenv("CORE_PORT"))
 	if errCreateServers != nil {
 		_ = logger.System(errCreateServers.Error())
 		return
 	}
 
-	sender.Methods().SetServers(servers)
+	sender := bot.CreateBot(a, telegramSender, logger)
+	sender.Methods().SetTasks(tasks)
+	sender.Methods().SetTypes(types.CreateType())
+	sender.Methods().SetServers(srv)
 
 	wg.Add(1)
 	go func() {

@@ -6,7 +6,7 @@ import (
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
 	"telegram_boxes/services/admin/app/servers"
-	"telegram_boxes/services/admin/app/task"
+	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 )
 
 func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
@@ -71,11 +71,11 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 				return
 			}
 
-			data := job.GetData().(*task.Task)
+			data := job.GetData().(*protobuf.Task)
 
 			switch "" {
-			case data.TypeID:
-				b.chooseTypeInTaskHandler(update.Message.Chat.ID, update.Message.MessageID, callback.ID(), job)
+			case data.GetType():
+				b.chooseTypeInTaskHandler(update.Message.Chat.ID, update.Message.MessageID, callback.ID(), job, data)
 			default:
 				b.Telegram().SendError(update.Message.Chat.ID, "Что-то пошло не так попробуйте снова", nil)
 				return
@@ -300,7 +300,7 @@ const (
 )
 
 func (b *botData) createTaskInlineHandler(chatID int64, queryID string, messageID int, act actions.Job) {
-	b.Task().Create(act.GetData().(*task.Task))
+	b.Task().Create(act.GetData().(*protobuf.Task))
 
 	b.Telegram().ToQueue(&telegram.Message{
 		Message: tgbotapi.NewCallbackWithAlert(queryID, "Задание создано"),
@@ -313,10 +313,9 @@ func (b *botData) createTaskInlineHandler(chatID int64, queryID string, messageI
 	b.Telegram().Actions().Delete(chatID)
 }
 
-func (b *botData) chooseTypeInTaskHandler(chatID int64, messageID int, actionID string, act actions.Job) {
+func (b *botData) chooseTypeInTaskHandler(chatID int64, messageID int, actionID string, act actions.Job, data *protobuf.Task) {
 
-	d := act.GetData().(*task.Task)
-	d.TypeID = actionID
+	data.Type = actionID
 
 	act.ChangeAutoAddMessages(true)
 
@@ -370,7 +369,7 @@ func (b *botData) removeTaskInlineHandler(chatID int64, messageID int, actionID 
 		b.Telegram().Actions().Delete(chatID)
 	}
 	b.Telegram().Actions().New(chatID,
-		actions.NewJob(DeleteAction.String(), TaskType.String(), tsk.ID, messageID, false))
+		actions.NewJob(DeleteAction.String(), TaskType.String(), tsk.GetId(), messageID, false))
 
 	b.Telegram().ToQueue(&telegram.Message{
 		Message: tgbotapi.MessageConfig{
@@ -424,7 +423,7 @@ func (b *botData) changePriorityTaskInlineHandler(chatID int64, messageID int, q
 		UserId:  chatID,
 	})
 
-	b.getTaskInlineHandler(chatID, messageID, tsk.ID)
+	b.getTaskInlineHandler(chatID, messageID, tsk.GetId())
 }
 
 func (b *botData) getTaskInlineHandler(chatID int64, messageID int, actionID string) {
