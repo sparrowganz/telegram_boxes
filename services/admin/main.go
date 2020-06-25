@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sparrowganz/teleFly/telegram"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 	"os"
 	"runtime/debug"
 	"strconv"
@@ -16,6 +18,7 @@ import (
 	"telegram_boxes/services/admin/app/task"
 	"telegram_boxes/services/admin/app/types"
 	"telegram_boxes/services/admin/bot"
+	"telegram_boxes/services/admin/protobuf"
 )
 
 func main() {
@@ -85,7 +88,23 @@ func main() {
 		sender.StartHandle()
 	}()
 
-	_ = logger.System("Start admin bot")
+	lis, errCreateConn := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("ADMIN_PORT")))
+	if errCreateConn != nil {
+		_ = logger.System(fmt.Sprintf("failed to listen: %v", err))
+		return
+	}
+
+	GRPCServer := grpc.NewServer(
+		grpc.UnaryInterceptor(logger.Interceptor),
+	)
+	protobuf.RegisterAdminServer(GRPCServer, protobuf.CreateAdminService(sender))
+
+	_ = logger.System(fmt.Sprintf("ADMIN started on  :%s", os.Getenv("ADMIN_PORT")))
+	err = GRPCServer.Serve(lis)
+	if err != nil {
+		_ = logger.System(fmt.Sprintf("failed to serve: %s" + err.Error()))
+	}
+
 	wg.Wait()
 }
 

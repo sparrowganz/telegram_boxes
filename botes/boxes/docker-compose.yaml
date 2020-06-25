@@ -20,6 +20,7 @@ services:
 
       - LOGS_HOST=${LOGS_HOST}
       - LOGS_PORT=${LOGS_PORT}
+
       - CORE_HOST=${CORE_HOST}
       - CORE_PORT=${CORE_PORT}
 

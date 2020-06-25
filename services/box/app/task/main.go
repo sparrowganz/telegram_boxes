@@ -36,8 +36,6 @@ func (t *Data) connect(host, port, username string) error {
 }
 
 type Data struct {
-	host     string
-	port     string
 	username string
 	client   protobuf.TasksClient
 	serverID string
@@ -45,8 +43,6 @@ type Data struct {
 
 func CreateTasks(host, port, username string) (Tasks, error) {
 	d := &Data{
-		host:     host,
-		port:     port,
 		username: username,
 	}
 

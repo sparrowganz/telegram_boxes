@@ -5,12 +5,12 @@ import (
 	"telegram_boxes/services/core/app/db/mongo"
 )
 
-type Database interface {
+type Client interface {
 	Connector
 	Getter
 }
 
-func InitDatabaseConnect(host, port, username, password, database, mechanism string) (Database, error) {
+func InitDatabaseConnect(host, port, username, password, database, mechanism string) (Client, error) {
 	return mongo.CreateMongoDB(host, port, username, password, database, mechanism)
 }
 

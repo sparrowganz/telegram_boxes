@@ -38,16 +38,11 @@ func (t *tasksData) connect(host, port, username string) error {
 }
 
 type tasksData struct {
-	host   string
-	port   string
 	client protobuf.TasksClient
 }
 
 func CreateTasks(host, port string) (Tasks, error) {
-	d := &tasksData{
-		host: host,
-		port: port,
-	}
+	d := &tasksData{}
 
 	err := d.connect(host, port, "admin")
 	if err != nil {

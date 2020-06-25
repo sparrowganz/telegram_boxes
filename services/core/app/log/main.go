@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Log interface {
+type Client interface {
 	Connector
 	Getter
 	logger
@@ -35,7 +35,7 @@ type logData struct {
 	cl protobuf.LoggerClient
 }
 
-func CreateLogger(host, port string) (l Log, err error) {
+func CreateLogger(host, port string) (l Client, err error) {
 	l = &logData{}
 	err = l.connect(host, port)
 	return

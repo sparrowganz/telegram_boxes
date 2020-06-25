@@ -46,8 +46,6 @@ func (data *Data) ID() string {
 }
 
 type Data struct {
-	host     string
-	port     string
 	username string
 	client   protobuf.ServersClient
 	serverID string
@@ -55,8 +53,6 @@ type Data struct {
 
 func CreateServers(host, port, username string) (Servers, error) {
 	d := &Data{
-		host:     host,
-		port:     port,
 		username: username,
 	}
 

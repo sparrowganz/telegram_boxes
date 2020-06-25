@@ -32,7 +32,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer recovery(logger)
 
 	dbConnect, errInitDB := db.InitDatabaseConnect(
 		os.Getenv("MONGO_HOST"), os.Getenv("MONGO_PORT"),
@@ -59,6 +58,7 @@ func main() {
 	}
 
 	sender := bot.CreateBot(dbConnect, telegramSender, logger, os.Getenv("BOT_USERNAME"))
+	defer recovery(sender)
 	servData, errCreateServers := servers.CreateServers(
 		os.Getenv("CORE_HOST"),
 		os.Getenv("CORE_PORT"),
@@ -86,7 +86,7 @@ func main() {
 
 	wg.Add(1)
 	go func() {
-		defer recovery(logger)
+		defer recovery(sender)
 		//defer wg.Done()
 
 		sender.StartReadErrors()
@@ -94,15 +94,13 @@ func main() {
 
 	wg.Add(1)
 	go func() {
-		defer recovery(logger)
+		defer recovery(sender)
 		//defer wg.Done()
 
 		sender.StartHandle()
 	}()
 
 	_ = logger.System("Start @" + sender.Methods().Username() + " bot")
-
-
 
 	go waitForShutdown(sender)
 	wg.Wait()
@@ -121,10 +119,11 @@ func waitForShutdown(b bot.Bot) {
 	os.Exit(0)
 }
 
-func recovery(l sLog.Log) {
+func recovery(b bot.Bot) {
 	var err error
 	r := recover()
 	if r != nil {
+		_ = b.Methods().Servers().SendError("PANIC!!! @"+b.Methods().Username(), protobuf.Status_Recovering)
 		switch t := r.(type) {
 		case string:
 			err = errors.New(t)
@@ -134,7 +133,8 @@ func recovery(l sLog.Log) {
 			err = errors.New("Unknown error ")
 		}
 
-		_ = l.System(
+		_ = b.Methods().Log().System(
 			fmt.Sprintf("RECOVERY : %s \n %s", err.Error(), debug.Stack()))
+		_ = b.Methods().Servers().SendError("RECOVERED "+b.Methods().Username(), protobuf.Status_OK)
 	}
 }

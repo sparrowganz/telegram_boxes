@@ -230,7 +230,8 @@ func (sd *serverData) SendError(ctx context.Context, r *SendErrorRequest) (*Send
 	bot.SetStatus(r.GetStatus().String())
 	err = sd.DB().Models().Bots().UpdateBot(bot, session)
 
-	//todo Send ADMIN error
+	_ = sd.Admin().SendError(r.GetStatus().String(), username, r.GetError())
+
 	return out, nil
 }
 
@@ -273,6 +274,8 @@ func (sd *serverData) InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxR
 			_ = sd.Log().Error(action, username, err.Error())
 			return out, err
 		}
+
+		_ = sd.Admin().SendError("START", r.GetUsername(), "New box in system")
 	}
 
 	bot.SetActive()
@@ -284,6 +287,7 @@ func (sd *serverData) InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxR
 	err = sd.DB().Models().Bots().UpdateBot(bot, session)
 
 	out.ID = bot.ID().Hex()
+	_ = sd.Admin().SendError("UP", r.GetUsername(), "OLD Box start again")
 
 	return out, nil
 }

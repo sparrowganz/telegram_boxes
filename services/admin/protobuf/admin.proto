@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "services/admin/protobuf";
+
+service Admin {
+    rpc SendError (SendErrorRequest) returns (SendErrorResponse) {
+    }
+}
+
+message SendErrorRequest {
+    string username =1;
+    string status = 2;
+    string error = 3;
+}
+
+message SendErrorResponse {
+
+}

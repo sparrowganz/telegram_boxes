@@ -43,16 +43,12 @@ func (s *serversData) connect(host, port, username string) error {
 }
 
 type serversData struct {
-	host        string
-	port        string
 	client      protobuf.ServersClient
 	coefficient int64
 }
 
 func CreateServers(host, port string) (Servers, error) {
 	d := &serversData{
-		host:        host,
-		port:        port,
 		coefficient: 11,
 	}
 

@@ -7,7 +7,10 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/signal"
 	"runtime/debug"
+	"syscall"
+	"telegram_boxes/services/core/app/admin"
 	"telegram_boxes/services/core/app/db"
 	slog "telegram_boxes/services/core/app/log"
 	"telegram_boxes/services/core/protobuf"
@@ -31,11 +34,18 @@ func main() {
 		return
 	}
 
-	//Create new server
-	s := protobuf.CreateServer(dbConnect, logger)
+	adminClient, errAdmin := admin.CreateClient(os.Getenv("ADMIN_HOST"), os.Getenv("ADMIN_PORT"))
+	if errAdmin != nil {
+		_ = logger.System(errAdmin.Error())
+		return
+	}
 
+	//Create new server
+	s := protobuf.CreateServer(dbConnect, logger, adminClient)
+	s.LeadUpConnects()
 	//
 	defer recovery(s.Log())
+	go waitForShutdown(s)
 
 	lis, errCreateConn := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("CORE_PORT")))
 	if errCreateConn != nil {
@@ -58,8 +68,28 @@ func main() {
 	return
 }
 
+func waitForShutdown(b protobuf.MainServer) {
+	interruptChan := make(chan os.Signal, 1)
+	signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	// Block until we receive our signal.
+	<-interruptChan
+
+	session := b.DB().GetMainSession().Clone()
+	defer session.Close()
+
+	servers , _ := b.DB().Models().Bots().GetAll(session)
+	for _ , s := range servers {
+		s.Status = protobuf.Status_Fatal.String()
+		b.DB().Models().Bots().UpdateBot(s,session)
+		_ = b.Admin().SendError(s.Status, s.UserName, "Shutdown core")
+	}
+
+	os.Exit(0)
+}
+
 //Recovery application out of panic
-func recovery(l slog.Log) {
+func recovery(l slog.Client) {
 	var err error
 	r := recover()
 	if r != nil {
@@ -71,6 +101,7 @@ func recovery(l slog.Log) {
 		default:
 			err = errors.New("Unknown error ")
 		}
+
 		_ = l.System("RECOVERY :" + err.Error() + "\n" + string(debug.Stack()))
 	}
 }
