@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sparrowganz/teleFly/telegram"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -17,6 +19,7 @@ import (
 	"telegram_boxes/services/box/app/servers"
 	"telegram_boxes/services/box/app/task"
 	"telegram_boxes/services/box/bot"
+	boxProto "telegram_boxes/services/box/protobuf"
 	"telegram_boxes/services/box/protobuf/services/core/protobuf"
 )
 
@@ -60,6 +63,8 @@ func main() {
 	sender := bot.CreateBot(dbConnect, telegramSender, logger, os.Getenv("BOT_USERNAME"))
 	defer recovery(sender)
 	servData, errCreateServers := servers.CreateServers(
+		os.Getenv("APP_IP"),
+		os.Getenv("APP_PORT"),
 		os.Getenv("CORE_HOST"),
 		os.Getenv("CORE_PORT"),
 		sender.Methods().Username(),
@@ -100,9 +105,26 @@ func main() {
 		sender.StartHandle()
 	}()
 
-	_ = logger.System("Start @" + sender.Methods().Username() + " bot")
-
 	go waitForShutdown(sender)
+
+	lis, errCreateConn := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
+	if errCreateConn != nil {
+		_ = logger.System(fmt.Sprintf("failed to listen: %v", err))
+		return
+	}
+
+	GRPCServer := grpc.NewServer(
+		grpc.UnaryInterceptor(logger.Interceptor),
+	)
+	boxProto.RegisterBoxServer(GRPCServer, boxProto.CreateBoxService(sender))
+
+	_ = logger.System(fmt.Sprintf("Protobuf %v started on  :%s",
+		os.Getenv("BOT_USERNAME"), os.Getenv("APP_PORT")))
+	err = GRPCServer.Serve(lis)
+	if err != nil {
+		_ = logger.System(fmt.Sprintf("failed to serve: %s" + err.Error()))
+	}
+
 	wg.Wait()
 }
 

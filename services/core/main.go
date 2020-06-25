@@ -11,6 +11,7 @@ import (
 	"runtime/debug"
 	"syscall"
 	"telegram_boxes/services/core/app/admin"
+	"telegram_boxes/services/core/app/box"
 	"telegram_boxes/services/core/app/db"
 	slog "telegram_boxes/services/core/app/log"
 	"telegram_boxes/services/core/protobuf"
@@ -41,8 +42,8 @@ func main() {
 	}
 
 	//Create new server
-	s := protobuf.CreateServer(dbConnect, logger, adminClient)
-	s.LeadUpConnects()
+	s := protobuf.CreateServer(dbConnect, logger, adminClient, box.CreateClients(dbConnect))
+
 	//
 	defer recovery(s.Log())
 	go waitForShutdown(s)

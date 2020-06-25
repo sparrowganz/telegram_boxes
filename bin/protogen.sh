@@ -22,10 +22,18 @@ echo "------- Генерация клиента сервиса Admin"
 protoc -I$GOPATH/src/telegram_boxes \
     services/admin/protobuf/admin.proto --go_out=plugins=grpc:./services/core/protobuf
 
+echo "------- Генерация клиента сервиса Box"
+protoc -I$GOPATH/src/telegram_boxes \
+    services/box/protobuf/box.proto --go_out=plugins=grpc:./services/core/protobuf
+
 #----------------------------------------------------------------------------------
 #   Box
 #----------------------------------------------------------------------------------
 echo "Генерация сервера Box"
+
+echo "------- Генерация сервера Box"
+protoc -I$GOPATH/src/telegram_boxes \
+    services/box/protobuf/box.proto --go_out=plugins=grpc:.
 
 echo "------- Генерация клиента сервиса Tasks"
 protoc -I$GOPATH/src/telegram_boxes \

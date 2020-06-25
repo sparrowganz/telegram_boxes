@@ -104,7 +104,9 @@ message GetServerResponse {
 //  Init box
 //----------------------------------------------------------------------------------------------------------------------
 message InitBoxRequest {
-    string Username = 1;
+    string host = 1;
+    string port =2;
+    string username = 3;
 }
 
 message InitBoxResponse {

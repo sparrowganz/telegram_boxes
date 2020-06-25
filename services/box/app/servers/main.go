@@ -51,17 +51,17 @@ type Data struct {
 	serverID string
 }
 
-func CreateServers(host, port, username string) (Servers, error) {
+func CreateServers(currentHost, currentPort, coreHost, corePort, username string) (Servers, error) {
 	d := &Data{
 		username: username,
 	}
 
-	err := d.connect(host, port, username)
+	err := d.connect(coreHost, corePort, username)
 	if err != nil {
 		return nil, err
 	}
 
-	err = d.Init(username)
+	err = d.Init(currentHost, currentPort, username)
 	if err != nil {
 		return nil, err
 	}
@@ -70,10 +70,10 @@ func CreateServers(host, port, username string) (Servers, error) {
 }
 
 type Initer interface {
-	Init(username string) error
+	Init(host, port, username string) error
 }
 
-func (data *Data) Init(username string) error {
+func (data *Data) Init(host, port, username string) error {
 	if data.client == nil {
 		return errors.New("client not initialize")
 	}
@@ -81,6 +81,8 @@ func (data *Data) Init(username string) error {
 	res, err := data.client.InitBox(
 		app.SetCallContext("init", username),
 		&protobuf.InitBoxRequest{
+			Host:     host,
+			Port:     port,
 			Username: username,
 		})
 	if err != nil {

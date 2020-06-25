@@ -5,6 +5,8 @@ services:
     container_name: 'admin'
     build: '$GOPATH/src/telegram_boxes/services/admin'
     restart: always
+    ports:
+      - ${ADMIN_PORT}:${ADMIN_PORT}
     depends_on:
       - core
     environment:

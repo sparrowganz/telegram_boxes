@@ -26,7 +26,7 @@ func (a *Admin) SendError(_ context.Context, r *SendErrorRequest) (*SendErrorRes
 	for _, adminID := range a.Bot.Methods().Admins().GetAll() {
 		a.Bot.Methods().Telegram().ToQueue(&telegram.Message{
 			Message: tgbotapi.NewMessage(adminID,
-				fmt.Sprintf("Ошибка: %v(%v) : %v", r.GetUsername(), r.GetStatus(), r.GetError())),
+				fmt.Sprintf("%v(%v) : %v", r.GetUsername(), r.GetStatus(), r.GetError())),
 			UserId: adminID,
 		})
 	}

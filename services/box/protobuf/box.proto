@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "services/box/protobuf";
+
+service Box {
+    rpc Check (CheckRequest) returns (CheckResponse) {
+
+    }
+}
+
+message CheckRequest {
+    int64 chatID = 1;
+}
+
+message CheckResponse {
+
+}

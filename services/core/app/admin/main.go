@@ -49,6 +49,7 @@ func CreateClient(host, port string) (Client, error) {
 }
 
 func (c *clientData) SendError(status, username, err string) error {
+
 	_, sendErr := c.client.SendError(
 		app.SetCallContext("SendError", "core"),
 		&protobuf.SendErrorRequest{

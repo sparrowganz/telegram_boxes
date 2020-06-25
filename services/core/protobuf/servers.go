@@ -3,10 +3,8 @@ package protobuf
 import (
 	"context"
 	"errors"
-	"google.golang.org/grpc/peer"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"strings"
 	"sync"
 	"telegram_boxes/services/core/app"
 	"telegram_boxes/services/core/app/models"
@@ -39,13 +37,21 @@ func (sd *serverData) HardCheck(r *HardCheckRequest, stream Servers_HardCheckSer
 
 	wg := &sync.WaitGroup{}
 
-	for  range bots {
+	for _, bot := range bots {
 
 		wg.Add(1)
+		currentBot := bot
 		go func() {
 			defer wg.Done()
-			//todo send request to box
+			status, errCheck := sd.Box().CheckBox(currentBot, r.GetUserID())
+			if errCheck != nil {
+				currentBot.SetStatus(status)
+				_ = sd.DB().Models().Bots().UpdateBot(currentBot, session)
+				_ = sd.Admin().SendError(status, currentBot.Username(), errCheck.Error())
+				return
+			}
 
+			_ = sd.Admin().SendError(status, currentBot.Username(), "Check Successful")
 
 		}()
 	}
@@ -241,18 +247,8 @@ func (sd *serverData) InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxR
 
 	action, username := app.GetDataContext(ctx)
 
-	if r.GetUsername() == "" {
-		return out, errors.New("@username does not exist")
-	}
-
-	p, ok := peer.FromContext(ctx)
-	if !ok {
-		return out, errors.New(" peer not found ")
-	}
-
-	parts := strings.Split(p.Addr.String(), ":")
-	if len(parts) != 2 {
-		return out, errors.New(p.Addr.String() + " is not valid address")
+	if r.GetUsername() == "" || r.GetHost() == "" || r.GetPort() == "" {
+		return out, errors.New("init data does not exist")
 	}
 
 	session := sd.DB().GetMainSession().Clone()
@@ -266,7 +262,7 @@ func (sd *serverData) InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxR
 			return out, err
 		}
 
-		bot = models.CreateBot(parts[0], parts[1])
+		bot = models.CreateBot(r.GetHost(), r.GetPort())
 		bot.SetUsername(r.GetUsername())
 
 		err = sd.DB().Models().Bots().CreateBot(bot, session)
@@ -275,16 +271,19 @@ func (sd *serverData) InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxR
 			return out, err
 		}
 
+		_ = sd.Box().AddBox(bot)
 		_ = sd.Admin().SendError("START", r.GetUsername(), "New box in system")
+		return out, nil
 	}
 
 	bot.SetActive()
 	bot.SetStatus(Status_OK.String())
-	if bot.Address().Addr() != parts[0]+":"+parts[1] {
-		bot.Address().SetIP(parts[0])
-		bot.Address().SetPort(parts[1])
+	if bot.Address().Addr() != r.GetHost()+":"+r.GetPort() {
+		bot.Address().SetIP(r.GetHost())
+		bot.Address().SetPort(r.GetPort())
 	}
-	err = sd.DB().Models().Bots().UpdateBot(bot, session)
+	_ = sd.DB().Models().Bots().UpdateBot(bot, session)
+	_ = sd.Box().AddBox(bot)
 
 	out.ID = bot.ID().Hex()
 	_ = sd.Admin().SendError("UP", r.GetUsername(), "OLD Box start again")
