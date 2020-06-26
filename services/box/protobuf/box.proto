@@ -8,12 +8,48 @@ service Box {
     rpc Check (CheckRequest) returns (CheckResponse) {
 
     }
+
+    rpc GetStatistics (GetStatisticsRequest) returns (Statistic) {
+
+    }
+
+    rpc RemoveCheckTask (RemoveCheckTaskRequest) returns (RemoveCheckTaskResponse){
+
+    }
+
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+//  RemoveCheckTask
+//----------------------------------------------------------------------------------------------------------------------
+message RemoveCheckTaskRequest {
+    string taskID = 1;
+}
+
+message RemoveCheckTaskResponse {
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Check
+//----------------------------------------------------------------------------------------------------------------------
 message CheckRequest {
     int64 chatID = 1;
 }
 
 message CheckResponse {
 
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get Statistics
+//----------------------------------------------------------------------------------------------------------------------
+
+message GetStatisticsRequest {
+}
+
+message Statistic {
+    int64 all = 1;
+    int64 blocked = 2;
+    int64 current = 3;
 }

@@ -42,7 +42,7 @@ func (sd *serverData) CleanupRunTask(ctx context.Context,
 	r *CleanupRunTaskRequest) (*CleanupRunTaskResponse, error) {
 	out := &CleanupRunTaskResponse{}
 
-	//action, username := app.GetDataContext(ctx)
+	action, username := app.GetDataContext(ctx)
 
 	session := sd.DB().GetMainSession().Clone()
 	defer session.Close()
@@ -51,7 +51,22 @@ func (sd *serverData) CleanupRunTask(ctx context.Context,
 		return out, errors.New(" taskID is not bson objectID")
 	}
 
-	//todo remove check task from boxes
+	boxes, err := sd.DB().Models().Bots().GetAll(session)
+	if err != nil {
+		if err != mgo.ErrNotFound {
+			_ = sd.Log().Error(action, username, err.Error())
+		}
+
+		return out, err
+	}
+
+	for _, box := range boxes {
+		err = sd.Box().RemoveTask(box, r.GetTaskID())
+		if err != nil {
+			_ = sd.Admin().SendError("OK", "core", err.Error())
+		}
+	}
+
 
 	return out, nil
 }
@@ -69,9 +84,23 @@ func (sd *serverData) DeleteTask(ctx context.Context,
 		return out, errors.New(" taskID is not bson objectID")
 	}
 
-	//todo remove check task from boxes
+	boxes, err := sd.DB().Models().Bots().GetAll(session)
+	if err != nil {
+		if err != mgo.ErrNotFound {
+			_ = sd.Log().Error(action, username, err.Error())
+		}
 
-	err := sd.DB().Models().Tasks().RemoveTask(bson.ObjectIdHex(r.GetTaskID()), session)
+		return out, err
+	}
+
+	for _, box := range boxes {
+		err = sd.Box().RemoveTask(box, r.GetTaskID())
+		if err != nil {
+			_ = sd.Admin().SendError("OK", "core", err.Error())
+		}
+	}
+
+	err = sd.DB().Models().Tasks().RemoveTask(bson.ObjectIdHex(r.GetTaskID()), session)
 	if err != nil {
 		_ = sd.Log().Error(action, username, err.Error())
 		return out, err

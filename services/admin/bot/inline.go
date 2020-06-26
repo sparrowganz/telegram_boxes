@@ -388,15 +388,23 @@ func (b *botData) removeTaskInlineHandler(chatID int64, messageID int, actionID 
 
 func (b *botData) cleanupRunTaskInlineHandler(chatID int64, messageID int, queryID, actionID string) {
 
-	tsk, err := b.Task().CleanupRun(actionID)
+	b.Telegram().DeleteMessages(chatID, []int{messageID})
+	err := b.Task().CleanupRun(actionID)
 	if err != nil {
 		_ = b.Log().Error("", "", "cleanupRunTaskInlineHandler: "+err.Error())
-		b.Telegram().SendError(chatID, TaskNotFound, nil)
+		b.Telegram().SendError(chatID, err.Error(), nil)
+		return
+	}
+
+	tsk ,errGet := b.Task().GetTask(actionID)
+	if errGet != nil {
+		_ = b.Log().Error("", "", "cleanupRunTaskInlineHandler: "+errGet.Error())
+		b.Telegram().SendError(chatID, errGet.Error(), nil)
 		return
 	}
 
 	b.Telegram().ToQueue(&telegram.Message{
-		Message: tgbotapi.NewCallbackWithAlert(queryID, "Выполнение "+tsk.Name+" очищено"),
+		Message: tgbotapi.NewCallbackWithAlert(queryID, "Выполнение "+tsk.GetName()+" очищено"),
 		UserId:  chatID,
 	})
 

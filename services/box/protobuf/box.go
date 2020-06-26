@@ -18,6 +18,34 @@ func CreateBoxService(b bot.Bot) BoxService {
 
 type BoxService interface {
 	Check(ctx context.Context, r *CheckRequest) (*CheckResponse, error)
+	GetStatistics(ctx context.Context, r *GetStatisticsRequest) (*Statistic, error)
+	RemoveCheckTask(ctx context.Context, r *RemoveCheckTaskRequest) (*RemoveCheckTaskResponse, error)
+}
+
+func (b *Box) RemoveCheckTask(_ context.Context, r *RemoveCheckTaskRequest) (*RemoveCheckTaskResponse, error) {
+	out := &RemoveCheckTaskResponse{}
+
+	session := b.Bot.Methods().Database().GetMainSession().Clone()
+	defer session.Close()
+
+	err := b.Bot.Methods().Database().Models().Users().RemoveCheck(r.GetTaskID(), session)
+	if err != nil {
+		return out, err
+	}
+
+	return out, nil
+}
+
+func (b *Box) GetStatistics(_ context.Context, _ *GetStatisticsRequest) (*Statistic, error) {
+	out := &Statistic{}
+
+	session := b.Bot.Methods().Database().GetMainSession().Clone()
+	defer session.Close()
+
+	out.All = int64(b.Bot.Methods().Database().Models().Users().GetAllCount(session))
+	out.Blocked = int64(b.Bot.Methods().Database().Models().Users().GetBlockedCount(session))
+	out.Current = int64(b.Bot.Methods().Telegram().GetCurrentUsers())
+	return out, nil
 }
 
 func (b *Box) Check(ctx context.Context, r *CheckRequest) (*CheckResponse, error) {

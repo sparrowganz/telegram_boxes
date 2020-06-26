@@ -8,6 +8,7 @@ import (
 	"sync"
 	"telegram_boxes/services/core/app"
 	"telegram_boxes/services/core/app/models"
+	boxProto "telegram_boxes/services/core/protobuf/services/box/protobuf"
 )
 
 type Servers interface {
@@ -51,6 +52,8 @@ func (sd *serverData) HardCheck(r *HardCheckRequest, stream Servers_HardCheckSer
 				return
 			}
 
+			currentBot.SetStatus(status)
+			_ = sd.DB().Models().Bots().UpdateBot(currentBot, session)
 			_ = sd.Admin().SendError(status, currentBot.Username(), "Check Successful")
 
 		}()
@@ -135,7 +138,11 @@ func (sd *serverData) GetAllUsersCount(ctx context.Context,
 	}
 
 	for _, bot := range bots {
-		//todo get new info from bots
+
+		var stats = &boxProto.Statistic{}
+		if bot.IsActive() {
+			stats, _ = sd.Box().GetStats(bot)
+		}
 
 		out.Counts = append(out.Counts, &Counts{
 			Id:       bot.ID().Hex(),
@@ -145,14 +152,18 @@ func (sd *serverData) GetAllUsersCount(ctx context.Context,
 				Blocked: bot.Statistics().GetAll(),
 			},
 			New: &Count{
-				All:     0,
-				Blocked: 0,
+				All:     stats.GetAll(),
+				Blocked: stats.GetBlocked(),
 			},
-			Current: 0,
+			Current: stats.GetCurrent(),
 		})
 
-		bot.Statistics().SetAll(0)
-		bot.Statistics().SetBlocked(0)
+		if stats.GetAll() > 0 {
+			bot.Statistics().SetAll(stats.GetAll())
+		}
+		if stats.GetBlocked() > 0 {
+			bot.Statistics().SetBlocked(stats.GetBlocked())
+		}
 		_ = sd.DB().Models().Bots().UpdateBot(bot, session)
 	}
 
@@ -231,6 +242,10 @@ func (sd *serverData) SendError(ctx context.Context, r *SendErrorRequest) (*Send
 	if err != nil {
 		_ = sd.Log().Error(action, username, err.Error())
 		return out, err
+	}
+
+	if r.GetStatus() != Status_OK {
+		bot.InActive()
 	}
 
 	bot.SetStatus(r.GetStatus().String())

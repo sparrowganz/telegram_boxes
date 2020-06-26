@@ -29,6 +29,97 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+//----------------------------------------------------------------------------------------------------------------------
+//  RemoveCheckTask
+//----------------------------------------------------------------------------------------------------------------------
+type RemoveCheckTaskRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskID string `protobuf:"bytes,1,opt,name=taskID,proto3" json:"taskID,omitempty"`
+}
+
+func (x *RemoveCheckTaskRequest) Reset() {
+	*x = RemoveCheckTaskRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_box_protobuf_box_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoveCheckTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveCheckTaskRequest) ProtoMessage() {}
+
+func (x *RemoveCheckTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_box_protobuf_box_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveCheckTaskRequest.ProtoReflect.Descriptor instead.
+func (*RemoveCheckTaskRequest) Descriptor() ([]byte, []int) {
+	return file_services_box_protobuf_box_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *RemoveCheckTaskRequest) GetTaskID() string {
+	if x != nil {
+		return x.TaskID
+	}
+	return ""
+}
+
+type RemoveCheckTaskResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RemoveCheckTaskResponse) Reset() {
+	*x = RemoveCheckTaskResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_box_protobuf_box_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoveCheckTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveCheckTaskResponse) ProtoMessage() {}
+
+func (x *RemoveCheckTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_box_protobuf_box_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveCheckTaskResponse.ProtoReflect.Descriptor instead.
+func (*RemoveCheckTaskResponse) Descriptor() ([]byte, []int) {
+	return file_services_box_protobuf_box_proto_rawDescGZIP(), []int{1}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Check
+//----------------------------------------------------------------------------------------------------------------------
 type CheckRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -40,7 +131,7 @@ type CheckRequest struct {
 func (x *CheckRequest) Reset() {
 	*x = CheckRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_box_protobuf_box_proto_msgTypes[0]
+		mi := &file_services_box_protobuf_box_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -53,7 +144,7 @@ func (x *CheckRequest) String() string {
 func (*CheckRequest) ProtoMessage() {}
 
 func (x *CheckRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_services_box_protobuf_box_proto_msgTypes[0]
+	mi := &file_services_box_protobuf_box_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -66,7 +157,7 @@ func (x *CheckRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckRequest.ProtoReflect.Descriptor instead.
 func (*CheckRequest) Descriptor() ([]byte, []int) {
-	return file_services_box_protobuf_box_proto_rawDescGZIP(), []int{0}
+	return file_services_box_protobuf_box_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CheckRequest) GetChatID() int64 {
@@ -85,7 +176,7 @@ type CheckResponse struct {
 func (x *CheckResponse) Reset() {
 	*x = CheckResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_box_protobuf_box_proto_msgTypes[1]
+		mi := &file_services_box_protobuf_box_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -98,7 +189,7 @@ func (x *CheckResponse) String() string {
 func (*CheckResponse) ProtoMessage() {}
 
 func (x *CheckResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_services_box_protobuf_box_proto_msgTypes[1]
+	mi := &file_services_box_protobuf_box_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -111,7 +202,108 @@ func (x *CheckResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckResponse.ProtoReflect.Descriptor instead.
 func (*CheckResponse) Descriptor() ([]byte, []int) {
-	return file_services_box_protobuf_box_proto_rawDescGZIP(), []int{1}
+	return file_services_box_protobuf_box_proto_rawDescGZIP(), []int{3}
+}
+
+type GetStatisticsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetStatisticsRequest) Reset() {
+	*x = GetStatisticsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_box_protobuf_box_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetStatisticsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetStatisticsRequest) ProtoMessage() {}
+
+func (x *GetStatisticsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_box_protobuf_box_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetStatisticsRequest.ProtoReflect.Descriptor instead.
+func (*GetStatisticsRequest) Descriptor() ([]byte, []int) {
+	return file_services_box_protobuf_box_proto_rawDescGZIP(), []int{4}
+}
+
+type Statistic struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	All     int64 `protobuf:"varint,1,opt,name=all,proto3" json:"all,omitempty"`
+	Blocked int64 `protobuf:"varint,2,opt,name=blocked,proto3" json:"blocked,omitempty"`
+	Current int64 `protobuf:"varint,3,opt,name=current,proto3" json:"current,omitempty"`
+}
+
+func (x *Statistic) Reset() {
+	*x = Statistic{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_box_protobuf_box_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Statistic) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Statistic) ProtoMessage() {}
+
+func (x *Statistic) ProtoReflect() protoreflect.Message {
+	mi := &file_services_box_protobuf_box_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Statistic.ProtoReflect.Descriptor instead.
+func (*Statistic) Descriptor() ([]byte, []int) {
+	return file_services_box_protobuf_box_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Statistic) GetAll() int64 {
+	if x != nil {
+		return x.All
+	}
+	return 0
+}
+
+func (x *Statistic) GetBlocked() int64 {
+	if x != nil {
+		return x.Blocked
+	}
+	return 0
+}
+
+func (x *Statistic) GetCurrent() int64 {
+	if x != nil {
+		return x.Current
+	}
+	return 0
 }
 
 var File_services_box_protobuf_box_proto protoreflect.FileDescriptor
@@ -119,17 +311,39 @@ var File_services_box_protobuf_box_proto protoreflect.FileDescriptor
 var file_services_box_protobuf_box_proto_rawDesc = []byte{
 	0x0a, 0x1f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x62, 0x6f, 0x78, 0x2f, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x62, 0x6f, 0x78, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x12, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x22, 0x26, 0x0a, 0x0c, 0x43,
-	0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x63,
-	0x68, 0x61, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x63, 0x68, 0x61,
-	0x74, 0x49, 0x44, 0x22, 0x0f, 0x0a, 0x0d, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x32, 0x41, 0x0a, 0x03, 0x42, 0x6f, 0x78, 0x12, 0x3a, 0x0a, 0x05, 0x43,
-	0x68, 0x65, 0x63, 0x6b, 0x12, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
-	0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x17, 0x5a, 0x15, 0x73, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x73, 0x2f, 0x62, 0x6f, 0x78, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x12, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x22, 0x30, 0x0a, 0x16, 0x52,
+	0x65, 0x6d, 0x6f, 0x76, 0x65, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x22, 0x19, 0x0a,
+	0x17, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x26, 0x0a, 0x0c, 0x43, 0x68, 0x65, 0x63,
+	0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x63, 0x68, 0x61, 0x74,
+	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x63, 0x68, 0x61, 0x74, 0x49, 0x44,
+	0x22, 0x0f, 0x0a, 0x0d, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x16, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x53, 0x74, 0x61, 0x74, 0x69, 0x73, 0x74, 0x69,
+	0x63, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x51, 0x0a, 0x09, 0x53, 0x74, 0x61,
+	0x74, 0x69, 0x73, 0x74, 0x69, 0x63, 0x12, 0x10, 0x0a, 0x03, 0x61, 0x6c, 0x6c, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x03, 0x61, 0x6c, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x62, 0x6c, 0x6f, 0x63,
+	0x6b, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x65, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x07, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x32, 0xe3, 0x01, 0x0a,
+	0x03, 0x42, 0x6f, 0x78, 0x12, 0x3a, 0x0a, 0x05, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x16, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
+	0x12, 0x46, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x53, 0x74, 0x61, 0x74, 0x69, 0x73, 0x74, 0x69, 0x63,
+	0x73, 0x12, 0x1e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x47, 0x65, 0x74,
+	0x53, 0x74, 0x61, 0x74, 0x69, 0x73, 0x74, 0x69, 0x63, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x13, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x61,
+	0x74, 0x69, 0x73, 0x74, 0x69, 0x63, 0x22, 0x00, 0x12, 0x58, 0x0a, 0x0f, 0x52, 0x65, 0x6d, 0x6f,
+	0x76, 0x65, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x20, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x43, 0x68, 0x65,
+	0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x43,
+	0x68, 0x65, 0x63, 0x6b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x42, 0x17, 0x5a, 0x15, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x62,
+	0x6f, 0x78, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -144,16 +358,24 @@ func file_services_box_protobuf_box_proto_rawDescGZIP() []byte {
 	return file_services_box_protobuf_box_proto_rawDescData
 }
 
-var file_services_box_protobuf_box_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_services_box_protobuf_box_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_services_box_protobuf_box_proto_goTypes = []interface{}{
-	(*CheckRequest)(nil),  // 0: protobuf.CheckRequest
-	(*CheckResponse)(nil), // 1: protobuf.CheckResponse
+	(*RemoveCheckTaskRequest)(nil),  // 0: protobuf.RemoveCheckTaskRequest
+	(*RemoveCheckTaskResponse)(nil), // 1: protobuf.RemoveCheckTaskResponse
+	(*CheckRequest)(nil),            // 2: protobuf.CheckRequest
+	(*CheckResponse)(nil),           // 3: protobuf.CheckResponse
+	(*GetStatisticsRequest)(nil),    // 4: protobuf.GetStatisticsRequest
+	(*Statistic)(nil),               // 5: protobuf.Statistic
 }
 var file_services_box_protobuf_box_proto_depIdxs = []int32{
-	0, // 0: protobuf.Box.Check:input_type -> protobuf.CheckRequest
-	1, // 1: protobuf.Box.Check:output_type -> protobuf.CheckResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 0: protobuf.Box.Check:input_type -> protobuf.CheckRequest
+	4, // 1: protobuf.Box.GetStatistics:input_type -> protobuf.GetStatisticsRequest
+	0, // 2: protobuf.Box.RemoveCheckTask:input_type -> protobuf.RemoveCheckTaskRequest
+	3, // 3: protobuf.Box.Check:output_type -> protobuf.CheckResponse
+	5, // 4: protobuf.Box.GetStatistics:output_type -> protobuf.Statistic
+	1, // 5: protobuf.Box.RemoveCheckTask:output_type -> protobuf.RemoveCheckTaskResponse
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -166,7 +388,7 @@ func file_services_box_protobuf_box_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_services_box_protobuf_box_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CheckRequest); i {
+			switch v := v.(*RemoveCheckTaskRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -178,7 +400,55 @@ func file_services_box_protobuf_box_proto_init() {
 			}
 		}
 		file_services_box_protobuf_box_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RemoveCheckTaskResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_box_protobuf_box_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CheckRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_box_protobuf_box_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CheckResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_box_protobuf_box_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetStatisticsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_box_protobuf_box_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Statistic); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -196,7 +466,7 @@ func file_services_box_protobuf_box_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_services_box_protobuf_box_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -223,6 +493,8 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type BoxClient interface {
 	Check(ctx context.Context, in *CheckRequest, opts ...grpc.CallOption) (*CheckResponse, error)
+	GetStatistics(ctx context.Context, in *GetStatisticsRequest, opts ...grpc.CallOption) (*Statistic, error)
+	RemoveCheckTask(ctx context.Context, in *RemoveCheckTaskRequest, opts ...grpc.CallOption) (*RemoveCheckTaskResponse, error)
 }
 
 type boxClient struct {
@@ -242,9 +514,29 @@ func (c *boxClient) Check(ctx context.Context, in *CheckRequest, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *boxClient) GetStatistics(ctx context.Context, in *GetStatisticsRequest, opts ...grpc.CallOption) (*Statistic, error) {
+	out := new(Statistic)
+	err := c.cc.Invoke(ctx, "/protobuf.Box/GetStatistics", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *boxClient) RemoveCheckTask(ctx context.Context, in *RemoveCheckTaskRequest, opts ...grpc.CallOption) (*RemoveCheckTaskResponse, error) {
+	out := new(RemoveCheckTaskResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Box/RemoveCheckTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BoxServer is the server API for Box service.
 type BoxServer interface {
 	Check(context.Context, *CheckRequest) (*CheckResponse, error)
+	GetStatistics(context.Context, *GetStatisticsRequest) (*Statistic, error)
+	RemoveCheckTask(context.Context, *RemoveCheckTaskRequest) (*RemoveCheckTaskResponse, error)
 }
 
 // UnimplementedBoxServer can be embedded to have forward compatible implementations.
@@ -253,6 +545,12 @@ type UnimplementedBoxServer struct {
 
 func (*UnimplementedBoxServer) Check(context.Context, *CheckRequest) (*CheckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
+}
+func (*UnimplementedBoxServer) GetStatistics(context.Context, *GetStatisticsRequest) (*Statistic, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStatistics not implemented")
+}
+func (*UnimplementedBoxServer) RemoveCheckTask(context.Context, *RemoveCheckTaskRequest) (*RemoveCheckTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveCheckTask not implemented")
 }
 
 func RegisterBoxServer(s *grpc.Server, srv BoxServer) {
@@ -277,6 +575,42 @@ func _Box_Check_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Box_GetStatistics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStatisticsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BoxServer).GetStatistics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Box/GetStatistics",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BoxServer).GetStatistics(ctx, req.(*GetStatisticsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Box_RemoveCheckTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveCheckTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BoxServer).RemoveCheckTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Box/RemoveCheckTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BoxServer).RemoveCheckTask(ctx, req.(*RemoveCheckTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Box_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "protobuf.Box",
 	HandlerType: (*BoxServer)(nil),
@@ -284,6 +618,14 @@ var _Box_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Check",
 			Handler:    _Box_Check_Handler,
+		},
+		{
+			MethodName: "GetStatistics",
+			Handler:    _Box_GetStatistics_Handler,
+		},
+		{
+			MethodName: "RemoveCheckTask",
+			Handler:    _Box_RemoveCheckTask_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

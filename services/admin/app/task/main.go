@@ -98,7 +98,7 @@ func (t *tasksData) ChangePriority(id string) (*protobuf.Task, error) {
 
 type Remover interface {
 	Delete(id string) error
-	CleanupRun(id string) (*protobuf.Task, error)
+	CleanupRun(id string) error
 }
 
 func (t *tasksData) Delete(id string) error {
@@ -111,17 +111,17 @@ func (t *tasksData) Delete(id string) error {
 	return err
 }
 
-func (t *tasksData) CleanupRun(id string) (*protobuf.Task, error) {
-	res, err := t.client.CleanupRunTask(
+func (t *tasksData) CleanupRun(id string) error {
+	_, err := t.client.CleanupRunTask(
 		app.SetCallContext("ChangePriority", "admin"),
 		&protobuf.CleanupRunTaskRequest{
 			TaskID: id,
 		})
 	if err != nil {
-		return &protobuf.Task{}, err
+		return err
 	}
 
-	return res.GetTask(), nil
+	return nil
 }
 
 type Creator interface {

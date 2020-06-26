@@ -88,7 +88,41 @@ func (c *ClientsData) add(bot models.Bot) (protobuf.BoxClient, error) {
 
 type Requester interface {
 	CheckBox(bot models.Bot, chatID int64) (string, error)
+	GetStats(bot models.Bot) (stats *protobuf.Statistic, err error)
+	RemoveTask(bot models.Bot, taskID string) error
 	check(client protobuf.BoxClient, chatID int64) (string, error)
+}
+
+func (c *ClientsData) RemoveTask(bot models.Bot, taskID string) (err error) {
+	client, ok := c.get(bot.ID().Hex())
+	if !ok {
+		client, err = c.add(bot)
+		if err != nil {
+			return err
+		}
+	}
+	_, err = client.RemoveCheckTask(
+		app.SetCallContext("RemoveTask", "core"),
+		&protobuf.RemoveCheckTaskRequest{
+			TaskID: taskID,
+		},
+	)
+	return
+}
+
+func (c *ClientsData) GetStats(bot models.Bot) (stats *protobuf.Statistic, err error) {
+	client, ok := c.get(bot.ID().Hex())
+	if !ok {
+		client, err = c.add(bot)
+		if err != nil {
+			return nil, err
+		}
+	}
+	stats, err = client.GetStatistics(
+		app.SetCallContext("getStats", "core"),
+		&protobuf.GetStatisticsRequest{},
+	)
+	return
 }
 
 func (c *ClientsData) CheckBox(bot models.Bot, chatID int64) (status string, err error) {
