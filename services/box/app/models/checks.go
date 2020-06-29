@@ -17,6 +17,7 @@ type UserCheckData interface {
 	Delete(id string)
 	GetAll() []string
 	GetAllChecks() (out []string)
+	CleanChecks()
 }
 
 func (u *UserData) Check(id string) bool {
@@ -70,4 +71,8 @@ func (u *UserData) GetAllChecks() (out []string) {
 	}
 
 	return
+}
+
+func (u *UserData) CleanChecks() {
+	u.ChecksData = map[string]string{}
 }

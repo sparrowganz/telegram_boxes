@@ -12,6 +12,7 @@ import (
 type Client interface {
 	connector
 	SendError(status, username, err string) error
+	CheckExecution(url string, chatID int64) (bool, error)
 }
 
 type clientData struct {
@@ -59,4 +60,18 @@ func (c *clientData) SendError(status, username, err string) error {
 		},
 	)
 	return sendErr
+}
+
+func (c *clientData) CheckExecution(url string, chatID int64) (bool, error) {
+	res, sendErr := c.client.CheckExecution(
+		app.SetCallContext("CheckExecution", "core"),
+		&protobuf.CheckExecutionRequest{
+			Url:    url,
+			ChatID: chatID,
+		},
+	)
+	if sendErr != nil {
+		return false, sendErr
+	}
+	return res.GetIsCheck() , nil
 }

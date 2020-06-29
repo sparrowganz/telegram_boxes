@@ -267,7 +267,10 @@ func (sd *serverData) CheckTask(ctx context.Context, r *CheckTaskRequest) (*Chec
 	}
 
 	if task.WithCheck() {
-		//todo check task
+		out.IsCheck , err = sd.Admin().CheckExecution(task.URL(), r.GetChatID())
+		if err != nil {
+			return out, err
+		}
 	}else{
 		out.IsCheck = true
 	}

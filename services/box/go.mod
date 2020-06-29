@@ -6,7 +6,7 @@ require (
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/golang/protobuf v1.4.2
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
-	github.com/sparrowganz/teleFly v0.0.0-20200626135326-bcc2381f57e6
+	github.com/sparrowganz/teleFly v0.0.0-20200626203428-b559eab64ae7
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect

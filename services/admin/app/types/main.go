@@ -13,19 +13,20 @@ type typeData struct {
 
 
 type Type struct {
-	ID   string
-	Name string
+	ID      string
+	Name    string
+	IsCheck bool
 }
 
 func CreateType() Types {
 	return &typeData{
 		storage: []*Type{
-			{"channel", "Телеграмм подписка"},
-			{"checkChannel", "Телеграмм подписка (check)"},
-			{"subscribeInstagram", "Подписка инстаграм"},
-			{"likeInstagram", "Лайки инстаграм"},
-			{"openWeb","Открыть ссылку"},
-			{"activateBot","Активировать бота"},
+			{"channel", "Телеграмм подписка", false},
+			{"checkChannel", "Телеграмм подписка (check)", true},
+			{"subscribeInstagram", "Подписка инстаграм", false},
+			{"likeInstagram", "Лайки инстаграм", false},
+			{"openWeb", "Открыть ссылку", false},
+			{"activateBot", "Активировать бота", false},
 		},
 	}
 }
@@ -33,6 +34,15 @@ func CreateType() Types {
 type Getter interface {
 	GetAllTypes() []*Type
 	GetType(id string) (*Type, error)
+	WithCheck(id string) bool
+}
+
+func (t *typeData) WithCheck(id string) bool {
+	tp, err := t.GetType(id)
+	if err != nil {
+		return false
+	}
+	return tp.IsCheck
 }
 
 func (t *typeData) GetAllTypes() []*Type {

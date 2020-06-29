@@ -28,6 +28,7 @@ func (b *botData) output(telegramID int64, tp config.KeyboardType) (text string,
 		return
 	}
 
+	//find is set in DB output
 	out, errOutput := b.Database().Models().Outputs().FindOutputByUserID(currentUser.ID().Hex(), session)
 	if errOutput != nil {
 
@@ -38,7 +39,25 @@ func (b *botData) output(telegramID int64, tp config.KeyboardType) (text string,
 		text = b.GetOutputText()
 		_, keyb = b.GetOutputKeyboard()
 
+	} else if time.Now().Sub(out.Timestamp().Created()) >= time.Hour*5*24 {
+
+		//todo delete task
+		//Check all already checked tasks
+		for _, task := range out.Tasks() {
+			isCheck, _ := b.Task().CheckTask(currentUser.Telegram().ID(), task)
+			if !isCheck {
+
+				tsk ,_ := b.Task().FindTask(task)
+
+				text = b.GetErrorTaskOutputText(tsk.GetLink())
+				return
+			}
+		}
+
+		text = b.GetErrorOutputText()
+
 	} else {
+		//View current  output text
 		text = b.GetCurrentOutputText(out.Cost(), out.PaymentGW(), out.Data(), out.Timestamp().Created().Add(time.Hour*24*5))
 		if tp == config.Inline {
 			keyb = b.GetCancelKeyboard(config.Inline)
@@ -63,6 +82,10 @@ func (b *botData) chooseOutputGW(telegramID int64, tp config.KeyboardType,
 	if !currentUser.Verified() {
 		text = b.GetNotVerifiedOutputText(b.getReferralLink(telegramID))
 		return
+	}
+
+	if len(currentUser.GetAllChecks()) == 0 {
+		text = b.ChecksNotFoundText()
 	}
 
 	if currentUser.Balance().Bot() < b.Config().Counts().MinOutput {
@@ -102,6 +125,7 @@ func (b *botData) setOutputData(telegramID int64, data string, out *models.Outpu
 	keyb = b.GetMainKeyboard()
 
 	currentUser.Balance().SetBot(0)
+	currentUser.CleanChecks()
 	_ = b.Database().Models().Users().UpdateUser(currentUser, session)
 
 	return

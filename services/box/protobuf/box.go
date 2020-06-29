@@ -61,7 +61,6 @@ func (b *Box) Check(ctx context.Context, r *CheckRequest) (*CheckResponse, error
 	if !<-ch {
 		err = errors.New(" Message not send ")
 	}
-	close(ch)
 
 	return &CheckResponse{}, err
 

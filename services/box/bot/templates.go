@@ -133,6 +133,23 @@ func (b *botData) GetOutputText() string {
 	return b.Config().Texts().Output
 }
 
+func (b *botData) GetErrorOutputText() string {
+	return b.Config().Texts().ErrorOutput
+}
+
+func (b *botData) GetErrorTaskOutputText(link string) string {
+	txt := b.Config().Texts().ErrorTaskOutput
+
+	if strings.Contains(txt, "@link") {
+		txt = strings.Replace(txt, "@link", link, -1)
+	}
+	return txt
+}
+
+func (b *botData) ChecksNotFoundText() string {
+	return b.Config().Texts().ChecksNotFound
+}
+
 func (b *botData) GetCurrentOutputText(cost int, gateway, data string, tm time.Time) string {
 
 	txt := b.Config().Texts().CurrentOutput
@@ -154,9 +171,9 @@ func (b *botData) GetCurrentOutputText(cost int, gateway, data string, tm time.T
 		var tmString string
 		res := tm.Sub(time.Now())
 		if res.Hours() < 24 {
-			tmString = fmt.Sprintf("%vч.", res.Hours())
+			tmString = fmt.Sprintf("%v часов", res.Hours())
 		} else {
-			tmString = fmt.Sprintf("%vд.", int(res.Hours()/24))
+			tmString = fmt.Sprintf("%v дней %v часов", int(res.Hours()/24), int(res.Hours())-int(res.Hours()/24))
 		}
 
 		txt = strings.Replace(txt, "@time", tmString, -1)

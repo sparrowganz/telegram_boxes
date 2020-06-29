@@ -101,6 +101,9 @@ type Texts struct {
 	TaskIsAlreadyCheck  string `json:"taskIsAlreadyCheck"`
 	SuccessCheckTask    string `json:"successCheckTask"`
 	SkipTask            string `json:"skipTask"`
+	ChecksNotFound      string `json:"checksNotFound"`
+	ErrorTaskOutput     string `json:"errorTaskOutput"`
+	ErrorOutput         string `json:"errorOutput"`
 }
 
 type Counts struct {

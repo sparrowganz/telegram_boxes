@@ -300,7 +300,7 @@ const (
 )
 
 func (b *botData) createTaskInlineHandler(chatID int64, queryID string, messageID int, act actions.Job) {
-	b.Task().Create(act.GetData().(*protobuf.Task))
+	_ = b.Task().Create(act.GetData().(*protobuf.Task))
 
 	b.Telegram().ToQueue(&telegram.Message{
 		Message: tgbotapi.NewCallbackWithAlert(queryID, "Задание создано"),
@@ -316,6 +316,7 @@ func (b *botData) createTaskInlineHandler(chatID int64, queryID string, messageI
 func (b *botData) chooseTypeInTaskHandler(chatID int64, messageID int, actionID string, act actions.Job, data *protobuf.Task) {
 
 	data.Type = actionID
+	data.WithCheck = b.Types().WithCheck(actionID)
 
 	act.ChangeAutoAddMessages(true)
 

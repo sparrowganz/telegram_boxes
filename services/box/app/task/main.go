@@ -12,7 +12,6 @@ import (
 type Tasks interface {
 	connector
 	Getter
-	Remover
 }
 
 type connector interface {
@@ -99,13 +98,5 @@ func (t *Data) GetTask(completedTask []string) (*protobuf.Task, error) {
 	}
 
 	return res.GetTask(), nil
-
-}
-
-type Remover interface {
-	CleanupRun(id string)
-}
-
-func (t *Data) CleanupRun(id string) {
 
 }

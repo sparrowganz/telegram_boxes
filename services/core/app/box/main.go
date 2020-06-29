@@ -55,8 +55,14 @@ func CreateClients(client db.Client) Clients {
 		conn, err := c.connect(bot.Address().IP(), bot.Address().Port(), bot.Username())
 		if err != nil {
 			bot.SetStatus("inactive")
+			bot.InActive()
 			_ = client.Models().Bots().UpdateBot(bot, client.GetMainSession())
 		}
+
+		bot.SetStatus("OK")
+		bot.SetActive()
+		_ = client.Models().Bots().UpdateBot(bot, client.GetMainSession())
+
 		c.m.Lock()
 		c.storage[bot.ID().Hex()] = conn
 		c.m.Unlock()

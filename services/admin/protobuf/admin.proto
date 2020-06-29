@@ -7,14 +7,27 @@ option go_package = "services/admin/protobuf";
 service Admin {
     rpc SendError (SendErrorRequest) returns (SendErrorResponse) {
     }
+
+    rpc CheckExecution (CheckExecutionRequest) returns (CheckExecutionResponse) {
+
+    }
 }
 
 message SendErrorRequest {
-    string username =1;
+    string username = 1;
     string status = 2;
     string error = 3;
 }
 
 message SendErrorResponse {
 
+}
+
+message CheckExecutionRequest {
+    string url = 1;
+    int64 chatID = 2;
+}
+
+message CheckExecutionResponse {
+    bool isCheck = 1;
 }
