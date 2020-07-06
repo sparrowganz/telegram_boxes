@@ -20,7 +20,21 @@ func CreateAdminService(b bot.Bot) AdminService {
 
 type AdminService interface {
 	SendError(ctx context.Context, r *SendErrorRequest) (*SendErrorResponse, error)
+	SendMessage(ctx context.Context, r *SendMessageRequest) (*SendMessageResponse, error)
 	CheckExecution(ctx context.Context, r *CheckExecutionRequest) (*CheckExecutionResponse, error)
+}
+
+func (a *Admin) SendMessage(_ context.Context, r *SendMessageRequest) (*SendMessageResponse, error) {
+	out := &SendMessageResponse{}
+
+	for _, adminID := range a.Bot.Methods().Admins().GetAll() {
+		a.Bot.Methods().Telegram().ToQueue(&telegram.Message{
+			Message: tgbotapi.NewMessage(adminID,
+				fmt.Sprintf("%v: %v", r.GetUsername(), r.GetMessage())),
+			UserId: adminID,
+		})
+	}
+	return out, nil
 }
 
 func (a *Admin) SendError(_ context.Context, r *SendErrorRequest) (*SendErrorResponse, error) {

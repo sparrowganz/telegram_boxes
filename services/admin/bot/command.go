@@ -78,7 +78,7 @@ func (b *botData) tasksCommandHandler(chatID int64) {
 				},
 				Text:                  txt,
 				ParseMode:             tgbotapi.ModeMarkdown,
-				DisableWebPagePreview: true,
+				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
 		})
@@ -89,6 +89,7 @@ func (b *botData) tasksCommandHandler(chatID int64) {
 func (b *botData) addTaskCommandHandler(chatID int64) {
 	if j, ok := b.Telegram().Actions().Get(chatID); ok {
 		b.Telegram().DeleteMessages(chatID, j.GetMessageIDs())
+		j.FlushMessageId()
 		b.Telegram().Actions().Delete(chatID)
 	}
 	b.Telegram().Actions().New(chatID,
@@ -104,7 +105,7 @@ func (b *botData) addTaskCommandHandler(chatID int64) {
 				},
 				Text:                  "Выберите тип",
 				ParseMode:             tgbotapi.ModeMarkdown,
-				DisableWebPagePreview: true,
+				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
 		})
@@ -176,44 +177,45 @@ func (b *botData) statisticsCommandHandler(chatID int64, isFake bool) {
 
 func (b *botData) broadcastCommandHandler(chatID int64) {
 
-	/*if len(serv) == 0 {
-		b.Telegram().ToQueue(
-			&telegram.Message{
-				Message: tgbotapi.MessageConfig{
-					BaseChat: tgbotapi.BaseChat{
-						ChatID:      chatID,
-					},
-					Text:                  "Телеграмм боты не найдены",
-					ParseMode:             tgbotapi.ModeMarkdown,
-					DisableWebPagePreview: false,
-				},
-				UserId: chatID,
-			})
-		return
-	}*/
+	var isSetBroadcast bool
+	stats, err := b.Servers().GetAllBroadcasts()
+	if err == nil && len(stats) > 0 {
+		isSetBroadcast = true
+	}
 
 	b.Telegram().ToQueue(
 		&telegram.Message{
-			Message: tgbotapi.NewMessage(chatID, "Здесь будет отображены текущие рассылки и создание новой"),
-			UserId:  chatID,
+			Message: tgbotapi.MessageConfig{
+				BaseChat: tgbotapi.BaseChat{
+					ChatID:      chatID,
+					ReplyMarkup: getMainBroadcastKeyboard(isSetBroadcast),
+				},
+				Text:                  "Меню управления рассылок: ",
+				ParseMode:             tgbotapi.ModeMarkdown,
+				DisableWebPagePreview: false,
+			},
+			UserId: chatID,
 		})
+
+	b.Telegram().Actions().New(chatID, actions.NewJob(
+		AddAction.String(),BroadcastType.String() , &protobuf.StartBroadcastRequest{}, 0, true))
 	return
 }
 
 func (b *botData) diagnosticsCommandHandler(chatID int64) {
 
-	sStatus, err := b.Servers().GetAllServers()
+	servers, err := b.Servers().GetAllServers()
 	if err != nil {
 		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
 		return
 	}
 
-	if len(sStatus) == 0 {
+	if len(servers) == 0 {
 		b.Telegram().ToQueue(
 			&telegram.Message{
 				Message: tgbotapi.MessageConfig{
 					BaseChat: tgbotapi.BaseChat{
-						ChatID:      chatID,
+						ChatID: chatID,
 					},
 					Text:                  "Телеграмм боты не найдены",
 					ParseMode:             tgbotapi.ModeMarkdown,
@@ -226,7 +228,7 @@ func (b *botData) diagnosticsCommandHandler(chatID int64) {
 
 	var txt string
 
-	for _, status := range sStatus {
+	for _, status := range servers {
 		txt += status.GetUsername() + " (" + status.GetStatus() + ")\n"
 	}
 

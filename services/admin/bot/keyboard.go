@@ -7,6 +7,7 @@ import (
 	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 )
 
+
 func cancelButton() (b keyboard.Button) {
 	return keyboard.NewButton().SetText("Отмена").SetData(CancelType.String())
 }
@@ -139,5 +140,127 @@ func getTaskKeyboard(tsk *protobuf.Task) *tgbotapi.InlineKeyboardMarkup {
 
 	keyb := tgbotapi.NewInlineKeyboardMarkup(row1, row2, row3)
 
+	return &keyb
+}
+
+func addButtonBroadcastKeyboard(isHasContent bool) *tgbotapi.InlineKeyboardMarkup {
+
+	var rows [][]tgbotapi.InlineKeyboardButton
+
+	if isHasContent {
+		nextButton, _ := keyboard.NewButton().SetText("Добавить клавишу").SetData(
+			BroadcastType.String(), AddAction.String(), ButtonID).ToInline()
+
+		rows = append(rows, tgbotapi.NewInlineKeyboardRow(nextButton))
+
+		sendButton, _ := keyboard.NewButton().SetText("Начать рассылку").SetData(
+			BroadcastType.String(), SendAction.String()).ToInline()
+		rows = append(rows, tgbotapi.NewInlineKeyboardRow(sendButton))
+	}
+
+	cancelB, _ := cancelButton().ToInline()
+	rows = append(rows, tgbotapi.NewInlineKeyboardRow(cancelB))
+
+	k := tgbotapi.NewInlineKeyboardMarkup(rows...)
+	return &k
+}
+
+func chooseServersKeyboard(chooseServersID []string, servs []*protobuf.Server) *tgbotapi.InlineKeyboardMarkup {
+	var row []tgbotapi.InlineKeyboardButton
+	var rows [][]tgbotapi.InlineKeyboardButton
+
+	var hasChoose bool
+	for _, srv := range servs {
+
+		var smile = "❌ "
+		for _, id := range chooseServersID {
+			if id == srv.Id {
+				smile = "✅ "
+				hasChoose = true
+				break
+			}
+		}
+
+		but, _ := keyboard.NewButton().SetText(smile+srv.Username).SetData(
+			BroadcastType.String(), ChooseAction.String(), srv.Id).ToInline()
+
+		row = append(row, but)
+		if len(row) == 2 {
+			rows = append(rows, row)
+			row = []tgbotapi.InlineKeyboardButton{}
+		}
+	}
+	if len(row) != 0 {
+		rows = append(rows, row)
+	}
+
+	if hasChoose {
+		nextButton, _ := keyboard.NewButton().SetText("Сохранить").SetData(
+			BroadcastType.String(), AddAction.String()).ToInline()
+		rows = append(rows, tgbotapi.NewInlineKeyboardRow(nextButton))
+	}
+	cancelB, _ := cancelButton().ToInline()
+
+	rows = append(rows, tgbotapi.NewInlineKeyboardRow(cancelB))
+
+	k := tgbotapi.NewInlineKeyboardMarkup(rows...)
+	return &k
+}
+
+func getMainBroadcastKeyboard(isSetBroadcast bool) *tgbotapi.InlineKeyboardMarkup {
+
+	var rows [][]tgbotapi.InlineKeyboardButton
+
+	if isSetBroadcast {
+		getBroadcasts, _ := keyboard.NewButton().SetText("Текущие рассылки").SetData(
+			BroadcastType.String(), GetAction.String(), "all").ToInline()
+		rows = append(rows, tgbotapi.NewInlineKeyboardRow(getBroadcasts))
+	}
+
+	addBroadcast, _ := keyboard.NewButton().SetText("Новая рассылка").SetData(
+		BroadcastType.String(), AddAction.String()).ToInline()
+	rows = append(rows, tgbotapi.NewInlineKeyboardRow(addBroadcast))
+
+	keyb := tgbotapi.NewInlineKeyboardMarkup(rows...)
+
+	return &keyb
+}
+
+func backMenu() *tgbotapi.InlineKeyboardMarkup {
+	cancel, _ := keyboard.NewButton().SetText("Отмена").SetData(
+		BroadcastType.String(), DeleteAction.String(), ButtonID).ToInline()
+	keyb := tgbotapi.NewInlineKeyboardMarkup(tgbotapi.NewInlineKeyboardRow(cancel))
+	return &keyb
+}
+
+func chooseBroadcastBot(data map[string]string) *tgbotapi.InlineKeyboardMarkup {
+	var rows [][]tgbotapi.InlineKeyboardButton
+
+	for username, id := range data {
+		bot, _ := keyboard.NewButton().SetText(username).SetData(
+			BroadcastType.String(), GetAction.String(), id).ToInline()
+		rows = append(rows, tgbotapi.NewInlineKeyboardRow(bot))
+	}
+
+	cancelB, _ := cancelButton().ToInline()
+	rows = append(rows, tgbotapi.NewInlineKeyboardRow(cancelB))
+
+	keyb := tgbotapi.NewInlineKeyboardMarkup(rows...)
+	return &keyb
+}
+
+func actionsBroadcastBot(data map[string]string) *tgbotapi.InlineKeyboardMarkup {
+	var rows [][]tgbotapi.InlineKeyboardButton
+
+	for id, title := range data {
+		bot, _ := keyboard.NewButton().SetText("Остановить от "+title).SetData(
+			BroadcastType.String(), StopAction.String(), id).ToInline()
+		rows = append(rows, tgbotapi.NewInlineKeyboardRow(bot))
+	}
+
+	cancelB, _ := cancelButton().ToInline()
+	rows = append(rows, tgbotapi.NewInlineKeyboardRow(cancelB))
+
+	keyb := tgbotapi.NewInlineKeyboardMarkup(rows...)
 	return &keyb
 }

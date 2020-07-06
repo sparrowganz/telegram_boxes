@@ -3,6 +3,7 @@ package protobuf
 import (
 	"telegram_boxes/services/core/app/admin"
 	"telegram_boxes/services/core/app/box"
+	"telegram_boxes/services/core/app/broadcast"
 	"telegram_boxes/services/core/app/db"
 	"telegram_boxes/services/core/app/log"
 )
@@ -15,6 +16,7 @@ type MainServer interface {
 	DB() db.Client
 	Log() log.Client
 	Box() box.Clients
+	Broadcast() broadcast.Broadcaster
 }
 
 type serverData struct {
@@ -22,6 +24,7 @@ type serverData struct {
 	logger   log.Client
 	admin    admin.Client
 	boxes    box.Clients
+	broadcast broadcast.Broadcaster
 }
 
 func CreateServer(
@@ -33,12 +36,17 @@ func CreateServer(
 		logger:   log,
 		admin:    a,
 		boxes:    c,
+		broadcast: broadcast.Create(),
 	}
 }
 
 
 func (sd *serverData) Admin() admin.Client {
 	return sd.admin
+}
+
+func (sd *serverData) Broadcast() broadcast.Broadcaster {
+	return sd.broadcast
 }
 
 func (sd *serverData) Box() box.Clients {

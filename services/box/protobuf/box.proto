@@ -13,10 +13,36 @@ service Box {
 
     }
 
-    rpc RemoveCheckTask (RemoveCheckTaskRequest) returns (RemoveCheckTaskResponse){
+    rpc RemoveCheckTask (RemoveCheckTaskRequest) returns (RemoveCheckTaskResponse) {
 
     }
 
+    rpc StartBroadcast (StartBroadcastRequest) returns (stream Stats) {
+
+    }
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  StartBroadcast
+//----------------------------------------------------------------------------------------------------------------------
+
+message StartBroadcastRequest {
+    string type = 1;
+    string fileLink = 2;
+    repeated Button buttons = 3;
+    string text = 4;
+    int64 chatID = 5;
+}
+
+message Button {
+    string name = 1;
+    string url = 2;
+}
+
+message Stats {
+    int64 success = 1;
+    int64 fail = 2;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

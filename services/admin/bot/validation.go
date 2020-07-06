@@ -9,9 +9,9 @@ func (b *botData) Validation(update tgbotapi.Update) {
 		b.inlineValidation(update.CallbackQuery)
 	} else if update.Message != nil {
 		if update.Message.Photo != nil {
-			//images.Validation(update)
+			b.imagesValidation(update.Message)
 		} else if update.Message.Video != nil {
-			//video.Validation(update)
+			b.videosValidation(update.Message)
 		} else if update.Message.IsCommand() {
 			b.commandValidation(update.Message)
 		} else if update.Message.Text != "" {

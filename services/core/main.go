@@ -34,6 +34,7 @@ func main() {
 		_ = logger.System(err.Error())
 		return
 	}
+	defer dbConnect.Close()
 
 	adminClient, errAdmin := admin.CreateClient(os.Getenv("ADMIN_HOST"), os.Getenv("ADMIN_PORT"))
 	if errAdmin != nil {

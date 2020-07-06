@@ -20,6 +20,7 @@ type Servers interface {
 	connector
 	Getter
 	Checker
+	Broadcaster
 }
 
 type connector interface {
@@ -180,3 +181,53 @@ func (s *serversData) HardCheckAll(ch chan *Check, userID int64) {
 	}
 }
 
+type Broadcaster interface {
+	GetAllBroadcasts() ([]*protobuf.Stat, error)
+	StartBroadcast(r *protobuf.StartBroadcastRequest) error
+	StopBroadcast(id string) error
+	GetStatisticsBroadcast(id string) ([]*protobuf.Stat, error)
+}
+
+func (s *serversData) GetAllBroadcasts() ([]*protobuf.Stat, error) {
+	br, err := s.client.GetAllBroadcasts(
+		app.SetCallContext("GetAllBroadcasts", "admin"), &protobuf.GetAllBroadcastsRequest{})
+	if err != nil {
+		return []*protobuf.Stat{}, err
+	}
+
+	return br.GetStats(), nil
+}
+
+func (s *serversData) StartBroadcast(r *protobuf.StartBroadcastRequest) error {
+	_, err := s.client.StartBroadcast(
+		app.SetCallContext("StartBroadcast", "admin"), r)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *serversData) StopBroadcast(id string) error {
+	_, err := s.client.StopBroadcast(
+		app.SetCallContext("StopBroadcast", "admin"), &protobuf.StopBroadcastRequest{
+			BroadcastID: id,
+		})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *serversData) GetStatisticsBroadcast(id string) ([]*protobuf.Stat, error) {
+	res, err := s.client.GetStatisticsBroadcast(
+		app.SetCallContext("GetStatisticsBroadcast", "admin"), &protobuf.GetStatisticsBroadcastRequest{
+			BroadcastID: id,
+		})
+	if err != nil {
+		return []*protobuf.Stat{}, err
+	}
+
+	return res.GetStats(), nil
+}

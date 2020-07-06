@@ -45,6 +45,7 @@ func main() {
 		_ = logger.System(errInitDB.Error())
 		return
 	}
+	defer dbConnect.Close()
 
 	conf, errRead := config.CreateConfig(
 		filepath.Join(os.Getenv("BOX_PATH_DIR"), os.Getenv("NAME_CONFIG_FILE")))
@@ -54,7 +55,7 @@ func main() {
 	}
 
 	wg := &sync.WaitGroup{}
-	telegramSender, errSender := telegram.Create(isDebug, wg, os.Getenv("TOKEN"), 10.0)
+	telegramSender, errSender := telegram.Create(isDebug, wg, os.Getenv("TOKEN"), 10)
 	if errSender != nil {
 		_ = logger.System(errSender.Error())
 		return

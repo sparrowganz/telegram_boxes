@@ -12,6 +12,7 @@ import (
 type Client interface {
 	connector
 	SendError(status, username, err string) error
+	SendMessage(username, message string) error
 	CheckExecution(url string, chatID int64) (bool, error)
 }
 
@@ -56,6 +57,18 @@ func (c *clientData) SendError(status, username, err string) error {
 		&protobuf.SendErrorRequest{
 			Error:    err,
 			Status:   status,
+			Username: username,
+		},
+	)
+	return sendErr
+}
+
+func (c *clientData) SendMessage(username, message string) error {
+
+	_, sendErr := c.client.SendMessage(
+		app.SetCallContext("SendMessage", "core"),
+		&protobuf.SendMessageRequest{
+			Message:  message,
 			Username: username,
 		},
 	)

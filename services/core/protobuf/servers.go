@@ -3,6 +3,7 @@ package protobuf
 import (
 	"context"
 	"errors"
+	"fmt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"sync"
@@ -19,6 +20,122 @@ type Servers interface {
 	GetAllUsersCount(ctx context.Context, r *GetAllUsersCountRequest) (*GetAllUsersCountResponse, error)
 	ChangeBonusActive(ctx context.Context, r *ChangeBonusActiveRequest) (*ChangeBonusActiveResponse, error)
 	HardCheck(r *HardCheckRequest, server Servers_HardCheckServer) error
+
+	//Broadcast
+	GetAllBroadcasts(ctx context.Context, r *GetAllBroadcastsRequest) (*GetAllBroadcastsResponse, error)
+	StartBroadcast(ctx context.Context, r *StartBroadcastRequest) (*StartBroadcastResponse, error)
+	StopBroadcast(ctx context.Context, r *StopBroadcastRequest) (*StopBroadcastResponse, error)
+	GetStatisticsBroadcast(ctx context.Context,
+		r *GetStatisticsBroadcastRequest) (*GetStatisticsBroadcastResponse, error)
+}
+
+func (sd *serverData) GetAllBroadcasts(ctx context.Context, r *GetAllBroadcastsRequest) (*GetAllBroadcastsResponse, error) {
+	var out = &GetAllBroadcastsResponse{}
+
+	session := sd.DB().GetMainSession().Clone()
+	defer session.Close()
+
+	data := sd.Broadcast().GetAll()
+	for id, val := range data {
+
+		bot, err := sd.DB().Models().Bots().FindByID(bson.ObjectIdHex(val.Bot()), session)
+		if err != nil {
+			continue
+		}
+
+		success, fail := val.Stats()
+
+		out.Stats = append(out.Stats, &Stat{
+			Id:          id,
+			BotID:       val.Bot(),
+			BotUsername: bot.Username(),
+			Success:     success,
+			Fail:        fail,
+			Time:        val.StartTime().UnixNano(),
+		})
+	}
+
+	return out, nil
+}
+
+func (sd *serverData) StartBroadcast(ctx context.Context, r *StartBroadcastRequest) (*StartBroadcastResponse, error) {
+
+	for _, bot := range r.GetBotIDs() {
+
+		go func(botID string) {
+
+			session := sd.DB().GetMainSession().Clone()
+			defer session.Close()
+
+			c, cancel := context.WithCancel(context.Background())
+			broadcastID, s := sd.Broadcast().Add(botID, c, cancel)
+
+			b, _ := sd.DB().Models().Bots().FindByID(bson.ObjectIdHex(botID), session)
+			ch := make(chan *boxProto.Stats, 100)
+
+			var buts []*boxProto.Button
+			for _, but := range r.GetButtons() {
+				buts = append(buts, &boxProto.Button{Name: but.Name, Url: but.Url})
+			}
+
+			go sd.Box().StartBroadcast(b, ch, c, &boxProto.StartBroadcastRequest{
+				ChatID:   r.GetChatID(),
+				Type:     r.GetType(),
+				FileLink: r.GetFileLink(),
+				Buttons:  buts,
+				Text:     r.GetText(),
+			})
+
+			for stat := range ch {
+				s.SetAccess(stat.GetSuccess())
+				s.SetFail(stat.GetFail())
+			}
+
+			success, fail := s.Stats()
+			_ = sd.Admin().SendMessage(b.Username(), fmt.Sprintf("Рассылка окончена %v/%v", success, fail))
+
+			sd.Broadcast().Remove(broadcastID)
+		}(bot)
+	}
+
+	return &StartBroadcastResponse{}, nil
+}
+
+func (sd *serverData) StopBroadcast(_ context.Context, r *StopBroadcastRequest) (*StopBroadcastResponse, error) {
+	var out = &StopBroadcastResponse{}
+	sd.Broadcast().Remove(r.GetBroadcastID())
+	return out, nil
+}
+
+func (sd *serverData) GetStatisticsBroadcast(_ context.Context,
+	r *GetStatisticsBroadcastRequest) (*GetStatisticsBroadcastResponse, error) {
+
+	var out = &GetStatisticsBroadcastResponse{}
+
+	session := sd.DB().GetMainSession().Clone()
+	defer session.Close()
+
+	data := sd.Broadcast().GetAllByBotID(r.GetBroadcastID())
+	for id, val := range data {
+
+		bot, err := sd.DB().Models().Bots().FindByID(bson.ObjectIdHex(val.Bot()), session)
+		if err != nil {
+			continue
+		}
+
+		success, fail := val.Stats()
+
+		out.Stats = append(out.Stats, &Stat{
+			Id:          id,
+			BotID:       val.Bot(),
+			BotUsername: bot.Username(),
+			Success:     success,
+			Fail:        fail,
+			Time:        val.StartTime().UnixNano(),
+		})
+	}
+
+	return out, nil
 }
 
 func (sd *serverData) HardCheck(r *HardCheckRequest, stream Servers_HardCheckServer) error {
@@ -54,7 +171,7 @@ func (sd *serverData) HardCheck(r *HardCheckRequest, stream Servers_HardCheckSer
 
 			currentBot.SetStatus(status)
 			_ = sd.DB().Models().Bots().UpdateBot(currentBot, session)
-			_ = sd.Admin().SendError(status, currentBot.Username(), "Check Successful")
+			_ = sd.Admin().SendError(status, currentBot.Username(), "Проверка прошла успешно")
 
 		}()
 	}

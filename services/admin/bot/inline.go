@@ -5,8 +5,10 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
+	"github.com/sparrowganz/teleFly/telegram/limits"
 	"telegram_boxes/services/admin/app/servers"
 	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
+	"time"
 )
 
 func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
@@ -16,6 +18,59 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 
 	callback := telegram.ParseCallBack(update.Data)
 	switch callback.Type() {
+	case BroadcastType:
+		switch callback.Action() {
+		case StopAction:
+			b.stopBroadcast(update.Message.Chat.ID, update.ID, update.Message.MessageID, callback.ID())
+		case SendAction:
+			b.sendBroadcastHandler(update.Message.Chat.ID, update.ID, update.Message.MessageID)
+		case DeleteAction:
+			switch callback.ID() {
+			case ButtonID:
+				b.cancelButtonID(update.Message.Chat.ID, update.Message.MessageID)
+			}
+		case GetAction:
+			switch callback.ID() {
+			case "all":
+				b.getListBroadcastsHandler(update.Message.Chat.ID, update.Message.MessageID)
+			default:
+				b.getBroadcastHandler(update.Message.Chat.ID, update.Message.MessageID, callback.ID())
+			}
+		case ChooseAction:
+			b.chooseBoxBroadcastsHandler(update.Message.Chat.ID, update.Message.MessageID, callback.ID())
+		case AddAction:
+			switch callback.ID() {
+			case ButtonID:
+				b.addButtonBroadcast(update.Message.Chat.ID, update.Message.MessageID)
+			default:
+				job, ok := b.Telegram().Actions().Get(update.Message.Chat.ID)
+				if !ok {
+					b.Telegram().DeleteMessages(update.Message.Chat.ID, []int{update.Message.MessageID})
+					_ = b.Log().Error("", "", "inlineValidation: job not found")
+					b.Telegram().SendError(update.Message.Chat.ID, "Что-то пошло не так попробуйте снова", nil)
+					return
+				}
+
+				data, isNormalData := job.GetData().(*protobuf.StartBroadcastRequest)
+				if !isNormalData {
+					b.Telegram().DeleteMessages(update.Message.Chat.ID, append(job.GetMessageIDs(), update.Message.MessageID))
+					job.FlushMessageId()
+
+					b.Telegram().Actions().Delete(update.Message.Chat.ID)
+
+					_ = b.Log().Error("", "", "inlineValidation: job not found")
+					b.Telegram().SendError(update.Message.Chat.ID, "Что-то пошло не так попробуйте снова", nil)
+					return
+				}
+
+				if len(data.GetBotIDs()) == 0 {
+					b.broadcastBotsHandler(update.Message.Chat.ID, update.Message.MessageID, data)
+				} else {
+					b.Telegram().DeleteMessages(update.Message.Chat.ID, []int{update.Message.MessageID})
+					b.broadcastSetData(update.Message.Chat.ID, data)
+				}
+			}
+		}
 	case BonusType:
 		switch callback.Action() {
 		case ChooseAction:
@@ -64,6 +119,8 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 			if job.GetAction() != callback.Action().String() || job.GetType() != callback.Type().String() {
 				job.AddMessageId(update.Message.MessageID)
 				b.Telegram().DeleteMessages(update.Message.Chat.ID, job.GetMessageIDs())
+				job.FlushMessageId()
+
 				b.Telegram().Actions().Delete(update.Message.Chat.ID)
 
 				_ = b.Log().Error("", "", "inlineValidation: action or type is invalid")
@@ -71,7 +128,13 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 				return
 			}
 
-			data := job.GetData().(*protobuf.Task)
+			data, isNormalData := job.GetData().(*protobuf.Task)
+			if !isNormalData {
+				b.Telegram().DeleteMessages(update.Message.Chat.ID, []int{update.Message.MessageID})
+				_ = b.Log().Error("", "", "inlineValidation: job not found")
+				b.Telegram().SendError(update.Message.Chat.ID, "Что-то пошло не так попробуйте снова", nil)
+				return
+			}
 
 			switch "" {
 			case data.GetType():
@@ -95,6 +158,8 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 		if job.GetAction()+job.GetType() != callback.Action().String() {
 			job.AddMessageId(update.Message.MessageID)
 			b.Telegram().DeleteMessages(update.Message.Chat.ID, job.GetMessageIDs())
+			job.FlushMessageId()
+
 			b.Telegram().Actions().Delete(update.Message.Chat.ID)
 
 			_ = b.Log().Error("", "", "inlineValidation: action or type is invalid")
@@ -110,8 +175,17 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 				case YesID:
 					b.forceRemoveInlineTask(update.Message.Chat.ID, update.Message.MessageID, job)
 				case NoID:
+
+					data, isNormalData := job.GetData().(string)
+					if !isNormalData {
+						b.Telegram().DeleteMessages(update.Message.Chat.ID, []int{update.Message.MessageID})
+						_ = b.Log().Error("", "", "inlineValidation: job not found")
+						b.Telegram().SendError(update.Message.Chat.ID, "Что-то пошло не так попробуйте снова", nil)
+						return
+					}
+
 					b.getTaskInlineHandler(
-						update.Message.Chat.ID, update.Message.MessageID, job.GetData().(string))
+						update.Message.Chat.ID, update.Message.MessageID, data)
 				}
 			case AddAction:
 				switch callback.ID() {
@@ -127,6 +201,369 @@ func (b *botData) inlineValidation(update *tgbotapi.CallbackQuery) {
 }
 
 //
+//				BROADCAST
+//
+
+func (b *botData) stopBroadcast(chatID int64, queryID string, messageID int, id string) {
+	b.Telegram().DeleteMessages(chatID, []int{messageID})
+	err := b.Servers().StopBroadcast(id)
+	if err != nil {
+		_ = b.Log().Error("", "", "stopBroadcast: "+err.Error())
+		b.Telegram().SendError(chatID, err.Error(), nil)
+		return
+	}
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.NewCallbackWithAlert(queryID, "Рассылка остановлена"),
+			UserId:  chatID,
+		})
+	return
+}
+
+func (b *botData) getBroadcastHandler(chatID int64, messageID int, id string) {
+	stats, err := b.Servers().GetAllBroadcasts()
+	if err != nil {
+		_ = b.Log().Error("", "", "getListBroadcastsHandler: "+err.Error())
+		b.Telegram().SendError(chatID, err.Error(), nil)
+		return
+	}
+
+	var botsData = map[string]string{}
+
+	var txt = "Текущие рассылки:\n"
+
+	for _, stat := range stats {
+		if stat.BotID == id {
+
+			tm := time.Unix(0, stat.GetTime()).Format("02.Jan.06 15:04")
+			txt += fmt.Sprintf("%v - %v / %v\n", tm, stat.Success, stat.Fail)
+
+			botsData[stat.Id] = tm
+		}
+	}
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.EditMessageTextConfig{
+				BaseEdit: tgbotapi.BaseEdit{
+					ChatID:      chatID,
+					MessageID:   messageID,
+					ReplyMarkup: actionsBroadcastBot(botsData),
+				},
+				Text:                  txt,
+				ParseMode:             tgbotapi.ModeMarkdown,
+				DisableWebPagePreview: false,
+			},
+			UserId: chatID,
+		})
+	return
+
+}
+
+func (b *botData) getListBroadcastsHandler(chatID int64, messageID int) {
+
+	stats, err := b.Servers().GetAllBroadcasts()
+	if err != nil {
+		_ = b.Log().Error("", "", "getListBroadcastsHandler: "+err.Error())
+		b.Telegram().SendError(chatID, err.Error(), nil)
+		return
+	}
+
+	var botsHash = map[string]string{}
+	for _, stat := range stats {
+		botsHash[stat.BotUsername] = stat.BotID
+	}
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.EditMessageTextConfig{
+				BaseEdit: tgbotapi.BaseEdit{
+					ChatID:      chatID,
+					MessageID:   messageID,
+					ReplyMarkup: chooseBroadcastBot(botsHash),
+				},
+				Text:                  `Выберите бот:`,
+				ParseMode:             tgbotapi.ModeMarkdown,
+				DisableWebPagePreview: false,
+			},
+			UserId: chatID,
+		})
+	return
+}
+
+func (b *botData) sendBroadcastHandler(chatID int64, queryID string, messageID int) {
+	job, ok := b.Telegram().Actions().Get(chatID)
+	if !ok {
+		b.Telegram().DeleteMessages(chatID, []int{messageID})
+		_ = b.Log().Error("", "", "addButtonBroadcast: job not found")
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
+
+	b.Telegram().DeleteMessages(chatID, append(job.GetMessageIDs(), messageID))
+
+	data, isNormalData := job.GetData().(*protobuf.StartBroadcastRequest)
+	if !isNormalData {
+		b.Telegram().DeleteMessages(chatID, append(job.GetMessageIDs(), messageID))
+		job.FlushMessageId()
+
+		b.Telegram().Actions().Delete(chatID)
+
+		_ = b.Log().Error("", "", "addButtonBroadcast: job not found")
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
+	if data.GetFileLink() != "" {
+		var errGetFileLink error
+		data.FileLink, errGetFileLink = b.Telegram().API().GetFileDirectURL(data.GetFileLink())
+		if errGetFileLink != nil {
+			_ = b.Log().Error("", "", errGetFileLink.Error())
+			b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+			return
+		}
+	}
+
+	data.ChatID = chatID
+	err := b.Servers().StartBroadcast(data)
+	if err != nil {
+		b.Telegram().SendError(chatID, "Ошибка рассылки: "+err.Error(), nil)
+		return
+	}
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.NewCallbackWithAlert(queryID, "Рассылка началась"),
+			UserId:  chatID,
+		})
+
+	b.Telegram().Actions().Delete(chatID)
+}
+
+func (b *botData) cancelButtonID(chatID int64, messageID int) {
+	job, ok := b.Telegram().Actions().Get(chatID)
+	if !ok {
+		b.Telegram().DeleteMessages(chatID, []int{messageID})
+		_ = b.Log().Error("", "", "addButtonBroadcast: job not found")
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
+
+	data, isNormalData := job.GetData().(*protobuf.StartBroadcastRequest)
+	if !isNormalData {
+		b.Telegram().DeleteMessages(chatID, append(job.GetMessageIDs(), messageID))
+		job.FlushMessageId()
+
+		b.Telegram().Actions().Delete(chatID)
+
+		_ = b.Log().Error("", "", "addButtonBroadcast: job not found")
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
+
+	job.SetAction(AddAction.String())
+
+	b.Telegram().DeleteMessages(chatID, []int{messageID})
+	b.broadcastSetData(chatID, data)
+}
+
+func (b *botData) addButtonBroadcast(chatID int64, messageID int) {
+
+	b.Telegram().DeleteMessages(chatID, []int{messageID})
+	job, ok := b.Telegram().Actions().Get(chatID)
+	if !ok {
+		//b.Telegram().DeleteMessages(chatID, []int{messageID})
+		_ = b.Log().Error("", "", "addButtonBroadcast: job not found")
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
+
+	job.SetAction(AddButton.String())
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.MessageConfig{
+				BaseChat: tgbotapi.BaseChat{
+					ChatID:      chatID,
+					ReplyMarkup: backMenu(),
+				},
+				Text:                  `Введите данные клавиши в формате "VK - https://vk.com"`,
+				ParseMode:             tgbotapi.ModeMarkdown,
+				DisableWebPagePreview: false,
+			},
+			UserId: chatID,
+		})
+	return
+
+}
+
+func (b *botData) broadcastSetData(chatID int64, data *protobuf.StartBroadcastRequest) {
+
+	var txt string
+
+	if data.Text == "" && data.FileLink == "" {
+		txt = "Пришлите данные для рассылки:"
+	} else if data.Text != "" {
+		txt = data.Text
+	}
+
+	if len(data.Buttons) > 0 {
+		txt += "\n\n"
+		for _, but := range data.Buttons {
+			txt += fmt.Sprintf("(%v)\n", but.Name)
+		}
+	}
+
+	var mess interface{}
+	if data.Type == imageType {
+
+		if len([]rune(data.Text)) > limits.Caption() {
+			txt = fmt.Sprintf("*ПРЕВЫШЕН ЛИМИТ СИМВОЛОВ НА ОПИСАНИЕ (%v/1024)*", len([]rune(data.Text)))
+		}
+
+		conf := tgbotapi.NewPhotoShare(chatID, data.FileLink)
+		conf.Caption = txt
+		conf.ParseMode = tgbotapi.ModeMarkdown
+		conf.ReplyMarkup = addButtonBroadcastKeyboard(true)
+		mess = conf
+	} else if data.Type == videoType {
+
+		if len([]rune(data.Text)) > limits.Caption() {
+			txt = fmt.Sprintf("*ПРЕВЫШЕН ЛИМИТ СИМВОЛОВ НА ОПИСАНИЕ (%v/1024)*", len([]rune(data.Text)))
+		}
+
+		conf := tgbotapi.NewVideoShare(chatID, data.FileLink)
+		conf.Caption = txt
+		conf.ParseMode = tgbotapi.ModeMarkdown
+		conf.ReplyMarkup = addButtonBroadcastKeyboard(true)
+		mess = conf
+	} else {
+
+		var hasContent bool
+		if data.Text != "" || data.FileLink != "" {
+			hasContent = true
+		}
+
+		mess = tgbotapi.MessageConfig{
+			BaseChat: tgbotapi.BaseChat{
+				ChatID:      chatID,
+				ReplyMarkup: addButtonBroadcastKeyboard(hasContent),
+			},
+			Text:                  txt,
+			ParseMode:             tgbotapi.ModeMarkdown,
+			DisableWebPagePreview: false,
+		}
+	}
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: mess,
+			UserId:  chatID,
+		})
+}
+
+func (b *botData) chooseBoxBroadcastsHandler(chatID int64, messageID int, botID string) {
+	job, ok := b.Telegram().Actions().Get(chatID)
+	if !ok {
+		b.Telegram().DeleteMessages(chatID, []int{messageID})
+		_ = b.Log().Error("", "", "chooseBoxBroadcastsHandler: job not found")
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
+
+	data, isNormalData := job.GetData().(*protobuf.StartBroadcastRequest)
+	if !isNormalData {
+		b.Telegram().DeleteMessages(chatID, append(job.GetMessageIDs(), messageID))
+		job.FlushMessageId()
+		b.Telegram().Actions().Delete(chatID)
+
+		_ = b.Log().Error("", "", "chooseBoxBroadcastsHandler: job not found")
+		b.Telegram().SendError(chatID, "Что-то пошло не так попробуйте снова", nil)
+		return
+	}
+
+	var isSet bool
+	for i, id := range data.BotIDs {
+		if id == botID {
+			data.BotIDs[i] = data.BotIDs[len(data.BotIDs)-1] // Copy last element to index i.
+			data.BotIDs[len(data.BotIDs)-1] = ""             // Erase last element (write zero value).
+			data.BotIDs = data.BotIDs[:len(data.BotIDs)-1]
+			isSet = true
+			break
+		}
+	}
+
+	if !isSet {
+		data.BotIDs = append(data.BotIDs, botID)
+	}
+
+	b.broadcastBotsHandler(chatID, messageID, data)
+}
+
+func (b *botData) broadcastBotsHandler(chatID int64, messageID int, data *protobuf.StartBroadcastRequest) {
+	srvs, err := b.Servers().GetAllServers()
+	if err != nil {
+		_ = b.Log().Error("", "", "broadcastBotsHandler: "+err.Error())
+		b.Telegram().SendError(chatID, err.Error(), nil)
+		return
+	}
+
+	var onlineServers []*protobuf.Server
+	for _, s := range srvs {
+		if s.Status == servers.OK.String() {
+			onlineServers = append(onlineServers, s)
+		}
+	}
+
+	if len(onlineServers) == 0 {
+		b.Telegram().ToQueue(
+			&telegram.Message{
+				Message: tgbotapi.EditMessageTextConfig{
+					BaseEdit: tgbotapi.BaseEdit{
+						ChatID:    chatID,
+						MessageID: messageID,
+					},
+					Text:      "Работающие коробки для рассылки не найдены ",
+					ParseMode: tgbotapi.ModeMarkdown,
+				},
+				UserId: chatID,
+			})
+		return
+	}
+
+	var txt = "Выберите коробки в которых будет рассылка"
+	if len(data.BotIDs) > 0 {
+		txt += "\n"
+		txt += "Выбранные коробки:\n"
+		for _, id := range data.BotIDs {
+
+			for _, s := range srvs {
+				if s.Id == id {
+					txt += s.Username + "\n"
+					break
+				}
+			}
+		}
+	}
+
+	b.Telegram().ToQueue(
+		&telegram.Message{
+			Message: tgbotapi.EditMessageTextConfig{
+				BaseEdit: tgbotapi.BaseEdit{
+					ChatID:      chatID,
+					MessageID:   messageID,
+					ReplyMarkup: chooseServersKeyboard(data.BotIDs, onlineServers),
+				},
+				Text:      txt,
+				ParseMode: tgbotapi.ModeMarkdown,
+			},
+			UserId: chatID,
+		})
+	return
+
+}
+
+//
 //				BONUS
 //
 
@@ -135,6 +572,7 @@ func (b *botData) changeActiveBonusHandler(chatID int64, messageID int, callback
 	if err != nil {
 		_ = b.Log().Error("", "", "changeActiveBonusHandler: "+err.Error())
 		b.Telegram().SendError(chatID, err.Error(), nil)
+		return
 	}
 	b.chooseBonusHandler(chatID, messageID, callbackID)
 }
@@ -144,6 +582,7 @@ func (b *botData) changeActiveAllBonusesHandler(chatID int64, messageID int) {
 	if err != nil {
 		_ = b.Log().Error("", "", "changeActiveAllBonusesHandler: "+err.Error())
 		b.Telegram().SendError(chatID, err.Error(), nil)
+		return
 	}
 	b.chooseAllBonusesHandler(chatID, messageID)
 }
@@ -310,6 +749,7 @@ func (b *botData) createTaskInlineHandler(chatID int64, queryID string, messageI
 	act.AddMessageId(messageID)
 
 	b.Telegram().DeleteMessages(chatID, act.GetMessageIDs())
+	act.FlushMessageId()
 	b.Telegram().Actions().Delete(chatID)
 }
 
@@ -367,6 +807,7 @@ func (b *botData) removeTaskInlineHandler(chatID int64, messageID int, actionID 
 
 	if j, ok := b.Telegram().Actions().Get(chatID); ok {
 		b.Telegram().DeleteMessages(chatID, j.GetMessageIDs())
+		j.FlushMessageId()
 		b.Telegram().Actions().Delete(chatID)
 	}
 	b.Telegram().Actions().New(chatID,

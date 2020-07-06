@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -12,6 +13,15 @@ const (
 
 func SetCallContext(action, username string) context.Context {
 	callContext := context.Background()
+	mdOut := metadata.Pairs(
+		"action", action,
+		"username", username,
+	)
+	callContext = metadata.NewOutgoingContext(callContext, mdOut)
+	return callContext
+}
+
+func SetCallContextWithContext(callContext context.Context,action, username string) context.Context {
 	mdOut := metadata.Pairs(
 		"action", action,
 		"username", username,
@@ -30,3 +40,8 @@ func GetDataContext(ctx context.Context) (action, username string) {
 	}
 	return
 }
+
+func ParseGRPCError(err error) string {
+	return status.Convert(err).Message()
+}
+

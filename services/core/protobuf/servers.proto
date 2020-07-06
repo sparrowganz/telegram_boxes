@@ -29,6 +29,89 @@ service Servers {
 
     rpc SendError (SendErrorRequest) returns (SendErrorResponse) {
     }
+
+    rpc GetAllBroadcasts (GetAllBroadcastsRequest) returns (GetAllBroadcastsResponse) {
+    }
+
+    rpc StartBroadcast (StartBroadcastRequest) returns (StartBroadcastResponse) {
+    }
+
+    rpc StopBroadcast (StopBroadcastRequest) returns (StopBroadcastResponse) {
+
+    }
+
+    rpc GetStatisticsBroadcast (GetStatisticsBroadcastRequest) returns (GetStatisticsBroadcastResponse) {
+
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get Statistics Broadcast
+//--------------------------------------------------------------------------------------------------------------------
+
+message GetAllBroadcastsRequest {
+
+}
+
+
+message GetAllBroadcastsResponse {
+    repeated Stat stats = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get Statistics Broadcast
+//--------------------------------------------------------------------------------------------------------------------
+
+message GetStatisticsBroadcastRequest {
+    string broadcastID = 1;
+}
+
+
+message GetStatisticsBroadcastResponse {
+    repeated Stat stats = 1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  StopBroadcastRequest
+//--------------------------------------------------------------------------------------------------------------------
+
+message StopBroadcastRequest {
+    string broadcastID = 1;
+}
+
+
+message StopBroadcastResponse {
+}
+
+message Stat {
+    string id = 1;
+    string botID = 2;
+    string botUsername = 3;
+    int64 success = 4;
+    int64 fail = 5;
+    int64 time = 6;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//  StartBroadcastRequest
+//--------------------------------------------------------------------------------------------------------------------
+
+message StartBroadcastRequest {
+    repeated string botIDs = 1;
+    string type = 2;
+    string fileLink = 3;
+    repeated Button buttons = 4;
+    string text = 5;
+    int64 chatID = 6;
+}
+
+message Button {
+    string name = 1;
+    string url = 2;
+}
+
+message StartBroadcastResponse {
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------

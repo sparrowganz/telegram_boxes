@@ -96,6 +96,7 @@ type Requester interface {
 	CheckBox(bot models.Bot, chatID int64) (string, error)
 	GetStats(bot models.Bot) (stats *protobuf.Statistic, err error)
 	RemoveTask(bot models.Bot, taskID string) error
+	StartBroadcast(bot models.Bot, ch chan *protobuf.Stats, ctx context.Context, r *protobuf.StartBroadcastRequest)
 	check(client protobuf.BoxClient, chatID int64) (string, error)
 }
 
@@ -141,6 +142,33 @@ func (c *ClientsData) CheckBox(bot models.Bot, chatID int64) (status string, err
 	}
 	status, err = c.check(client, chatID)
 	return
+}
+
+func (c *ClientsData) StartBroadcast(bot models.Bot, ch chan *protobuf.Stats, ctx context.Context, r *protobuf.StartBroadcastRequest) {
+	defer close(ch)
+
+	client, ok := c.get(bot.ID().Hex())
+	if !ok {
+		var err error
+		client, err = c.add(bot)
+		if err != nil {
+			return
+		}
+	}
+
+	stream, errStart := client.StartBroadcast(app.SetCallContextWithContext(ctx, "StartBroadcast", "core"), r)
+	if errStart != nil {
+		return
+	}
+
+	for {
+		stats, errRecv := stream.Recv()
+		if errRecv != nil {
+			break
+		}
+		ch <- stats
+	}
+
 }
 
 func (c *ClientsData) check(client protobuf.BoxClient, chatID int64) (string, error) {

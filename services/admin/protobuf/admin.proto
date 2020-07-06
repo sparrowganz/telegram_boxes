@@ -8,9 +8,21 @@ service Admin {
     rpc SendError (SendErrorRequest) returns (SendErrorResponse) {
     }
 
+    rpc SendMessage (SendMessageRequest) returns (SendMessageResponse) {
+    }
+
     rpc CheckExecution (CheckExecutionRequest) returns (CheckExecutionResponse) {
 
     }
+}
+
+message SendMessageRequest {
+    string username = 1;
+    string message = 2;
+}
+
+message SendMessageResponse {
+
 }
 
 message SendErrorRequest {
