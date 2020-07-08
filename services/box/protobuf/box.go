@@ -275,7 +275,7 @@ func (b *Box) Check(ctx context.Context, r *CheckRequest) (*CheckResponse, error
 	var err error
 
 	b.Bot.Methods().Telegram().ToQueue(&telegram.Message{
-		Message: tgbotapi.NewMessage(r.GetChatID(), "CHECK is running bot"),
+		Message: tgbotapi.NewMessage(r.GetChatID(), "Диагностика..."),
 		Type:    ch,
 		UserId:  r.GetChatID(),
 	})

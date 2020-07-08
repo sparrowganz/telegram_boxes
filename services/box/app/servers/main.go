@@ -94,10 +94,10 @@ func (data *Data) Init(host, port, username string) error {
 }
 
 type Sender interface {
-	SendError(err string, status protobuf.Status) error
+	SendError(err string, status string) error
 }
 
-func (data *Data) SendError(err string, status protobuf.Status) error {
+func (data *Data) SendError(err string, status string) error {
 
 	if data.client == nil {
 		return errors.New("client not initialize")

@@ -13,6 +13,7 @@ import (
 	"runtime/debug"
 	"sync"
 	"syscall"
+	"telegram_boxes/services/box/app"
 	"telegram_boxes/services/box/app/config"
 	"telegram_boxes/services/box/app/db"
 	sLog "telegram_boxes/services/box/app/log"
@@ -20,7 +21,6 @@ import (
 	"telegram_boxes/services/box/app/task"
 	"telegram_boxes/services/box/bot"
 	boxProto "telegram_boxes/services/box/protobuf"
-	"telegram_boxes/services/box/protobuf/services/core/protobuf"
 )
 
 func main() {
@@ -98,13 +98,15 @@ func main() {
 		sender.StartReadErrors()
 	}()
 
-	wg.Add(1)
-	go func() {
-		defer recovery(sender)
-		//defer wg.Done()
+	wg.Add(5)
+	for i := 0 ; i < 5 ; i ++ {
+		go func() {
+			defer recovery(sender)
+			defer wg.Done()
 
-		sender.StartHandle()
-	}()
+			sender.StartHandle()
+		}()
+	}
 
 	go waitForShutdown(sender)
 
@@ -138,7 +140,7 @@ func waitForShutdown(b bot.Bot) {
 
 	b.Close()
 
-	_ = b.Methods().Servers().SendError("SHUTDOWN SERVER @"+b.Methods().Username(), protobuf.Status_Fatal)
+	_ = b.Methods().Servers().SendError("Сервер выключился", app.StatusFatal.String())
 	os.Exit(0)
 }
 
@@ -146,7 +148,7 @@ func recovery(b bot.Bot) {
 	var err error
 	r := recover()
 	if r != nil {
-		_ = b.Methods().Servers().SendError("PANIC!!! @"+b.Methods().Username(), protobuf.Status_Recovering)
+		_ = b.Methods().Servers().SendError("Критическая ошибка", app.StatusRecovery.String())
 		switch t := r.(type) {
 		case string:
 			err = errors.New(t)
@@ -158,6 +160,6 @@ func recovery(b bot.Bot) {
 
 		_ = b.Methods().Log().System(
 			fmt.Sprintf("RECOVERY : %s \n %s", err.Error(), debug.Stack()))
-		_ = b.Methods().Servers().SendError("RECOVERED "+b.Methods().Username(), protobuf.Status_OK)
+		_ = b.Methods().Servers().SendError("Работа восстановлена", app.StatusOK.String())
 	}
 }

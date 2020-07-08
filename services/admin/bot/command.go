@@ -5,6 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
+	"telegram_boxes/services/admin/app"
 	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 )
 
@@ -12,7 +13,7 @@ type Command string
 
 var (
 	start       Command = "start"
-	tasks       Command = "task"
+	tasks       Command = "tasks"
 	addtask     Command = "addtask"
 	statistics  Command = "statistics"
 	diagnostics Command = "diagnostics"
@@ -44,7 +45,7 @@ func (b *botData) commandValidation(message *tgbotapi.Message) {
 func (b *botData) startCommandHandler(chatID int64) {
 	b.Telegram().ToQueue(
 		&telegram.Message{
-			Message: tgbotapi.NewMessage(chatID, "Добро пожаловать (?? username), вы имеете доступ к боту (список команд ??)"),
+			Message: tgbotapi.NewMessage(chatID, "Добро пожаловать"),
 			UserId:  chatID,
 		})
 	return
@@ -63,9 +64,9 @@ func (b *botData) tasksCommandHandler(chatID int64) {
 		keyb interface{}
 	)
 	if len(allTasks) == 0 {
-		txt = "Задания не найдены\nИспользуйте команду /addtask для добавления"
+		txt = "Нет заданий"
 	} else {
-		txt = "Информация по заданиям:"
+		txt = "Задания:"
 		keyb = getTasksKeyboard(allTasks)
 	}
 
@@ -77,7 +78,7 @@ func (b *botData) tasksCommandHandler(chatID int64) {
 					ReplyMarkup: keyb,
 				},
 				Text:                  txt,
-				ParseMode:             tgbotapi.ModeMarkdown,
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
@@ -104,7 +105,7 @@ func (b *botData) addTaskCommandHandler(chatID int64) {
 					ReplyMarkup: getTypesKeyboard(b.Types().GetAllTypes()),
 				},
 				Text:                  "Выберите тип",
-				ParseMode:             tgbotapi.ModeMarkdown,
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
@@ -139,7 +140,7 @@ func (b *botData) statisticsCommandHandler(chatID int64, isFake bool) {
 						ChatID:      chatID,
 					},
 					Text:                  "Телеграмм боты не найдены",
-					ParseMode:             tgbotapi.ModeMarkdown,
+					ParseMode:             tgbotapi.ModeHTML,
 					DisableWebPagePreview: false,
 				},
 				UserId: chatID,
@@ -167,7 +168,7 @@ func (b *botData) statisticsCommandHandler(chatID int64, isFake bool) {
 					ReplyMarkup: keyb,
 				},
 				Text:                  txt,
-				ParseMode:             tgbotapi.ModeMarkdown,
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
@@ -190,8 +191,8 @@ func (b *botData) broadcastCommandHandler(chatID int64) {
 					ChatID:      chatID,
 					ReplyMarkup: getMainBroadcastKeyboard(isSetBroadcast),
 				},
-				Text:                  "Меню управления рассылок: ",
-				ParseMode:             tgbotapi.ModeMarkdown,
+				Text:                  "Меню управления рассылками: ",
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
@@ -218,7 +219,7 @@ func (b *botData) diagnosticsCommandHandler(chatID int64) {
 						ChatID: chatID,
 					},
 					Text:                  "Телеграмм боты не найдены",
-					ParseMode:             tgbotapi.ModeMarkdown,
+					ParseMode:             tgbotapi.ModeHTML,
 					DisableWebPagePreview: false,
 				},
 				UserId: chatID,
@@ -229,7 +230,19 @@ func (b *botData) diagnosticsCommandHandler(chatID int64) {
 	var txt string
 
 	for _, status := range servers {
-		txt += status.GetUsername() + " (" + status.GetStatus() + ")\n"
+
+		var smile string
+		if status.GetStatus() == app.StatusOK.String() {
+			smile = "✅"
+		} else if status.GetStatus() == app.StatusFatal.String() {
+			smile = "❌"
+		} else if status.GetStatus() == app.StatusRecovery.String() {
+			smile = "⚠"
+		} else {
+			smile = "❔"
+		}
+
+		txt += status.GetUsername() + " " + smile + "\n"
 	}
 
 	keyb, _ := hardCheckButton().ToKeyboard()
@@ -242,7 +255,7 @@ func (b *botData) diagnosticsCommandHandler(chatID int64) {
 					ReplyMarkup: keyb,
 				},
 				Text:                  txt,
-				ParseMode:             tgbotapi.ModeMarkdown,
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
@@ -266,7 +279,7 @@ func (b *botData) bonusCommandHandler(chatID int64) {
 						ChatID:      chatID,
 					},
 					Text:                  "Телеграмм боты не найдены",
-					ParseMode:             tgbotapi.ModeMarkdown,
+					ParseMode:             tgbotapi.ModeHTML,
 					DisableWebPagePreview: false,
 				},
 				UserId: chatID,
@@ -282,7 +295,7 @@ func (b *botData) bonusCommandHandler(chatID int64) {
 					ReplyMarkup: getBonusServersKeyboard(serv),
 				},
 				Text:                  "Выберите бот для управлением бонуса:",
-				ParseMode:             tgbotapi.ModeMarkdown,
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,

@@ -21,7 +21,12 @@ type Clients interface {
 
 type ClientsData struct {
 	m       *sync.Mutex
-	storage map[string]protobuf.BoxClient //[bsonID.Hex()]protobuf.BoxClient
+	storage map[string]*client //[bsonID.Hex()]protobuf.BoxClient
+}
+
+type client struct {
+	client protobuf.BoxClient
+	addr   string
 }
 
 type connector interface {
@@ -44,27 +49,30 @@ func (c *ClientsData) connect(host, port, username string) (protobuf.BoxClient, 
 	return protobuf.NewBoxClient(cnnServers), nil
 }
 
-func CreateClients(client db.Client) Clients {
+func CreateClients(cl db.Client) Clients {
 	c := &ClientsData{
 		m:       &sync.Mutex{},
-		storage: map[string]protobuf.BoxClient{},
+		storage: make(map[string]*client),
 	}
 
-	bots , _ := client.Models().Bots().GetAll(client.GetMainSession())
+	bots, _ := cl.Models().Bots().GetAll(cl.GetMainSession())
 	for _, bot := range bots {
 		conn, err := c.connect(bot.Address().IP(), bot.Address().Port(), bot.Username())
 		if err != nil {
 			bot.SetStatus("inactive")
 			bot.InActive()
-			_ = client.Models().Bots().UpdateBot(bot, client.GetMainSession())
+			_ = cl.Models().Bots().UpdateBot(bot, cl.GetMainSession())
 		}
 
-		bot.SetStatus("OK")
+		bot.SetStatus(app.StatusOK.String())
 		bot.SetActive()
-		_ = client.Models().Bots().UpdateBot(bot, client.GetMainSession())
+		_ = cl.Models().Bots().UpdateBot(bot, cl.GetMainSession())
 
 		c.m.Lock()
-		c.storage[bot.ID().Hex()] = conn
+		c.storage[bot.ID().Hex()] = &client{
+			client: conn,
+			addr:   bot.Addr.Ip + ":" + bot.Addr.PortNum,
+		}
 		c.m.Unlock()
 	}
 
@@ -87,7 +95,10 @@ func (c *ClientsData) add(bot models.Bot) (protobuf.BoxClient, error) {
 		return nil, err
 	}
 	c.m.Lock()
-	c.storage[bot.ID().Hex()] = conn
+	c.storage[bot.ID().Hex()] = &client{
+		client: conn,
+		addr:   bot.Address().IP() + ":" + bot.Address().Port(),
+	}
 	c.m.Unlock()
 	return conn, nil
 }
@@ -101,14 +112,14 @@ type Requester interface {
 }
 
 func (c *ClientsData) RemoveTask(bot models.Bot, taskID string) (err error) {
-	client, ok := c.get(bot.ID().Hex())
+	conn, ok := c.get(bot.ID().Hex())
 	if !ok {
-		client, err = c.add(bot)
+		conn, err = c.add(bot)
 		if err != nil {
 			return err
 		}
 	}
-	_, err = client.RemoveCheckTask(
+	_, err = conn.RemoveCheckTask(
 		app.SetCallContext("RemoveTask", "core"),
 		&protobuf.RemoveCheckTaskRequest{
 			TaskID: taskID,
@@ -118,14 +129,14 @@ func (c *ClientsData) RemoveTask(bot models.Bot, taskID string) (err error) {
 }
 
 func (c *ClientsData) GetStats(bot models.Bot) (stats *protobuf.Statistic, err error) {
-	client, ok := c.get(bot.ID().Hex())
+	cl, ok := c.get(bot.ID().Hex())
 	if !ok {
-		client, err = c.add(bot)
+		cl, err = c.add(bot)
 		if err != nil {
 			return nil, err
 		}
 	}
-	stats, err = client.GetStatistics(
+	stats, err = cl.GetStatistics(
 		app.SetCallContext("getStats", "core"),
 		&protobuf.GetStatisticsRequest{},
 	)
@@ -133,30 +144,33 @@ func (c *ClientsData) GetStats(bot models.Bot) (stats *protobuf.Statistic, err e
 }
 
 func (c *ClientsData) CheckBox(bot models.Bot, chatID int64) (status string, err error) {
-	client, ok := c.get(bot.ID().Hex())
+	cl, ok := c.get(bot.ID().Hex())
 	if !ok {
-		client, err = c.add(bot)
+		cl, err = c.add(bot)
 		if err != nil {
 			return "Not Connected", err
 		}
+	} else {
+		c.updateAddr(bot)
 	}
-	status, err = c.check(client, chatID)
+
+	status, err = c.check(cl, chatID)
 	return
 }
 
 func (c *ClientsData) StartBroadcast(bot models.Bot, ch chan *protobuf.Stats, ctx context.Context, r *protobuf.StartBroadcastRequest) {
 	defer close(ch)
 
-	client, ok := c.get(bot.ID().Hex())
+	cl, ok := c.get(bot.ID().Hex())
 	if !ok {
 		var err error
-		client, err = c.add(bot)
+		cl, err = c.add(bot)
 		if err != nil {
 			return
 		}
 	}
 
-	stream, errStart := client.StartBroadcast(app.SetCallContextWithContext(ctx, "StartBroadcast", "core"), r)
+	stream, errStart := cl.StartBroadcast(app.SetCallContextWithContext(ctx, "StartBroadcast", "core"), r)
 	if errStart != nil {
 		return
 	}
@@ -175,18 +189,40 @@ func (c *ClientsData) check(client protobuf.BoxClient, chatID int64) (string, er
 	_, err := client.Check(
 		app.SetCallContext("check", "core"), &protobuf.CheckRequest{ChatID: chatID})
 	if err != nil {
-		return "FATAl", err
+		return app.StatusFatal.String(), err
 	}
-	return "OK", nil
+	return app.StatusOK.String(), nil
 }
 
 type getter interface {
 	get(botID string) (protobuf.BoxClient, bool)
+	updateAddr(bot models.Bot)
+}
+
+func (c *ClientsData) updateAddr(bot models.Bot) {
+	c.m.Lock()
+	defer c.m.Unlock()
+
+	cl, ok := c.storage[bot.ID().Hex()]
+	if !ok {
+		conn, _ := c.connect(bot.Address().IP(), bot.Address().Port(), bot.Username())
+		c.storage[bot.ID().Hex()] = &client{
+			client: conn,
+			addr:   bot.Address().IP() + ":" + bot.Address().Port(),
+		}
+	}
+
+	if cl.addr != bot.Address().IP()+":"+bot.Address().Port() {
+		cl.addr = bot.Address().IP() + ":" + bot.Address().Port()
+		cl.client, _ = c.connect(bot.Address().IP(), bot.Address().Port(), bot.Username())
+	}
+
+	return
 }
 
 func (c *ClientsData) get(botID string) (protobuf.BoxClient, bool) {
 	c.m.Lock()
 	defer c.m.Unlock()
-	client, ok := c.storage[botID]
-	return client, ok
+	cl, ok := c.storage[botID]
+	return cl.client, ok
 }

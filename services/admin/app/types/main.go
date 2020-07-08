@@ -21,12 +21,12 @@ type Type struct {
 func CreateType() Types {
 	return &typeData{
 		storage: []*Type{
-			{"channel", "Телеграмм подписка", false},
-			{"checkChannel", "Телеграмм подписка (check)", true},
-			{"subscribeInstagram", "Подписка инстаграм", false},
-			{"likeInstagram", "Лайки инстаграм", false},
-			{"openWeb", "Открыть ссылку", false},
-			{"activateBot", "Активировать бота", false},
+			{"channel", "Канал", false},
+			{"checkChannel", "Канал (проверка)", true},
+			{"subscribeInstagram", "Instagram", false},
+			{"likeInstagram", "Лайки Instagram", false},
+			{"openWeb", "Ссылка", false},
+			{"activateBot", "Бот", false},
 		},
 	}
 }

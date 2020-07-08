@@ -7,6 +7,7 @@ import (
 	"github.com/sparrowganz/teleFly/telegram"
 	"net/url"
 	"strings"
+	"telegram_boxes/services/admin/app"
 	"telegram_boxes/services/admin/bot"
 )
 
@@ -30,7 +31,7 @@ func (a *Admin) SendMessage(_ context.Context, r *SendMessageRequest) (*SendMess
 	for _, adminID := range a.Bot.Methods().Admins().GetAll() {
 		a.Bot.Methods().Telegram().ToQueue(&telegram.Message{
 			Message: tgbotapi.NewMessage(adminID,
-				fmt.Sprintf("%v: %v", r.GetUsername(), r.GetMessage())),
+				fmt.Sprintf("%v %v", r.GetUsername(), r.GetMessage())),
 			UserId: adminID,
 		})
 	}
@@ -41,9 +42,26 @@ func (a *Admin) SendError(_ context.Context, r *SendErrorRequest) (*SendErrorRes
 	out := &SendErrorResponse{}
 
 	for _, adminID := range a.Bot.Methods().Admins().GetAll() {
+
+		var smile string
+		if r.GetStatus() == app.StatusOK.String() {
+			smile = "✅"
+		} else if r.GetStatus() == app.StatusFatal.String() {
+			smile = "❌"
+		} else if r.GetStatus() == app.StatusRecovery.String() {
+			smile = "⚠"
+		} else {
+			smile = "❔"
+		}
+
+		var err string
+		if r.GetError() != "" {
+			err = fmt.Sprintf("%v", r.GetError())
+		}
+
 		a.Bot.Methods().Telegram().ToQueue(&telegram.Message{
 			Message: tgbotapi.NewMessage(adminID,
-				fmt.Sprintf("%v(%v) : %v", r.GetUsername(), r.GetStatus(), r.GetError())),
+				fmt.Sprintf("@%v %v %v", r.GetUsername(), smile, err)),
 			UserId: adminID,
 		})
 	}

@@ -63,7 +63,7 @@ func (sd *serverData) CleanupRunTask(ctx context.Context,
 	for _, box := range boxes {
 		err = sd.Box().RemoveTask(box, r.GetTaskID())
 		if err != nil {
-			_ = sd.Admin().SendError("OK", "core", err.Error())
+			_ = sd.Admin().SendError(app.StatusOK.String(), "core", err.Error())
 		}
 	}
 
@@ -96,7 +96,7 @@ func (sd *serverData) DeleteTask(ctx context.Context,
 	for _, box := range boxes {
 		err = sd.Box().RemoveTask(box, r.GetTaskID())
 		if err != nil {
-			_ = sd.Admin().SendError("OK", "core", err.Error())
+			_ = sd.Admin().SendError(app.StatusOK.String(), "core", err.Error())
 		}
 	}
 

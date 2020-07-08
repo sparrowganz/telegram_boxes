@@ -217,14 +217,14 @@ func (b *botData) startCommandHandler(chatID int64, username, firstname, lastnam
 
 func (b *botData) startReferralCommandHandler(chatID int64, username, firstname, lastname, email string, args string) {
 
-	session := b.Database().GetMainSession().Clone()
-	defer session.Close()
-
 	inviterID, errConv := strconv.Atoi(args)
 	if errConv != nil {
 		b.startCommandHandler(chatID, username, firstname, lastname, email)
 		return
 	}
+
+	session := b.Database().GetMainSession().Clone()
+	defer session.Close()
 
 	_, err := b.Database().Models().Users().FindUserByTelegramID(chatID, session)
 	if err != nil {
@@ -263,7 +263,7 @@ func (b *botData) startReferralCommandHandler(chatID int64, username, firstname,
 					},
 					Text: b.BonusForReferralText(
 						referralUsername, b.getReferralLink(inviter.Telegram().ID())),
-					ParseMode:             tgbotapi.ModeMarkdown,
+					ParseMode:             tgbotapi.ModeHTML,
 					DisableWebPagePreview: true,
 				},
 				UserId: inviter.Telegram().ID(),

@@ -3,6 +3,7 @@ package bot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sparrowganz/teleFly/telegram"
+	"telegram_boxes/services/box/app"
 	"telegram_boxes/services/box/app/config"
 	"telegram_boxes/services/box/app/db"
 	"telegram_boxes/services/box/app/log"
@@ -114,7 +115,7 @@ func (b *botData) StartReadErrors() {
 			})
 		} else {
 			_ = b.Log().Error("", "system", err.Err.Error())
-			_ = b.Servers().SendError(err.Err.Error(), servers.OK)
+			_ = b.Servers().SendError(err.Err.Error(), app.StatusOK.String())
 		}
 	}
 }

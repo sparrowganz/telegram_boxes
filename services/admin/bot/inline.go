@@ -6,6 +6,7 @@ import (
 	"github.com/sparrowganz/teleFly/telegram"
 	"github.com/sparrowganz/teleFly/telegram/actions"
 	"github.com/sparrowganz/teleFly/telegram/limits"
+	"telegram_boxes/services/admin/app"
 	"telegram_boxes/services/admin/app/servers"
 	"telegram_boxes/services/admin/protobuf/services/core/protobuf"
 	"time"
@@ -252,7 +253,7 @@ func (b *botData) getBroadcastHandler(chatID int64, messageID int, id string) {
 					ReplyMarkup: actionsBroadcastBot(botsData),
 				},
 				Text:                  txt,
-				ParseMode:             tgbotapi.ModeMarkdown,
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
@@ -284,7 +285,7 @@ func (b *botData) getListBroadcastsHandler(chatID int64, messageID int) {
 					ReplyMarkup: chooseBroadcastBot(botsHash),
 				},
 				Text:                  `Выберите бот:`,
-				ParseMode:             tgbotapi.ModeMarkdown,
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
@@ -388,7 +389,7 @@ func (b *botData) addButtonBroadcast(chatID int64, messageID int) {
 					ReplyMarkup: backMenu(),
 				},
 				Text:                  `Введите данные клавиши в формате "VK - https://vk.com"`,
-				ParseMode:             tgbotapi.ModeMarkdown,
+				ParseMode:             tgbotapi.ModeHTML,
 				DisableWebPagePreview: false,
 			},
 			UserId: chatID,
@@ -402,7 +403,7 @@ func (b *botData) broadcastSetData(chatID int64, data *protobuf.StartBroadcastRe
 	var txt string
 
 	if data.Text == "" && data.FileLink == "" {
-		txt = "Пришлите данные для рассылки:"
+		txt = "Пост для рассылки:"
 	} else if data.Text != "" {
 		txt = data.Text
 	}
@@ -423,7 +424,7 @@ func (b *botData) broadcastSetData(chatID int64, data *protobuf.StartBroadcastRe
 
 		conf := tgbotapi.NewPhotoShare(chatID, data.FileLink)
 		conf.Caption = txt
-		conf.ParseMode = tgbotapi.ModeMarkdown
+		conf.ParseMode = tgbotapi.ModeHTML
 		conf.ReplyMarkup = addButtonBroadcastKeyboard(true)
 		mess = conf
 	} else if data.Type == videoType {
@@ -434,7 +435,7 @@ func (b *botData) broadcastSetData(chatID int64, data *protobuf.StartBroadcastRe
 
 		conf := tgbotapi.NewVideoShare(chatID, data.FileLink)
 		conf.Caption = txt
-		conf.ParseMode = tgbotapi.ModeMarkdown
+		conf.ParseMode = tgbotapi.ModeHTML
 		conf.ReplyMarkup = addButtonBroadcastKeyboard(true)
 		mess = conf
 	} else {
@@ -450,7 +451,7 @@ func (b *botData) broadcastSetData(chatID int64, data *protobuf.StartBroadcastRe
 				ReplyMarkup: addButtonBroadcastKeyboard(hasContent),
 			},
 			Text:                  txt,
-			ParseMode:             tgbotapi.ModeMarkdown,
+			ParseMode:             tgbotapi.ModeHTML,
 			DisableWebPagePreview: false,
 		}
 	}
@@ -510,7 +511,7 @@ func (b *botData) broadcastBotsHandler(chatID int64, messageID int, data *protob
 
 	var onlineServers []*protobuf.Server
 	for _, s := range srvs {
-		if s.Status == servers.OK.String() {
+		if s.Status == app.StatusOK.String() {
 			onlineServers = append(onlineServers, s)
 		}
 	}
@@ -524,7 +525,7 @@ func (b *botData) broadcastBotsHandler(chatID int64, messageID int, data *protob
 						MessageID: messageID,
 					},
 					Text:      "Работающие коробки для рассылки не найдены ",
-					ParseMode: tgbotapi.ModeMarkdown,
+					ParseMode: tgbotapi.ModeHTML,
 				},
 				UserId: chatID,
 			})
@@ -555,7 +556,7 @@ func (b *botData) broadcastBotsHandler(chatID int64, messageID int, data *protob
 					ReplyMarkup: chooseServersKeyboard(data.BotIDs, onlineServers),
 				},
 				Text:      txt,
-				ParseMode: tgbotapi.ModeMarkdown,
+				ParseMode: tgbotapi.ModeHTML,
 			},
 			UserId: chatID,
 		})
@@ -623,7 +624,7 @@ func (b *botData) chooseAllBonusesHandler(chatID int64, messageID int) {
 					ReplyMarkup: changeBonusKeyboard(AllID, isSetInactive),
 				},
 				Text:      txt,
-				ParseMode: tgbotapi.ModeMarkdown,
+				ParseMode: tgbotapi.ModeHTML,
 			},
 			UserId: chatID,
 		})
@@ -656,7 +657,7 @@ func (b *botData) chooseBonusHandler(chatID int64, messageID int, callbackID str
 					ReplyMarkup: changeBonusKeyboard(server.GetId(), !server.GetIsActive()),
 				},
 				Text:      txt,
-				ParseMode: tgbotapi.ModeMarkdown,
+				ParseMode: tgbotapi.ModeHTML,
 			},
 			UserId: chatID,
 		})
@@ -673,8 +674,8 @@ func (b *botData) checkAllServers(chatID int64, messageID int) {
 				ChatID:    chatID,
 				MessageID: messageID,
 			},
-			Text:                  "Проверка началась",
-			ParseMode:             tgbotapi.ModeMarkdown,
+			Text:                  "Диагностика началась...",
+			ParseMode:             tgbotapi.ModeHTML,
 			DisableWebPagePreview: true,
 		},
 		UserId: chatID,
@@ -684,14 +685,26 @@ func (b *botData) checkAllServers(chatID int64, messageID int) {
 	go b.Servers().HardCheckAll(chResult, chatID)
 
 	for res := range chResult {
+
+		var smile string
+		if res.Status == app.StatusOK.String() {
+			smile = "✅"
+		} else if res.Status == app.StatusFatal.String() {
+			smile = "❌"
+		} else if res.Status == app.StatusRecovery.String() {
+			smile = "⚠"
+		} else {
+			smile = "❔"
+		}
+
 		b.Telegram().ToQueue(
 			&telegram.Message{
 				Message: tgbotapi.MessageConfig{
 					BaseChat: tgbotapi.BaseChat{
 						ChatID: chatID,
 					},
-					Text:      fmt.Sprintf("%v - %v", res.Username, res.Status),
-					ParseMode: tgbotapi.ModeMarkdown,
+					Text:      fmt.Sprintf("%v %v", res.Username, smile),
+					ParseMode: tgbotapi.ModeHTML,
 				},
 				UserId: chatID,
 			})
@@ -703,8 +716,8 @@ func (b *botData) checkAllServers(chatID int64, messageID int) {
 				BaseChat: tgbotapi.BaseChat{
 					ChatID: chatID,
 				},
-				Text:      "Проверка закончена",
-				ParseMode: tgbotapi.ModeMarkdown,
+				Text:      "Диагностика закончена...",
+				ParseMode: tgbotapi.ModeHTML,
 			},
 			UserId: chatID,
 		})
@@ -735,7 +748,7 @@ func (b *botData) cancelHandler(chatID int64, queryID string, messageID int) {
 //
 const (
 	TaskNotFound = "Задание не найдено попробуйте снова"
-	TaskTemplate = "Задание %s: \n????(Выводить ли само задание)\n\n%v"
+	TaskTemplate = "<b>%s</b>\n%s\n\n%s"
 )
 
 func (b *botData) createTaskInlineHandler(chatID int64, queryID string, messageID int, act actions.Job) {
@@ -770,7 +783,7 @@ func (b *botData) chooseTypeInTaskHandler(chatID int64, messageID int, actionID 
 				MessageID:   messageID,
 			},
 			Text:                  "Введите имя:",
-			ParseMode:             tgbotapi.ModeMarkdown,
+			ParseMode:             tgbotapi.ModeHTML,
 			DisableWebPagePreview: true,
 		},
 		UserId: chatID,
@@ -819,8 +832,8 @@ func (b *botData) removeTaskInlineHandler(chatID int64, messageID int, actionID 
 				ChatID:      chatID,
 				ReplyMarkup: lastChoiceKeyboard(DeleteAction.String() + TaskType.String()),
 			},
-			Text:                  `Вы уверены что хотите удалить задание: "` + tsk.Name + `" `,
-			ParseMode:             tgbotapi.ModeMarkdown,
+			Text:                  "Удалить задание *" + tsk.Name + "*?",
+			ParseMode:             tgbotapi.ModeHTML,
 			DisableWebPagePreview: true,
 		},
 		UserId: chatID,
@@ -888,9 +901,9 @@ func (b *botData) getTaskInlineHandler(chatID int64, messageID int, actionID str
 
 	var priorityText string
 	if tsk.IsPriority {
-		priorityText = "✅ Задание приоритетное"
+		priorityText = "⭐️ Задание приоритетное"
 	} else {
-		priorityText = "❌ Задание не приоритетно"
+		priorityText = "🔷 Стандартный приоритет"
 	}
 
 	b.Telegram().ToQueue(&telegram.Message{
@@ -900,8 +913,8 @@ func (b *botData) getTaskInlineHandler(chatID int64, messageID int, actionID str
 				ReplyMarkup: getTaskKeyboard(tsk),
 				MessageID:   messageID,
 			},
-			Text:                  fmt.Sprintf(TaskTemplate, tsk.Name, priorityText),
-			ParseMode:             tgbotapi.ModeMarkdown,
+			Text:                  fmt.Sprintf(TaskTemplate, tsk.Name, tsk.Link, priorityText),
+			ParseMode:             tgbotapi.ModeHTML,
 			DisableWebPagePreview: true,
 		},
 		UserId: chatID,

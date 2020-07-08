@@ -80,8 +80,8 @@ func getTypesKeyboard(tps []*types.Type) *tgbotapi.InlineKeyboardMarkup {
 		rows = append(rows, row)
 	}
 
-	cancelB, _ := cancelButton().ToInline()
-	k := tgbotapi.NewInlineKeyboardMarkup(append(rows, tgbotapi.NewInlineKeyboardRow(cancelB))...)
+	//cancelB, _ := cancelButton().ToInline()
+	k := tgbotapi.NewInlineKeyboardMarkup(/*append(*/rows.../*, tgbotapi.NewInlineKeyboardRow(cancelB))...*/)
 	return &k
 }
 
@@ -130,7 +130,7 @@ func getTaskKeyboard(tsk *protobuf.Task) *tgbotapi.InlineKeyboardMarkup {
 		TaskType.String(), PriorityAction.String(), tsk.GetId()).ToInline()
 	row1 := tgbotapi.NewInlineKeyboardRow(changePriorityButton)
 
-	resetDoButton, _ := keyboard.NewButton().SetText("Очистить выполнение").SetData(
+	resetDoButton, _ := keyboard.NewButton().SetText("Обнулить выполнение").SetData(
 		TaskType.String(), CleanAction.String(), tsk.GetId()).ToInline()
 	row2 := tgbotapi.NewInlineKeyboardRow(resetDoButton)
 
@@ -138,7 +138,10 @@ func getTaskKeyboard(tsk *protobuf.Task) *tgbotapi.InlineKeyboardMarkup {
 		TaskType.String(), DeleteAction.String(), tsk.GetId()).ToInline()
 	row3 := tgbotapi.NewInlineKeyboardRow(deleteButton)
 
-	keyb := tgbotapi.NewInlineKeyboardMarkup(row1, row2, row3)
+	cancel, _ := cancelButton().ToInline()
+	row4 := tgbotapi.NewInlineKeyboardRow(cancel)
+
+	keyb := tgbotapi.NewInlineKeyboardMarkup(row1, row2, row3, row4)
 
 	return &keyb
 }
@@ -148,7 +151,7 @@ func addButtonBroadcastKeyboard(isHasContent bool) *tgbotapi.InlineKeyboardMarku
 	var rows [][]tgbotapi.InlineKeyboardButton
 
 	if isHasContent {
-		nextButton, _ := keyboard.NewButton().SetText("Добавить клавишу").SetData(
+		nextButton, _ := keyboard.NewButton().SetText("Добавить кнопку").SetData(
 			BroadcastType.String(), AddAction.String(), ButtonID).ToInline()
 
 		rows = append(rows, tgbotapi.NewInlineKeyboardRow(nextButton))
@@ -195,7 +198,7 @@ func chooseServersKeyboard(chooseServersID []string, servs []*protobuf.Server) *
 	}
 
 	if hasChoose {
-		nextButton, _ := keyboard.NewButton().SetText("Сохранить").SetData(
+		nextButton, _ := keyboard.NewButton().SetText("Выбрать").SetData(
 			BroadcastType.String(), AddAction.String()).ToInline()
 		rows = append(rows, tgbotapi.NewInlineKeyboardRow(nextButton))
 	}

@@ -41,13 +41,13 @@ func (b *botData) output(telegramID int64, tp config.KeyboardType) (text string,
 
 	} else if time.Now().Sub(out.Timestamp().Created()) >= time.Hour*5*24 {
 
-		//todo delete task
+		defer b.Database().Models().Outputs().RemoveOutput(out, session)
 		//Check all already checked tasks
 		for _, task := range out.Tasks() {
 			isCheck, _ := b.Task().CheckTask(currentUser.Telegram().ID(), task)
 			if !isCheck {
 
-				tsk ,_ := b.Task().FindTask(task)
+				tsk, _ := b.Task().FindTask(task)
 
 				text = b.GetErrorTaskOutputText(tsk.GetLink())
 				return
@@ -55,6 +55,7 @@ func (b *botData) output(telegramID int64, tp config.KeyboardType) (text string,
 		}
 
 		text = b.GetErrorOutputText()
+
 
 	} else {
 		//View current  output text
@@ -80,7 +81,10 @@ func (b *botData) chooseOutputGW(telegramID int64, tp config.KeyboardType,
 	}
 
 	if !currentUser.Verified() {
-		text = b.GetNotVerifiedOutputText(b.getReferralLink(telegramID))
+
+		text = b.GetNotVerifiedOutputText(
+			b.Database().Models().Users().GetCountInvitedUsers(currentUser.ID().Hex(), session),
+			b.getReferralLink(telegramID))
 		return
 	}
 

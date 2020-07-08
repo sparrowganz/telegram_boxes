@@ -125,7 +125,7 @@ message HardCheckRequest {
 message Check {
     string id = 1;
     string username = 2;
-    Status status = 3;
+    string status = 3;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ message InitBoxResponse {
 //  Send Error
 //----------------------------------------------------------------------------------------------------------------------
 message SendErrorRequest {
-    Status status = 1;
+    string status = 1;
     string Error = 2;
 }
 
@@ -208,11 +208,6 @@ message SendErrorResponse {
 
 }
 
-enum Status {
-    OK = 0;
-    Recovering = 1;
-    Fatal = 2;
-}
 
 message Server {
     string id = 1;

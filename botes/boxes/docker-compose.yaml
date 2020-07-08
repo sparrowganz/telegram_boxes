@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   box:
-    container_name: "box_TEST"
+    container_name: "Test"
     build: '$GOPATH/src/telegram_boxes/services/box'
     ports:
       - ${APP_PORT}:${APP_PORT}
@@ -34,7 +34,7 @@ services:
       - MONGO_MECHANISM=${MONGO_MECHANISM}
 
   database:
-    container_name: 'database_TEST'
+    container_name: 'Test_DB'
     image: bitnami/mongodb:latest
     restart: always
     environment:

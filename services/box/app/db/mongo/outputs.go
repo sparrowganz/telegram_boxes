@@ -49,6 +49,5 @@ func (output *outputData) UpdateOutput(out models.Output, session *mgo.Session) 
 }
 
 func (output *outputData) RemoveOutput(out models.Output, session *mgo.Session) error {
-	out.Timestamp().SetRemoveTime()
-	return output.queryOutputs(session).UpdateId(out.ID(), out)
+	return output.queryOutputs(session).RemoveId(out.ID())
 }

@@ -10,6 +10,7 @@ import (
 	"telegram_boxes/services/core/app"
 	"telegram_boxes/services/core/app/models"
 	boxProto "telegram_boxes/services/core/protobuf/services/box/protobuf"
+	"time"
 )
 
 type Servers interface {
@@ -51,7 +52,7 @@ func (sd *serverData) GetAllBroadcasts(ctx context.Context, r *GetAllBroadcastsR
 			BotUsername: bot.Username(),
 			Success:     success,
 			Fail:        fail,
-			Time:        val.StartTime().UnixNano(),
+			Time:        val.StartTime().Add(time.Hour * 3).UnixNano(),
 		})
 	}
 
@@ -92,7 +93,7 @@ func (sd *serverData) StartBroadcast(ctx context.Context, r *StartBroadcastReque
 			}
 
 			success, fail := s.Stats()
-			_ = sd.Admin().SendMessage(b.Username(), fmt.Sprintf("Рассылка окончена %v/%v", success, fail))
+			_ = sd.Admin().SendMessage(b.Username(), fmt.Sprintf("Рассылка окончена %v / %v", success, fail))
 
 			sd.Broadcast().Remove(broadcastID)
 		}(bot)
@@ -158,9 +159,10 @@ func (sd *serverData) HardCheck(r *HardCheckRequest, stream Servers_HardCheckSer
 	for _, bot := range bots {
 
 		wg.Add(1)
-		currentBot := bot
-		go func() {
+		go func(currentBot *models.BotData) {
 			defer wg.Done()
+
+			fmt.Println(currentBot, "1")
 			status, errCheck := sd.Box().CheckBox(currentBot, r.GetUserID())
 			if errCheck != nil {
 				currentBot.SetStatus(status)
@@ -168,12 +170,19 @@ func (sd *serverData) HardCheck(r *HardCheckRequest, stream Servers_HardCheckSer
 				_ = sd.Admin().SendError(status, currentBot.Username(), errCheck.Error())
 				return
 			}
+			fmt.Println(currentBot, "2")
 
 			currentBot.SetStatus(status)
 			_ = sd.DB().Models().Bots().UpdateBot(currentBot, session)
-			_ = sd.Admin().SendError(status, currentBot.Username(), "Проверка прошла успешно")
+			chResult <- &Check{
+				Id:            currentBot.Id.Hex(),
+				Username:      currentBot.UserName,
+				Status:        status,
+			}
+			//_ = sd.Admin().SendError(status, currentBot.Username(), "")
+			fmt.Println(currentBot, "3")
 
-		}()
+		}(bot)
 	}
 
 	readWg := &sync.WaitGroup{}
@@ -266,7 +275,7 @@ func (sd *serverData) GetAllUsersCount(ctx context.Context,
 			Username: bot.Username(),
 			Old: &Count{
 				All:     bot.Statistics().GetAll(),
-				Blocked: bot.Statistics().GetAll(),
+				Blocked: bot.Statistics().GetBlocked(),
 			},
 			New: &Count{
 				All:     stats.GetAll(),
@@ -361,14 +370,14 @@ func (sd *serverData) SendError(ctx context.Context, r *SendErrorRequest) (*Send
 		return out, err
 	}
 
-	if r.GetStatus() != Status_OK {
+	if r.GetStatus() != app.StatusOK.String() {
 		bot.InActive()
 	}
 
-	bot.SetStatus(r.GetStatus().String())
+	bot.SetStatus(r.GetStatus())
 	err = sd.DB().Models().Bots().UpdateBot(bot, session)
 
-	_ = sd.Admin().SendError(r.GetStatus().String(), username, r.GetError())
+	_ = sd.Admin().SendError(r.GetStatus(), username, r.GetError())
 
 	return out, nil
 }
@@ -404,12 +413,12 @@ func (sd *serverData) InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxR
 		}
 
 		_ = sd.Box().AddBox(bot)
-		_ = sd.Admin().SendError("START", r.GetUsername(), "New box in system")
+		_ = sd.Admin().SendError(app.StatusOK.String(), r.GetUsername(), "Зарегистрирован новый бот")
 		return out, nil
 	}
 
 	bot.SetActive()
-	bot.SetStatus(Status_OK.String())
+	bot.SetStatus(app.StatusOK.String())
 	if bot.Address().Addr() != r.GetHost()+":"+r.GetPort() {
 		bot.Address().SetIP(r.GetHost())
 		bot.Address().SetPort(r.GetPort())
@@ -418,7 +427,7 @@ func (sd *serverData) InitBox(ctx context.Context, r *InitBoxRequest) (*InitBoxR
 	_ = sd.Box().AddBox(bot)
 
 	out.ID = bot.ID().Hex()
-	_ = sd.Admin().SendError("UP", r.GetUsername(), "OLD Box start again")
+	_ = sd.Admin().SendError(app.StatusOK.String(), r.GetUsername(), "Зарегистрированный бот активирован")
 
 	return out, nil
 }

@@ -48,6 +48,7 @@ type BonusSetter interface {
 
 func (b *BonusData) SetActive() {
 	b.Active = true
+	b.SetTime("14:26")
 }
 
 func (b *BonusData) Inactive() {

@@ -81,7 +81,6 @@ func (c *Data) Counts() Counts {
 type Texts struct {
 	IncorrectCommand    string `json:"incorrectCommand"`
 	Error               string `json:"error"`
-	IsSetOutput         string `json:"isSetOutput"`
 	NotifyForReferral   string `json:"notifyForReferral"`
 	StartText           string `json:"startText"`
 	Balance             string `json:"balance"`

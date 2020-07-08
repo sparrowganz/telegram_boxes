@@ -96,11 +96,15 @@ func (b *botData) GetStatusReferral(status bool) string {
 	}
 }
 
-func (b *botData) GetNotVerifiedOutputText(referralLink string) string {
+func (b *botData) GetNotVerifiedOutputText(refCount int, referralLink string) string {
 	txt := b.Config().Texts().NotVerifiedOutput
 
 	if strings.Contains(txt, "@verifiedCount") {
 		txt = strings.Replace(txt, "@verifiedCount", strconv.Itoa(b.Config().Counts().VerifiedCount), -1)
+	}
+
+	if strings.Contains(txt, "@referralCount") {
+		txt = strings.Replace(txt, "@referralCount", strconv.Itoa(refCount), -1)
 	}
 
 	if strings.Contains(txt, "@referralLink") {
@@ -173,7 +177,7 @@ func (b *botData) GetCurrentOutputText(cost int, gateway, data string, tm time.T
 		if res.Hours() < 24 {
 			tmString = fmt.Sprintf("%v часов", res.Hours())
 		} else {
-			tmString = fmt.Sprintf("%v дней %v часов", int(res.Hours()/24), int(res.Hours())-int(res.Hours()/24))
+			tmString = fmt.Sprintf("%v дней %v часов", int(res.Hours()/24), int(res.Hours())%24)
 		}
 
 		txt = strings.Replace(txt, "@time", tmString, -1)
@@ -184,9 +188,31 @@ func (b *botData) GetCurrentOutputText(cost int, gateway, data string, tm time.T
 func (b *botData) GetFinalOutputText(cost int, gateway, data string, tm time.Time) string {
 	txt := b.Config().Texts().FinalOutput
 
-	if strings.Contains(txt, "@currentOutput") {
-		txt = strings.Replace(txt, "@currentOutput", b.GetCurrentOutputText(cost, gateway, data, tm), -1)
+	if strings.Contains(txt, "@cost") {
+		txt = strings.Replace(txt, "@cost", strconv.Itoa(cost), -1)
 	}
+
+	if strings.Contains(txt, "@gateway") {
+		txt = strings.Replace(txt, "@gateway", gateway, -1)
+	}
+
+	if strings.Contains(txt, "@data") {
+		txt = strings.Replace(txt, "@data", data, -1)
+	}
+
+	if strings.Contains(txt, "@time") {
+
+		var tmString string
+		res := tm.Sub(time.Now())
+		if res.Hours() < 24 {
+			tmString = fmt.Sprintf("%v часов", res.Hours())
+		} else {
+			tmString = fmt.Sprintf("%v дней %v часов", int(res.Hours()/24), int(res.Hours())%24)
+		}
+
+		txt = strings.Replace(txt, "@time", tmString, -1)
+	}
+
 	return txt
 }
 
@@ -237,5 +263,12 @@ func (b *botData) SuccessCheckTask(cost int) string {
 }
 
 func (b *botData) GetHelpText() string {
-	return b.Config().Texts().Help
+
+	txt := b.Config().Texts().Help
+
+	if strings.Contains(txt, "@minOutput") {
+		txt = strings.Replace(txt, "@minOutput", strconv.Itoa(b.Config().Counts().MinOutput), -1)
+	}
+
+	return txt
 }

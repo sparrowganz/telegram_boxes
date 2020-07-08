@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"runtime/debug"
 	"syscall"
+	"telegram_boxes/services/core/app"
 	"telegram_boxes/services/core/app/admin"
 	"telegram_boxes/services/core/app/box"
 	"telegram_boxes/services/core/app/db"
@@ -82,9 +83,9 @@ func waitForShutdown(b protobuf.MainServer) {
 
 	servers , _ := b.DB().Models().Bots().GetAll(session)
 	for _ , s := range servers {
-		s.Status = protobuf.Status_Fatal.String()
+		s.Status = app.StatusFatal.String()
 		b.DB().Models().Bots().UpdateBot(s,session)
-		_ = b.Admin().SendError(s.Status, s.UserName, "Shutdown core")
+		_ = b.Admin().SendError(s.Status, s.UserName, "Выключение ядра")
 	}
 
 	os.Exit(0)

@@ -10,11 +10,6 @@ import (
 	"time"
 )
 
-var (
-	OK         = protobuf.Status_OK
-	RECOVERING = protobuf.Status_Recovering
-	FATAL      = protobuf.Status_Fatal
-)
 
 type Servers interface {
 	connector
@@ -139,7 +134,7 @@ type Checker interface {
 type Check struct {
 	ID       string
 	Username string
-	Status   protobuf.Status
+	Status   string
 	Error    string
 }
 

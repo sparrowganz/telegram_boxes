@@ -3,8 +3,8 @@ package bot
 import (
 	"errors"
 	"fmt"
+	"telegram_boxes/services/box/app"
 	"telegram_boxes/services/box/app/models"
-	"telegram_boxes/services/box/app/servers"
 )
 
 func (b *botData) getTask(chatID int64) (text string, keyb interface{}, err error) {
@@ -25,7 +25,7 @@ func (b *botData) getTask(chatID int64) (text string, keyb interface{}, err erro
 
 	kind, ok := b.Config().Kinds()[task.GetType()]
 	if !ok {
-		b.Servers().SendError("unknown task type "+task.GetType(), servers.OK)
+		b.Servers().SendError("Неизвестный тип задания: "+task.GetType(), app.StatusOK.String())
 		err = errors.New("unknown task type " + task.GetType())
 		return
 	}
@@ -60,7 +60,7 @@ func (b *botData) checkTask(chatID int64, taskID string) (text string, keyb inte
 
 	kind, ok := b.Config().Kinds()[task.GetType()]
 	if !ok {
-		b.Servers().SendError("unknown task type "+task.GetType(), servers.OK)
+		b.Servers().SendError("Неизвестный тип задания: "+task.GetType(), app.StatusOK.String())
 		err = errors.New("unknown task type " + task.GetType())
 		return
 	}

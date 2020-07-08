@@ -80,13 +80,15 @@ func main() {
 		sender.StartReadErrors()
 	}()
 
-	wg.Add(1)
-	go func() {
-		defer recovery(logger)
-		defer wg.Done()
+	wg.Add(5)
+	for i := 0 ; i < 5 ; i ++ {
+		go func() {
+			defer recovery(logger)
+			defer wg.Done()
 
-		sender.StartHandle()
-	}()
+			sender.StartHandle()
+		}()
+	}
 
 	lis, errCreateConn := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("ADMIN_PORT")))
 	if errCreateConn != nil {
